@@ -1,0 +1,201 @@
+{% extends 'base.html' %}
+{% block title %}Cadets — DIT University NCC{% endblock %}
+{% block extra_css %}
+<style>
+/* ── cadet category tab bar ── */
+.cat-tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:50px}
+.cat-tab{font-family:var(--f-mono);font-size:10px;letter-spacing:.22em;text-transform:uppercase;
+  padding:9px 22px;border-radius:2px;border:1px solid var(--border);color:var(--muted);
+  text-decoration:none;transition:all .2s;cursor:pointer}
+.cat-tab:hover,.cat-tab.active{border-color:var(--gold);color:var(--gold);background:rgba(200,168,60,.08)}
+
+/* ── cadet section header ── */
+.cadet-section-hd{
+  display:flex;align-items:center;gap:16px;margin-bottom:28px;
+  padding-bottom:14px;border-bottom:1px solid rgba(200,168,60,.15);
+}
+.cadet-section-hd .section-tag{
+  font-family:var(--f-display);font-size:22px;color:var(--gold);letter-spacing:.12em;
+}
+.cadet-section-hd .section-meta{
+  font-family:var(--f-mono);font-size:10px;color:var(--muted);letter-spacing:.18em;
+  border:1px solid rgba(200,168,60,.2);padding:3px 10px;border-radius:2px;
+}
+.cadet-count{
+  margin-left:auto;font-family:var(--f-display);font-size:34px;color:rgba(200,168,60,.25);line-height:1;
+}
+
+/* ── cadet card ── */
+.cadets-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:20px}
+.cadet-card{
+  background:var(--glass2);border:1px solid rgba(180,150,50,.18);
+  border-radius:8px;overflow:hidden;position:relative;
+  cursor:pointer;transform-style:preserve-3d;perspective:800px;
+  transition:transform .3s ease, box-shadow .3s ease, border-color .3s ease;
+}
+.cadet-card::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:2px;z-index:2;
+  background:linear-gradient(90deg,transparent,var(--gold),transparent);
+  opacity:0;transition:opacity .3s;
+}
+.cadet-card:hover::before{opacity:1}
+.cadet-card:hover{
+  border-color:rgba(200,168,60,.48);
+  box-shadow:0 20px 56px rgba(0,0,0,.6), 0 0 28px rgba(200,168,60,.1);
+}
+/* photo */
+.cadet-photo{height:195px;overflow:hidden;position:relative;
+  background:linear-gradient(160deg,#0c2010 0%,#162a1c 100%)}
+.cadet-photo img{width:100%;height:100%;object-fit:cover;
+  transition:transform .45s ease, filter .45s ease;filter:saturate(.8)}
+.cadet-card:hover .cadet-photo img{transform:scale(1.07);filter:saturate(1)}
+.cadet-photo::after{
+  content:'';position:absolute;inset:0;pointer-events:none;
+  background:linear-gradient(180deg,transparent 35%,rgba(4,8,10,.75) 100%);
+}
+.cadet-photo-ph{width:100%;height:100%;display:flex;align-items:center;justify-content:center}
+.cadet-photo-ph svg{opacity:.2;transition:opacity .3s}
+.cadet-card:hover .cadet-photo-ph svg{opacity:.32}
+/* overlays */
+.cadet-roll{position:absolute;top:10px;right:10px;z-index:3;
+  font-family:var(--f-mono);font-size:9px;color:var(--gold);
+  background:rgba(4,8,10,.8);border:1px solid rgba(200,168,60,.28);
+  padding:3px 8px;border-radius:2px;letter-spacing:.1em}
+.cadet-badge{position:absolute;bottom:10px;left:10px;z-index:3;
+  font-family:var(--f-display);font-size:10.5px;letter-spacing:.2em;
+  background:var(--gold);color:#04080a;padding:3px 9px 2px;border-radius:2px;
+  box-shadow:0 2px 10px rgba(0,0,0,.5)}
+/* body */
+.cadet-body{padding:15px 16px 17px;
+  background:linear-gradient(180deg,rgba(12,24,14,.55) 0%,rgba(8,16,10,.96) 100%);
+  position:relative}
+.cadet-name{font-family:var(--f-ui);font-size:17px;font-weight:700;color:var(--white);
+  margin-bottom:4px;line-height:1.2;transition:color .2s}
+.cadet-card:hover .cadet-name{color:var(--gold-lt,#e8c84a)}
+.cadet-rank-label{font-family:var(--f-mono);font-size:9.5px;color:var(--gold);
+  letter-spacing:.15em;text-transform:uppercase;display:block;margin-bottom:6px}
+.cadet-meta{font-size:11px;color:var(--muted);display:flex;gap:7px;align-items:center;flex-wrap:wrap}
+.cadet-meta-dot{color:rgba(200,168,60,.3);font-size:9px}
+.cadet-year-pill{
+  display:inline-block;margin-top:7px;
+  font-family:var(--f-mono);font-size:9px;letter-spacing:.1em;
+  background:rgba(200,168,60,.07);border:1px solid rgba(200,168,60,.18);
+  color:rgba(200,168,60,.75);padding:2px 8px;border-radius:2px;
+}
+/* corner accent */
+.cadet-corner{position:absolute;bottom:12px;right:12px;width:18px;height:18px;opacity:.15}
+.cadet-corner::before,.cadet-corner::after{content:'';position:absolute;background:var(--gold)}
+.cadet-corner::before{width:100%;height:1.5px;bottom:0;right:0}
+.cadet-corner::after{width:1.5px;height:100%;bottom:0;right:0}
+</style>
+{% endblock %}
+{% block content %}
+<div style="padding-top:var(--nav-h)"></div>
+<section class="section">
+  <div class="section-max">
+    <div class="section-hd reveal">
+      <span class="tag">// ACTIVE_ROSTER</span>
+      <h2>Current <em>Cadets</em></h2>
+      <div class="divider"></div>
+      <p class="lead">DIT University NCC 29 UK Battalion — {{ seniors|length + buddies|length }} active cadets across two cohorts.</p>
+    </div>
+
+    <!-- Tabs -->
+    <div class="cat-tabs reveal">
+      <a href="{{ url_for('cadets') }}"             class="cat-tab {% if not active_cat %}active{% endif %}">All Cadets</a>
+      <a href="{{ url_for('cadets', cat='Senior') }}" class="cat-tab {% if active_cat=='Senior' %}active{% endif %}">Seniors — 3rd Year</a>
+      <a href="{{ url_for('cadets', cat='Buddy') }}"  class="cat-tab {% if active_cat=='Buddy'  %}active{% endif %}">Buddies — 1st Year</a>
+    </div>
+
+    {% if seniors %}
+    <!-- Seniors -->
+    <div style="margin-bottom:60px">
+      <div class="cadet-section-hd reveal">
+        <div class="section-tag">SENIORS</div>
+        <div class="section-meta">NCC 3rd Year · Batch 2024–27</div>
+        <div class="cadet-count">{{ seniors|length }}</div>
+      </div>
+      <div class="cadets-grid stagger">
+        {% for c in seniors %}
+        <div class="cadet-card">
+          <div class="cadet-photo">
+            {% if c['photo'] %}
+            <img src="{{ url_for('static', filename='uploads/cadets/'+c['photo']) }}" alt="{{ c['name'] }}" loading="lazy">
+            {% else %}
+            <div class="cadet-photo-ph">
+              <svg viewBox="0 0 80 80" width="72" height="72">
+                <circle cx="40" cy="30" r="20" fill="none" stroke="#c8a030" stroke-width="1.5" opacity=".4"/>
+                <circle cx="40" cy="30" r="12" fill="rgba(200,168,60,.18)"/>
+                <ellipse cx="40" cy="74" rx="30" ry="18" fill="rgba(200,168,60,.12)"/>
+              </svg>
+            </div>
+            {% endif %}
+            {% if c['roll_number'] %}<span class="cadet-roll">{{ c['roll_number'] }}</span>{% endif %}
+            {% if c['rank'] != 'CDT' %}<span class="cadet-badge">{{ c['rank'] }}</span>{% endif %}
+          </div>
+          <div class="cadet-body">
+            <div class="cadet-name">{{ c['name'] }}</div>
+            <span class="cadet-rank-label">{{ c['rank'] }}</span>
+            <div class="cadet-meta">
+              <span>{{ c['batch'] }}</span>
+              {% if c['branch'] %}<span class="cadet-meta-dot">·</span><span>{{ c['branch'] }}</span>{% endif %}
+            </div>
+            <div class="cadet-year-pill">{{ c['ncc_year'] or 'NCC 3rd Year' }}</div>
+            <div class="cadet-corner"></div>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+    {% endif %}
+
+    {% if buddies %}
+    <!-- Buddies -->
+    <div>
+      <div class="cadet-section-hd reveal">
+        <div class="section-tag">BUDDIES</div>
+        <div class="section-meta">NCC 1st Year · Batch 2025–28</div>
+        <div class="cadet-count">{{ buddies|length }}</div>
+      </div>
+      <div class="cadets-grid stagger">
+        {% for c in buddies %}
+        <div class="cadet-card">
+          <div class="cadet-photo">
+            {% if c['photo'] %}
+            <img src="{{ url_for('static', filename='uploads/cadets/'+c['photo']) }}" alt="{{ c['name'] }}" loading="lazy">
+            {% else %}
+            <div class="cadet-photo-ph">
+              <svg viewBox="0 0 80 80" width="72" height="72">
+                <circle cx="40" cy="30" r="20" fill="none" stroke="#c8a030" stroke-width="1.5" opacity=".3"/>
+                <circle cx="40" cy="30" r="12" fill="rgba(200,168,60,.12)"/>
+                <ellipse cx="40" cy="74" rx="30" ry="18" fill="rgba(200,168,60,.08)"/>
+              </svg>
+            </div>
+            {% endif %}
+            {% if c['roll_number'] %}<span class="cadet-roll">{{ c['roll_number'] }}</span>{% endif %}
+          </div>
+          <div class="cadet-body">
+            <div class="cadet-name">{{ c['name'] }}</div>
+            <span class="cadet-rank-label">{{ c['rank'] }}</span>
+            <div class="cadet-meta">
+              <span>{{ c['batch'] }}</span>
+              {% if c['branch'] %}<span class="cadet-meta-dot">·</span><span>{{ c['branch'] }}</span>{% endif %}
+            </div>
+            <div class="cadet-year-pill">{{ c['ncc_year'] or 'NCC 1st Year' }}</div>
+            <div class="cadet-corner"></div>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+    {% endif %}
+
+    {% if not seniors and not buddies %}
+    <div style="text-align:center;padding:80px 20px;color:var(--muted)">
+      <div style="font-size:52px;margin-bottom:18px">🎖️</div>
+      <p style="font-family:var(--f-display);font-size:26px;letter-spacing:.1em">No cadets found</p>
+    </div>
+    {% endif %}
+  </div>
+</section>
+{% endblock %}

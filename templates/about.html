@@ -1,0 +1,67 @@
+{% extends 'base.html' %}
+{% block title %}About — DIT University NCC{% endblock %}
+{% block content %}
+<div class="about-hero">
+  <div style="max-width:760px;margin:0 auto">
+    <span class="tag">// ABOUT_US</span>
+    <h1 style="font-family:var(--f-display);font-size:clamp(40px,7vw,80px);letter-spacing:.06em;line-height:.95;margin-bottom:16px">
+      NATIONAL CADET CORPS<br><span style="color:var(--gold)">INDIA</span>
+    </h1>
+    <div class="divider"></div>
+    <p style="color:var(--muted);font-size:17px;line-height:1.8;margin-top:20px">
+      Established in 1948, the NCC is the largest uniformed youth organisation in the world. The 29 UK Battalion at DIT University, Dehradun carries this proud legacy forward across Uttarakhand.
+    </p>
+  </div>
+</div>
+
+<section class="section">
+  <div class="section-max">
+    <!-- Battalion detail -->
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:56px;align-items:center;margin-bottom:80px" class="reveal">
+      <div>
+        <span class="tag">// 29 UK BN</span>
+        <h3 style="font-family:var(--f-display);font-size:38px;letter-spacing:.08em;color:var(--gold);margin-bottom:18px">THE BATTALION</h3>
+        <p style="color:var(--muted);margin-bottom:14px;line-height:1.8">The 29 Uttarakhand Battalion is stationed in Dehradun and encompasses multiple colleges in the Garhwal region. DIT University's NCC unit trains cadets in Army Wing activities including drill, weapon handling, map reading, and field craft.</p>
+        <p style="color:var(--muted);line-height:1.8">Our cadets regularly participate in Republic Day parades, Annual Training Camps (ATC), Combined Annual Training Camps (CATC), and national-level competitions at Thal Sainik Camp.</p>
+      </div>
+      <div style="text-align:center">
+        <svg viewBox="0 0 160 160" width="170" height="170" style="margin:0 auto;filter:drop-shadow(0 0 18px rgba(200,168,60,.35))">
+          <polygon points="80,4 152,42 152,118 80,156 8,118 8,42" fill="none" stroke="#c8a030" stroke-width="2.5"/>
+          <polygon points="80,18 138,50 138,110 80,142 22,110 22,50" fill="none" stroke="#c8a030" stroke-width="1" opacity=".5"/>
+          <text x="80" y="78" text-anchor="middle" fill="#c8a030" font-family="'Bebas Neue',sans-serif" font-size="20" letter-spacing="3">NCC</text>
+          <text x="80" y="97" text-anchor="middle" fill="#c8a030" font-family="'Bebas Neue',sans-serif" font-size="12" letter-spacing="5">INDIA</text>
+          <text x="80" y="115" text-anchor="middle" fill="rgba(200,168,60,.6)" font-family="'Share Tech Mono',monospace" font-size="10">29 UK BN</text>
+        </svg>
+        <div class="cert-row">
+          <div class="cert-hex"><span class="cl">A</span><span class="clb">Certificate</span></div>
+          <div class="cert-hex"><span class="cl">B</span><span class="clb">Certificate</span></div>
+          <div class="cert-hex"><span class="cl">C</span><span class="clb">Certificate</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Values -->
+    <div class="section-hd reveal">
+      <span class="tag">// CORE_VALUES</span>
+      <h2>Our <em>Values</em></h2>
+      <div class="divider"></div>
+    </div>
+    <div class="about-grid stagger">
+      {% for icon,title,desc in [
+        ('🦅','Discipline','Punctuality, orderliness, and adherence to rules form the bedrock of every cadet\'s character.'),
+        ('🤝','Unity','Cadets from diverse backgrounds unite as one — transcending religion, region, and social boundaries.'),
+        ('💪','Leadership','Through command assignments and team tasks, cadets develop leadership that lasts a lifetime.'),
+        ('🌍','Service','Community programs and disaster relief instill a deep sense of responsibility towards society.'),
+        ('⛰️','Adventure','Himalayan treks, rock climbing, and river crossing forge physical fitness and mental resolve.'),
+        ('🎖️','Honour','Integrity and ethical conduct are non-negotiable values every cadet lives by.'),
+      ] %}
+      <div class="about-card">
+        <span class="about-icon">{{ icon }}</span>
+        <div class="about-ct">{{ title }}</div>
+        <p style="color:var(--muted);font-size:13.5px;line-height:1.72">{{ desc }}</p>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+{% endblock %}

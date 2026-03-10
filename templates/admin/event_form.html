@@ -1,0 +1,34 @@
+{% extends 'admin/base.html' %}
+{% block title %}Add Event — Command Center{% endblock %}
+{% block content %}
+<div class="adm-topbar">
+  <div class="adm-pg-title">Add Event</div>
+  <a href="{{ url_for('admin_events') }}" class="btn btn-ghost">← Back</a>
+</div>
+<div class="adm-form">
+  <form method="POST">
+    <div class="fld"><label>Event Title *</label>
+      <input type="text" name="title" required>
+    </div>
+    <div class="fld"><label>Description</label>
+      <textarea name="description"></textarea>
+    </div>
+    <div class="frow">
+      <div class="fld"><label>Event Type</label>
+        <select name="event_type">
+          {% for t in ['fallin','camp','training','ceremony','other'] %}
+          <option value="{{ t }}">{{ t|title }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="fld"><label>Date &amp; Time *</label>
+        <input type="datetime-local" name="event_date" required>
+      </div>
+    </div>
+    <div class="fld"><label>Location</label>
+      <input type="text" name="location" placeholder="e.g. DIT University Parade Ground">
+    </div>
+    <button type="submit" class="btn btn-gold">Add Event</button>
+  </form>
+</div>
+{% endblock %}

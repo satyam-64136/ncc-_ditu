@@ -1,0 +1,144 @@
+{% extends 'admin/base.html' %}
+{% block title %}Attendance Records — Dashboard{% endblock %}
+{% block content %}
+<div class="adm-topbar">
+  <div class="adm-pg-title">Attendance Records</div>
+  <div style="display:flex;gap:8px">
+    <a href="{{ url_for('admin_attendance') }}" class="btn btn-gold btn-sm">✅ Mark Fallin</a>
+    <a href="{{ url_for('admin_export', date=f_date) }}" class="btn btn-outline btn-sm">📊 Export{% if f_date %} {{ f_date }}{% else %} All{% endif %} CSV</a>
+  </div>
+</div>
+
+<!-- Filters -->
+<div style="background:rgba(8,20,10,.6);border:1px solid rgba(200,168,60,.14);border-radius:6px;padding:18px 22px;margin-bottom:22px">
+  <div style="font-family:'Rajdhani',sans-serif;font-size:11px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:var(--gold);margin-bottom:12px">Filter Records</div>
+  <form method="GET" action="{{ url_for('admin_att_records') }}" style="display:flex;gap:12px;flex-wrap:wrap;align-items:flex-end">
+    <div class="fld" style="margin:0">
+      <label>Date</label>
+      <input type="date" name="date" value="{{ f_date }}"
+        style="background:rgba(4,8,10,.8);border:1px solid rgba(200,168,60,.2);border-radius:3px;padding:8px 12px;color:var(--white);font-family:var(--f-body);font-size:13px;outline:none">
+    </div>
+    <div class="fld" style="margin:0">
+      <label>Cadet Name</label>
+      <input type="text" name="cadet" value="{{ f_cadet }}" placeholder="Search name…"
+        style="background:rgba(4,8,10,.8);border:1px solid rgba(200,168,60,.2);border-radius:3px;padding:8px 12px;color:var(--white);font-family:var(--f-body);font-size:13px;outline:none;width:180px">
+    </div>
+    <div class="fld" style="margin:0">
+      <label>Status</label>
+      <select name="status" style="background:rgba(4,8,10,.8);border:1px solid rgba(200,168,60,.2);border-radius:3px;padding:8px 12px;color:var(--white);font-family:var(--f-body);font-size:13px;outline:none">
+        <option value="" {% if not f_status %}selected{% endif %}>All</option>
+        <option value="present" {% if f_status=='present' %}selected{% endif %}>Present</option>
+        <option value="late"    {% if f_status=='late'    %}selected{% endif %}>Late</option>
+        <option value="absent"  {% if f_status=='absent'  %}selected{% endif %}>Absent</option>
+      </select>
+    </div>
+    <button type="submit" class="btn btn-gold btn-sm">Filter</button>
+    <a href="{{ url_for('admin_att_records') }}" class="btn btn-ghost btn-sm">Clear</a>
+  </form>
+</div>
+
+<div style="display:grid;grid-template-columns:290px 1fr;gap:22px;align-items:start">
+
+  <!-- Session list -->
+  <div style="background:rgba(8,20,10,.7);border:1px solid rgba(200,168,60,.14);border-radius:6px;overflow:hidden">
+    <div style="padding:12px 16px;border-bottom:1px solid rgba(200,168,60,.1);display:flex;justify-content:space-between;align-items:center">
+      <span style="font-family:'Rajdhani',sans-serif;font-size:13px;font-weight:700;color:var(--gold);letter-spacing:.12em;text-transform:uppercase">All Sessions</span>
+      <span style="font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--muted)">{{ all_dates|length }}</span>
+    </div>
+    <div style="max-height:580px;overflow-y:auto">
+      {% for row in all_dates %}
+      {% set pct = ((row['present_count']/row['total'])*100)|round(0)|int if row['total']>0 else 0 %}
+      <a href="{{ url_for('admin_att_records', date=row['date'], cadet=f_cadet, status=f_status) }}"
+        style="display:block;padding:11px 16px;border-bottom:1px solid rgba(200,168,60,.05);transition:background .15s;background:{% if f_date==row['date'] %}rgba(200,168,60,.08){% else %}transparent{% endif %};text-decoration:none">
+        <div style="display:flex;justify-content:space-between;margin-bottom:4px">
+          <span style="font-family:'Share Tech Mono',monospace;font-size:11.5px;color:{% if f_date==row['date'] %}var(--gold){% else %}var(--white){% endif %}">{{ row['date'] }}</span>
+          <span style="font-size:10px;color:var(--muted)">{{ pct }}%</span>
+        </div>
+        <div style="height:2.5px;background:rgba(255,255,255,.06);border-radius:2px;margin-bottom:5px">
+          <div style="height:100%;width:{{ pct }}%;background:var(--green-hi);border-radius:2px"></div>
+        </div>
+        <div style="display:flex;gap:10px;font-size:10.5px">
+          <span style="color:#5ac84a">✓ {{ row['present_count'] }}</span>
+          <span style="color:var(--gold)">◔ {{ row['late_count'] }}</span>
+          <span style="color:#f07070">✗ {{ row['absent_count'] }}</span>
+          <span style="color:var(--muted);margin-left:auto">{{ row['fallin_type'] or '—' }}</span>
+        </div>
+      </a>
+      {% else %}
+      <div style="padding:24px;text-align:center;color:var(--muted);font-size:13px">No records yet.</div>
+      {% endfor %}
+    </div>
+  </div>
+
+  <!-- Detail -->
+  <div>
+    {% if stats %}
+    <div style="display:flex;gap:12px;margin-bottom:18px;flex-wrap:wrap">
+      {% for label, val, clr in [('Present', stats.present, '#5ac84a'), ('Late', stats.late, 'var(--gold)'), ('Absent', stats.absent, '#f07070'), ('Total', stats.total, 'var(--white)')] %}
+      <div style="background:rgba(8,20,10,.7);border:1px solid rgba(200,168,60,.14);border-radius:6px;padding:14px 20px;text-align:center;min-width:80px">
+        <div style="font-family:'Bebas Neue',sans-serif;font-size:32px;color:{{ clr }};line-height:1">{{ val }}</div>
+        <div style="font-family:'Rajdhani',sans-serif;font-size:10px;letter-spacing:.14em;color:{{ clr }};opacity:.8">{{ label }}</div>
+      </div>
+      {% endfor %}
+      <div style="background:rgba(8,20,10,.7);border:1px solid rgba(200,168,60,.14);border-radius:6px;padding:14px 20px;text-align:center;min-width:80px">
+        <div style="font-family:'Bebas Neue',sans-serif;font-size:32px;color:var(--green-hi);line-height:1">{{ stats.pct }}%</div>
+        <div style="font-family:'Rajdhani',sans-serif;font-size:10px;letter-spacing:.14em;color:var(--green-hi);opacity:.8">Attendance</div>
+      </div>
+    </div>
+    {% endif %}
+
+    {% if detail_rows %}
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+      <span style="font-family:'Rajdhani',sans-serif;font-size:13px;font-weight:700;color:var(--gold);letter-spacing:.1em;text-transform:uppercase">
+        {% if f_date %}{{ f_date }} — {% endif %}{{ detail_rows|length }} Record{{ 's' if detail_rows|length!=1 else '' }}
+      </span>
+      <a href="{{ url_for('admin_export', date=f_date) }}" class="btn btn-ghost btn-sm">📊 Export CSV</a>
+    </div>
+    <div class="adm-tw">
+      <table class="adm-table">
+        <thead>
+          <tr><th>#</th><th>Date</th><th>Cadet</th><th>Rank</th><th>Category</th><th>Status</th><th>Fallin Type</th><th>Edit</th></tr>
+        </thead>
+        <tbody>
+          {% for r in detail_rows %}
+          <tr>
+            <td style="font-family:var(--f-mono);font-size:11px;color:var(--muted)">{{ loop.index }}</td>
+            <td style="font-family:var(--f-mono);font-size:11.5px">{{ r['date'] }}</td>
+            <td style="font-weight:600">{{ r['name'] }}</td>
+            <td style="font-size:12px;color:var(--muted)">{{ r['rank'] }}</td>
+            <td><span class="sbadge sbadge-active">{{ r['category'] or '—' }}</span></td>
+            <td>
+              <span class="sbadge sbadge-{{ r['status'] }}">{{ r['status']|title }}</span>
+            </td>
+            <td style="font-size:11.5px;color:var(--muted)">{{ r['fallin_type'] or '—' }}</td>
+            <td>
+              <form method="POST" action="{{ url_for('admin_edit_attendance', att_id=r['att_id']) }}" style="display:flex;gap:5px;align-items:center">
+                <input type="hidden" name="redirect_date" value="{{ f_date }}">
+                <input type="hidden" name="redirect_cadet" value="{{ f_cadet }}">
+                <input type="hidden" name="redirect_status" value="{{ f_status }}">
+                <select name="status" style="background:rgba(4,8,10,.9);border:1px solid rgba(200,168,60,.2);border-radius:3px;padding:4px 8px;color:var(--white);font-size:11.5px;outline:none">
+                  <option value="present" {% if r['status']=='present' %}selected{% endif %}>Present</option>
+                  <option value="late"    {% if r['status']=='late'    %}selected{% endif %}>Late</option>
+                  <option value="absent"  {% if r['status']=='absent'  %}selected{% endif %}>Absent</option>
+                </select>
+                <button type="submit" class="btn btn-gold btn-sm" style="padding:4px 10px;font-size:10px">Save</button>
+              </form>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    {% elif f_date or f_cadet or f_status %}
+    <div style="text-align:center;padding:50px;color:var(--muted);border:1px dashed rgba(200,168,60,.14);border-radius:6px">
+      <p style="font-size:14px">No records match your filters.</p>
+    </div>
+    {% else %}
+    <div style="text-align:center;padding:50px;color:var(--muted);border:1px dashed rgba(200,168,60,.14);border-radius:6px">
+      <p style="font-size:14px">Select a session from the left, or use filters above.</p>
+      <a href="{{ url_for('admin_attendance') }}" class="btn btn-gold btn-sm" style="margin-top:14px">Mark Today's Fallin</a>
+    </div>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

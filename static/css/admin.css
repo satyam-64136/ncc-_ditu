@@ -1,0 +1,160 @@
+/* ═══════════════════════════════════════════════════════════════
+   ADMIN PANEL — COMMAND CENTER
+   ═══════════════════════════════════════════════════════════════ */
+
+.adm-layout{display:flex;min-height:100vh}
+
+/* ── SIDEBAR ────────────────────────────────────────────────── */
+.adm-sidebar{
+  width:252px;background:#030a05;
+  border-right:1px solid rgba(200,168,60,.14);
+  position:fixed;top:0;left:0;bottom:0;
+  display:flex;flex-direction:column;z-index:100;overflow-y:auto;
+}
+.adm-sb-hd{padding:22px 18px;border-bottom:1px solid rgba(200,168,60,.12)}
+.adm-sb-logo{display:flex;align-items:center;gap:10px}
+.adm-sb-title{font-family:'Bebas Neue',sans-serif;font-size:15px;letter-spacing:.12em;color:var(--gold)}
+.adm-sb-sub{font-family:'Rajdhani',sans-serif;font-size:11px;color:var(--muted);letter-spacing:.1em}
+.adm-sb-nav{padding:18px 10px;flex:1}
+.adm-sb-sec{
+  font-family:'Share Tech Mono',monospace;font-size:9.5px;
+  color:rgba(122,144,122,.45);letter-spacing:.28em;text-transform:uppercase;
+  padding:7px 12px 3px;margin-top:14px;
+}
+.adm-sb-link{
+  display:flex;align-items:center;gap:9px;
+  font-family:'Rajdhani',sans-serif;font-size:13.5px;font-weight:600;
+  letter-spacing:.08em;color:rgba(232,239,232,.6);
+  text-decoration:none;padding:9px 12px;border-radius:5px;
+  margin-bottom:2px;transition:all .18s;
+}
+.adm-sb-link:hover,.adm-sb-link.active{background:rgba(200,168,60,.1);color:var(--gold)}
+.adm-sb-icon{font-size:15px;width:20px;text-align:center}
+.adm-sb-ft{padding:14px;border-top:1px solid rgba(200,168,60,.1)}
+.adm-sb-user{
+  font-family:'Share Tech Mono',monospace;font-size:11px;
+  color:var(--muted);margin-bottom:8px;
+}
+
+/* ── MAIN ───────────────────────────────────────────────────── */
+.adm-main{flex:1;margin-left:252px;padding:28px 32px;min-height:100vh}
+
+.adm-topbar{
+  display:flex;align-items:center;justify-content:space-between;
+  margin-bottom:28px;
+}
+.adm-pg-title{
+  font-family:'Bebas Neue',sans-serif;font-size:30px;
+  letter-spacing:.08em;color:var(--white);
+}
+
+/* stats */
+.adm-stats{
+  display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));
+  gap:14px;margin-bottom:28px;
+}
+.adm-stat{
+  background:rgba(8,20,10,.8);border:1px solid rgba(200,168,60,.18);
+  border-radius:6px;padding:18px 22px;display:flex;align-items:center;gap:14px;
+}
+.adm-stat-ico{font-size:26px}
+.adm-stat-n{
+  font-family:'Bebas Neue',sans-serif;font-size:34px;color:var(--gold);
+  line-height:1;display:block;
+}
+.adm-stat-l{
+  font-family:'Rajdhani',sans-serif;font-size:11px;font-weight:700;
+  letter-spacing:.16em;text-transform:uppercase;color:var(--muted);
+}
+
+/* table */
+.adm-tw{
+  background:rgba(8,20,10,.6);border:1px solid rgba(200,168,60,.14);
+  border-radius:6px;overflow:hidden;
+}
+.adm-table{width:100%;border-collapse:collapse}
+.adm-table th{
+  font-family:'Rajdhani',sans-serif;font-size:11.5px;font-weight:700;
+  letter-spacing:.16em;text-transform:uppercase;color:var(--gold);
+  padding:13px 15px;background:rgba(200,168,60,.05);
+  border-bottom:1px solid rgba(200,168,60,.14);text-align:left;
+}
+.adm-table td{
+  padding:11px 15px;border-bottom:1px solid rgba(200,168,60,.05);
+  font-size:13.5px;color:var(--white);
+}
+.adm-table tr:hover td{background:rgba(200,168,60,.03)}
+.adm-table tr:last-child td{border-bottom:none}
+
+/* form */
+.adm-form{
+  background:rgba(8,20,10,.6);border:1px solid rgba(200,168,60,.14);
+  border-radius:6px;padding:30px;max-width:680px;
+}
+.fld{margin-bottom:18px}
+.fld label{
+  display:block;
+  font-family:'Rajdhani',sans-serif;font-size:12px;font-weight:700;
+  letter-spacing:.14em;text-transform:uppercase;color:var(--gold);margin-bottom:7px;
+}
+.fld input,.fld select,.fld textarea{
+  width:100%;background:rgba(4,8,10,.8);
+  border:1px solid rgba(200,168,60,.2);border-radius:3px;
+  padding:9px 13px;font-family:'Exo 2',sans-serif;font-size:13.5px;
+  color:var(--white);outline:none;transition:border-color .2s;
+}
+.fld input:focus,.fld select:focus,.fld textarea:focus{
+  border-color:var(--gold);box-shadow:0 0 0 2px rgba(200,168,60,.1);
+}
+.fld textarea{resize:vertical;min-height:90px}
+.fld select option{background:#04080a}
+.frow{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.fcheck{display:flex;align-items:center;gap:9px}
+.fcheck input{width:17px;height:17px;accent-color:var(--gold)}
+
+/* badges */
+.sbadge{
+  display:inline-block;font-family:'Share Tech Mono',monospace;
+  font-size:9.5px;padding:2px 8px;border-radius:2px;letter-spacing:.1em;text-transform:uppercase;
+}
+.sbadge-active{background:rgba(50,100,50,.2);border:1px solid rgba(50,100,50,.4);color:#5ac85a}
+.sbadge-inactive{background:rgba(80,80,80,.15);border:1px solid rgba(80,80,80,.2);color:#888}
+.sbadge-present{background:rgba(50,100,50,.2);color:#5ac85a}
+.sbadge-absent{background:rgba(160,30,30,.2);color:#f07070}
+.sbadge-late{background:rgba(200,168,60,.15);color:var(--gold)}
+
+/* login */
+.adm-login{
+  min-height:100vh;display:flex;align-items:center;justify-content:center;
+  background:radial-gradient(ellipse at center,#0d2510 0%,#030a05 65%);padding:24px;
+}
+.adm-login-card{
+  background:rgba(8,20,10,.92);border:1px solid rgba(200,168,60,.28);
+  border-radius:10px;padding:46px;width:100%;max-width:400px;text-align:center;
+  backdrop-filter:blur(12px);
+}
+.adm-login-logo{margin-bottom:22px}
+.adm-login-title{
+  font-family:'Bebas Neue',sans-serif;font-size:26px;letter-spacing:.12em;
+  color:var(--white);margin-bottom:4px;
+}
+.adm-login-sub{
+  font-family:'Rajdhani',sans-serif;font-size:12.5px;color:var(--muted);
+  letter-spacing:.1em;margin-bottom:30px;
+}
+
+@media(max-width:768px){
+  .adm-sidebar{width:100%;position:relative}
+  .adm-main{margin-left:0;padding:16px}
+  .adm-layout{flex-direction:column}
+  .frow{grid-template-columns:1fr}
+}
+
+/* ── section heading ── */
+.adm-sh{
+  font-family:'Rajdhani',sans-serif;font-size:17px;font-weight:700;
+  color:var(--gold);letter-spacing:.1em;text-transform:uppercase;
+}
+
+/* ── attendance record badges ── */
+.sbadge-buddy{background:rgba(80,120,180,.15);border:1px solid rgba(80,120,180,.3);color:#7aaaf0}

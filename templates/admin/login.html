@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Command Center Login — DIT NCC</title>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Rajdhani:wght@400;600;700&family=Exo+2:wght@400;600&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/admin.css') }}">
+</head>
+<body>
+
+{% with msgs = get_flashed_messages(with_categories=true) %}
+{% if msgs %}
+<div class="flash-stack">{% for cat,msg in msgs %}<div class="flash flash-{{ cat }}">{{ msg }}</div>{% endfor %}</div>
+{% endif %}
+{% endwith %}
+
+<div class="adm-login">
+  <div class="adm-login-card">
+    <div class="adm-login-logo">
+      <svg viewBox="0 0 60 60" width="70" height="70">
+        <polygon points="30,3 57,17 57,43 30,57 3,43 3,17" fill="none" stroke="#c8a030" stroke-width="2"/>
+        <text x="30" y="36" text-anchor="middle" fill="#c8a030" font-family="'Bebas Neue',sans-serif" font-size="12" letter-spacing="1">NCC</text>
+      </svg>
+    </div>
+    <div class="adm-login-title">Command Center</div>
+    <div class="adm-login-sub">DIT University NCC · 29 UK Battalion</div>
+
+    <form method="POST">
+      <div class="fld" style="text-align:left">
+        <label>Username</label>
+        <input type="text" name="username" placeholder="Enter username" required autocomplete="username">
+      </div>
+      <div class="fld" style="text-align:left">
+        <label>Password</label>
+        <input type="password" name="password" placeholder="Enter password" required autocomplete="current-password">
+      </div>
+      <button type="submit" class="btn btn-gold" style="width:100%;justify-content:center;margin-top:6px">AUTHENTICATE</button>
+    </form>
+
+    <div style="margin-top:20px">
+      <a href="{{ url_for('index') }}" style="font-family:var(--f-ui);font-size:12.5px;color:var(--muted);letter-spacing:.1em">← Return to Site</a>
+    </div>
+  </div>
+</div>
+</body>
+</html>

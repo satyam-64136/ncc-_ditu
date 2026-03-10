@@ -1,0 +1,65 @@
+{% extends 'base.html' %}
+{% block title %}Events — DIT University NCC{% endblock %}
+{% block content %}
+<div style="padding-top:var(--nav-h)"></div>
+<section class="section">
+  <div class="section-max">
+    <div class="section-hd reveal">
+      <span class="tag">// OPERATIONS_BOARD</span>
+      <h2>Events &amp; <em>Schedule</em></h2>
+      <div class="divider"></div>
+      <p class="lead">Fall-in schedules, camp announcements and important notices for all cadets.</p>
+    </div>
+
+    {% macro event_row(e, dim=false) %}
+    {% set months=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'] %}
+    {% set m = e['event_date'][5:7]|int %}
+    <div class="event-row" {% if dim %}style="opacity:.6"{% endif %}>
+      <div class="event-date">
+        <span class="day">{{ e['event_date'][8:10] }}</span>
+        <span class="mon">{{ months[m-1] if m>=1 and m<=12 else '' }}</span>
+        <span class="mon" style="font-size:9px">{{ e['event_date'][:4] }}</span>
+      </div>
+      <div>
+        <span class="etype etype-{{ e['event_type'] or 'fallin' }}">{{ e['event_type'] or 'event' }}</span>
+        <div class="event-title">{{ e['title'] }}</div>
+        {% if e['description'] %}<p style="font-size:13px;color:var(--muted);margin:5px 0;line-height:1.5">{{ e['description'] }}</p>{% endif %}
+        {% if e['location'] %}<div class="event-loc">📍 {{ e['location'] }}</div>{% endif %}
+      </div>
+      <div style="text-align:center;min-width:70px">
+        <div style="font-family:var(--f-mono);font-size:11px;color:var(--gold)">{{ e['event_date'][11:16] or '08:00' }}</div>
+        <div style="font-size:9px;color:var(--muted);letter-spacing:.06em">HRS</div>
+        {% if dim %}<div style="font-family:var(--f-mono);font-size:9px;color:rgba(100,100,100,.6);margin-top:6px">COMPLETED</div>{% endif %}
+      </div>
+    </div>
+    {% endmacro %}
+
+    <!-- Upcoming -->
+    <div style="margin-bottom:60px">
+      <h3 style="font-family:var(--f-ui);font-size:20px;font-weight:700;color:var(--gold);letter-spacing:.16em;text-transform:uppercase;margin-bottom:22px;display:flex;align-items:center;gap:10px" class="reveal">
+        <span style="width:8px;height:8px;border-radius:50%;background:#4ac84a;box-shadow:0 0 10px #4ac84a;display:inline-block;animation:upcomingPulse 2s infinite"></span>
+        Upcoming Events
+      </h3>
+      {% if upcoming %}
+      <div class="event-list stagger">{% for e in upcoming %}{{ event_row(e) }}{% endfor %}</div>
+      {% else %}
+      <div style="text-align:center;padding:40px;border:1px dashed rgba(200,168,60,.18);border-radius:6px;color:var(--muted)">
+        <p style="font-family:var(--f-ui);font-size:17px">No upcoming events scheduled.</p>
+      </div>
+      {% endif %}
+    </div>
+
+    <!-- Past -->
+    {% if past %}
+    <div>
+      <h3 style="font-family:var(--f-ui);font-size:20px;font-weight:700;color:var(--muted);letter-spacing:.16em;text-transform:uppercase;margin-bottom:22px" class="reveal">Past Events</h3>
+      <div class="event-list stagger">{% for e in past %}{{ event_row(e, dim=true) }}{% endfor %}</div>
+    </div>
+    {% endif %}
+  </div>
+</section>
+
+<style>
+@keyframes upcomingPulse{0%,100%{box-shadow:0 0 8px #4ac84a}50%{box-shadow:0 0 22px #4ac84a,0 0 40px rgba(74,200,74,.35)}}
+</style>
+{% endblock %}

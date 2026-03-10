@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}DIT University NCC · 29 UK Battalion{% endblock %}</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Rajdhani:wght@400;500;600;700&family=Share+Tech+Mono&family=Exo+2:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+  {% block extra_css %}{% endblock %}
+</head>
+<body>
+
+<!-- ── NAVIGATION ────────────────────────────────────────────── -->
+<nav class="nav" id="mainNav">
+  <div class="nav-inner">
+    <a href="{{ url_for('index') }}" class="nav-brand">
+      <svg class="brand-hex" viewBox="0 0 44 44" width="42" height="42">
+        <polygon points="22,2 42,12 42,32 22,42 2,32 2,12"
+                 fill="none" stroke="#c8a030" stroke-width="1.6"/>
+        <polygon points="22,9 35,16.5 35,27.5 22,35 9,27.5 9,16.5"
+                 fill="none" stroke="#c8a030" stroke-width=".8" opacity=".5"/>
+        <text x="22" y="26" text-anchor="middle"
+              fill="#c8a030" font-family="'Bebas Neue',sans-serif"
+              font-size="9.5" letter-spacing="1">NCC</text>
+      </svg>
+      <div class="brand-lines">
+        <span>29 UK BATTALION</span>
+        <span>DIT University · Dehradun</span>
+      </div>
+    </a>
+
+    <div class="nav-links">
+      <a href="{{ url_for('index') }}"        class="nav-link {% if request.endpoint=='index' %}active{% endif %}">Home</a>
+      <a href="{{ url_for('about') }}"        class="nav-link {% if request.endpoint=='about' %}active{% endif %}">About</a>
+      <a href="{{ url_for('cadets') }}"       class="nav-link {% if request.endpoint=='cadets' %}active{% endif %}">Cadets</a>
+      <a href="{{ url_for('rank_holders') }}" class="nav-link {% if request.endpoint=='rank_holders' %}active{% endif %}">Ranks</a>
+      <a href="{{ url_for('achievements') }}" class="nav-link {% if request.endpoint=='achievements' %}active{% endif %}">Achievements</a>
+      <a href="{{ url_for('alumni') }}"       class="nav-link {% if request.endpoint=='alumni' %}active{% endif %}">Alumni</a>
+      <a href="{{ url_for('gallery') }}"      class="nav-link {% if request.endpoint=='gallery' %}active{% endif %}">Gallery</a>
+      <a href="{{ url_for('events') }}"       class="nav-link {% if request.endpoint=='events' %}active{% endif %}">Events</a>
+    </div>
+
+    <div class="nav-right">
+      <button class="btn-mode" id="modeBtn" title="Toggle Day/Night">
+        <span class="mode-d">☀</span>
+        <span class="mode-n">☽</span>
+      </button>
+      <button class="nav-burger" id="navBurger" aria-label="Menu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </div>
+
+  <div class="mobile-nav" id="mobileNav">
+    <a href="{{ url_for('index') }}">Home</a>
+    <a href="{{ url_for('about') }}">About</a>
+    <a href="{{ url_for('cadets') }}">Cadets</a>
+    <a href="{{ url_for('rank_holders') }}">Ranks</a>
+    <a href="{{ url_for('achievements') }}">Achievements</a>
+    <a href="{{ url_for('alumni') }}">Alumni</a>
+    <a href="{{ url_for('gallery') }}">Gallery</a>
+    <a href="{{ url_for('events') }}">Events</a>
+  </div>
+</nav>
+
+<!-- ── FLASH MESSAGES ──────────────────────────────────────────── -->
+{% with msgs = get_flashed_messages(with_categories=true) %}
+{% if msgs %}
+<div class="flash-stack">
+{% for cat, msg in msgs %}
+  <div class="flash flash-{{ cat }}">{{ msg }}</div>
+{% endfor %}
+</div>
+{% endif %}
+{% endwith %}
+
+<!-- ── PAGE CONTENT ────────────────────────────────────────────── -->
+<main>{% block content %}{% endblock %}</main>
+
+<!-- ── FOOTER ──────────────────────────────────────────────────── -->
+<footer class="footer">
+  <div class="footer-inner">
+    <div class="footer-brand">
+      <svg viewBox="0 0 44 44" width="48" height="48">
+        <polygon points="22,2 42,12 42,32 22,42 2,32 2,12" fill="none" stroke="#c8a030" stroke-width="1.6"/>
+        <text x="22" y="27" text-anchor="middle" fill="#c8a030"
+              font-family="'Bebas Neue',sans-serif" font-size="9.5">NCC</text>
+      </svg>
+      <div>
+        <div class="footer-t">DIT University NCC</div>
+        <div class="footer-s">29 UK Battalion · Dehradun, Uttarakhand</div>
+      </div>
+    </div>
+    <div class="footer-motto">"UNITY &amp; DISCIPLINE"</div>
+    <div class="footer-links">
+      <a href="{{ url_for('events') }}">Events</a>
+      <a href="{{ url_for('gallery') }}">Gallery</a>
+      <a href="{{ url_for('alumni') }}">Alumni</a>
+      <a href="{{ url_for('admin_login') }}" class="footer-admin-link">⬡</a>
+    </div>
+  </div>
+  <div class="footer-bar">© 2025 DIT University NCC 29 UK Battalion · All Rights Reserved</div>
+</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+<script src="{{ url_for('static', filename='js/main.js') }}"></script>
+{% block extra_js %}{% endblock %}
+</body>
+</html>

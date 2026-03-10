@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0">
+  <title>{% block title %}Dashboard — DIT NCC{% endblock %}</title>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Rajdhani:wght@400;600;700&family=Exo+2:wght@400;600&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/admin.css') }}">
+</head>
+<body>
+<div class="adm-layout">
+  <aside class="adm-sidebar">
+    <div class="adm-sb-hd">
+      <div class="adm-sb-logo">
+        <svg viewBox="0 0 40 40" width="34" height="34">
+          <polygon points="20,2 38,11 38,29 20,38 2,29 2,11" fill="none" stroke="#c8a030" stroke-width="1.6"/>
+          <text x="20" y="24" text-anchor="middle" fill="#c8a030" font-family="'Bebas Neue',sans-serif" font-size="9">NCC</text>
+        </svg>
+        <div>
+          <div class="adm-sb-title">Dashboard</div>
+          <div class="adm-sb-sub">29 UK Battalion</div>
+        </div>
+      </div>
+    </div>
+    <nav class="adm-sb-nav">
+      <div class="adm-sb-sec">Main</div>
+      <a href="{{ url_for('admin_dashboard') }}" class="adm-sb-link {% if request.endpoint=='admin_dashboard' %}active{% endif %}">
+        <span class="adm-sb-icon">⊞</span> Dashboard
+      </a>
+      <div class="adm-sb-sec">Manage</div>
+      <a href="{{ url_for('admin_cadets') }}" class="adm-sb-link {% if 'cadet' in request.endpoint %}active{% endif %}">
+        <span class="adm-sb-icon">👤</span> Cadets
+      </a>
+      <a href="{{ url_for('admin_events') }}" class="adm-sb-link {% if 'event' in request.endpoint %}active{% endif %}">
+        <span class="adm-sb-icon">📅</span> Events
+      </a>
+      <a href="{{ url_for('admin_gallery') }}" class="adm-sb-link {% if 'gallery' in request.endpoint %}active{% endif %}">
+        <span class="adm-sb-icon">🖼️</span> Gallery
+      </a>
+      <div class="adm-sb-sec">Fallin</div>
+      <a href="{{ url_for('admin_attendance') }}" class="adm-sb-link {% if request.endpoint=='admin_attendance' %}active{% endif %}">
+        <span class="adm-sb-icon">✅</span> Mark Fallin
+      </a>
+      <a href="{{ url_for('admin_att_records') }}" class="adm-sb-link {% if request.endpoint in ('admin_att_records','admin_edit_attendance') %}active{% endif %}">
+        <span class="adm-sb-icon">📋</span> Attendance Records
+      </a>
+      <a href="{{ url_for('admin_export') }}" class="adm-sb-link">
+        <span class="adm-sb-icon">📊</span> Export CSV
+      </a>
+      <div class="adm-sb-sec">Site</div>
+      <a href="{{ url_for('index') }}" class="adm-sb-link" target="_blank">
+        <span class="adm-sb-icon">🌐</span> View Site
+      </a>
+    </nav>
+    <div class="adm-sb-ft">
+      <div class="adm-sb-user">◉ {{ session.get('admin_name','Admin') }}</div>
+      <a href="{{ url_for('admin_logout') }}" class="btn btn-outline btn-sm" style="width:100%;justify-content:center">Logout</a>
+    </div>
+  </aside>
+  <main class="adm-main">
+    {% with msgs = get_flashed_messages(with_categories=true) %}
+    {% if msgs %}
+    <div style="margin-bottom:16px">
+      {% for cat,msg in msgs %}
+      <div class="flash flash-{{ cat }}" style="border-radius:3px;display:inline-block">{{ msg }}</div>
+      {% endfor %}
+    </div>
+    {% endif %}
+    {% endwith %}
+    {% block content %}{% endblock %}
+  </main>
+</div>
+</body>
+</html>

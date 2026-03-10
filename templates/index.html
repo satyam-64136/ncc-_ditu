@@ -1,0 +1,133 @@
+{% extends 'base.html' %}
+{% block title %}DIT University NCC · 29 UK Battalion — Dehradun{% endblock %}
+
+{% block content %}
+
+<!-- ════════ HERO ════════ -->
+<section id="hero">
+  <canvas id="three-canvas"></canvas>
+  <div class="hero-vignette"></div>
+  <div class="hero-content">
+    <span class="hero-eyebrow">29 UK Battalion · Dehradun, Uttarakhand</span>
+    <h1 class="hero-title">DIT UNIVERSITY<br><span class="g">NCC</span></h1>
+    <p class="hero-sub">National Cadet Corps · India</p>
+    <div class="hero-badge">UNITY &amp; DISCIPLINE</div>
+    <div class="hero-cta">
+      <a href="{{ url_for('cadets') }}"  class="btn btn-gold">Meet Our Cadets</a>
+      <a href="{{ url_for('events') }}"  class="btn btn-outline">Upcoming Events</a>
+    </div>
+  </div>
+</section>
+
+<!-- ════════ STATS ════════ -->
+<div class="statsbar">
+  <div class="statsbar-inner">
+    <div>
+      <span class="stat-num" data-count="{{ cadets_count }}">0</span>
+      <span class="stat-lbl">Active Cadets</span>
+    </div>
+    <div>
+      <span class="stat-num" data-count="{{ alumni_count }}">0</span>
+      <span class="stat-lbl">Alumni</span>
+    </div>
+    <div>
+      <span class="stat-num" data-count="{{ events_count }}">0</span>
+      <span class="stat-lbl">Events Held</span>
+    </div>
+    <div>
+      <span class="stat-num" data-count="1966">0</span>
+      <span class="stat-lbl">Est. Year</span>
+    </div>
+  </div>
+</div>
+
+<!-- ════════ ABOUT STRIP ════════ -->
+<section class="section">
+  <div class="section-max">
+    <div class="section-hd reveal">
+      <span class="tag">// BATTALION_INFO</span>
+      <h2>About <em>29 UK Battalion</em></h2>
+      <div class="divider"></div>
+      <p class="lead">The NCC builds character, discipline and leadership in India's youth through rigorous military-style training.</p>
+    </div>
+
+    <div class="about-grid stagger">
+      <div class="about-card">
+        <span class="about-icon">🎯</span>
+        <div class="about-ct">Mission</div>
+        <p style="color:var(--muted);font-size:14.5px;line-height:1.75">To develop character, comradeship, discipline, leadership, secular outlook, the spirit of adventure, and ideals of selfless service among the youth of India.</p>
+      </div>
+      <div class="about-card">
+        <span class="about-icon">⚔️</span>
+        <div class="about-ct">Training</div>
+        <p style="color:var(--muted);font-size:14.5px;line-height:1.75">Rigorous military drills, weapon training, map reading, first aid, adventure activities, and participation in national-level camps and Republic Day parades.</p>
+      </div>
+      <div class="about-card">
+        <span class="about-icon">🏆</span>
+        <div class="about-ct">Excellence</div>
+        <p style="color:var(--muted);font-size:14.5px;line-height:1.75">Our cadets consistently earn A, B and C certificates and compete at state and national levels, with many going on to serve in the Indian Armed Forces.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ════════ UPCOMING EVENTS ════════ -->
+{% if upcoming %}
+<section style="background:rgba(8,20,10,.4);border-top:1px solid var(--border);border-bottom:1px solid var(--border);padding:80px 28px">
+  <div class="section-max">
+    <div class="section-hd reveal">
+      <span class="tag">// SCHEDULE</span>
+      <h2>Upcoming <em>Events</em></h2>
+      <div class="divider"></div>
+    </div>
+    <div class="event-list stagger">
+      {% for e in upcoming %}
+      <div class="event-row">
+        <div class="event-date">
+          <span class="day">{{ e['event_date'][:2] if e['event_date']|length > 7 else e['event_date'][-2:] }}</span>
+          <span class="mon">
+            {% set months=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'] %}
+            {% set m = e['event_date'][5:7]|int %}
+            {{ months[m-1] if m >= 1 and m <= 12 else '' }}
+          </span>
+        </div>
+        <div>
+          <span class="etype etype-{{ e['event_type'] or 'fallin' }}">{{ e['event_type'] or 'event' }}</span>
+          <div class="event-title">{{ e['title'] }}</div>
+          {% if e['location'] %}<div class="event-loc">📍 {{ e['location'] }}</div>{% endif %}
+        </div>
+        <a href="{{ url_for('events') }}" class="btn btn-outline btn-sm">Details</a>
+      </div>
+      {% endfor %}
+    </div>
+    <div style="text-align:center;margin-top:32px">
+      <a href="{{ url_for('events') }}" class="btn btn-outline">All Events</a>
+    </div>
+  </div>
+</section>
+{% endif %}
+
+<!-- ════════ CTA ════════ -->
+<section class="section" style="text-align:center">
+  <div class="reveal">
+    <span class="tag">// JOIN_US</span>
+    <h2 style="font-family:var(--f-display);font-size:clamp(32px,5vw,58px);letter-spacing:.06em;margin-bottom:16px">
+      Be Part of the <em style="color:var(--gold);font-style:normal">Legacy</em>
+    </h2>
+    <p style="color:var(--muted);margin-bottom:40px;max-width:480px;margin-left:auto;margin-right:auto;font-size:15.5px">
+      The NCC shapes tomorrow's leaders. Join 29 UK Battalion and embark on a journey of discipline, courage, and camaraderie.
+    </p>
+    <div style="display:flex;gap:14px;justify-content:center;flex-wrap:wrap">
+      <a href="{{ url_for('cadets') }}"  class="btn btn-gold">Meet Cadets</a>
+      <a href="{{ url_for('alumni') }}"  class="btn btn-outline">Alumni Stories</a>
+      <a href="{{ url_for('gallery') }}" class="btn btn-outline">Photo Gallery</a>
+    </div>
+  </div>
+</section>
+
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="{{ url_for('static', filename='js/parade.js') }}"></script>
+{% endblock %}

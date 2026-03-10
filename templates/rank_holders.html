@@ -1,0 +1,148 @@
+{% extends 'base.html' %}
+{% block title %}Rank Holders — DIT University NCC{% endblock %}
+{% block extra_css %}
+<style>
+/* ── rank cards ── */
+.rank-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:28px}
+.rank-card{
+  background:var(--glass2);border:1px solid rgba(180,150,50,.2);
+  border-radius:10px;overflow:hidden;position:relative;
+  transition:all .35s cubic-bezier(.22,.68,0,1.2);cursor:default;
+}
+.rank-card::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:3px;
+  background:linear-gradient(90deg,transparent,var(--gold) 40%,#e8c84a 60%,transparent);
+}
+.rank-card::after{
+  content:'';position:absolute;inset:0;border-radius:10px;pointer-events:none;
+  box-shadow:inset 0 0 0 1px rgba(200,168,60,0);transition:box-shadow .35s;
+}
+.rank-card:hover{
+  border-color:rgba(200,168,60,.55);
+  box-shadow:0 24px 70px rgba(0,0,0,.7), 0 0 48px rgba(200,168,60,.18);
+  transform:translateY(-10px) scale(1.02);
+}
+.rank-card:hover::after{box-shadow:inset 0 0 0 1px rgba(200,168,60,.18)}
+/* insignia area */
+.rank-insignia{
+  padding:36px 28px 22px;
+  background:linear-gradient(180deg,rgba(22,48,24,.85) 0%,rgba(8,20,10,.4) 100%);
+  text-align:center;position:relative;
+}
+.rank-star-ring{
+  display:inline-flex;align-items:center;justify-content:center;
+  position:relative;margin-bottom:12px;
+}
+.rank-star-ring::before{
+  content:'';position:absolute;width:100px;height:100px;border-radius:50%;
+  border:1px solid rgba(200,168,60,.12);
+  animation:rankPulse 3s ease-in-out infinite;
+}
+.rank-card:hover .rank-star-ring::before{border-color:rgba(200,168,60,.35);animation-duration:1.5s}
+@keyframes rankPulse{0%,100%{transform:scale(1);opacity:.5}50%{transform:scale(1.08);opacity:1}}
+.rank-stars{
+  font-size:52px;color:var(--gold);display:block;line-height:1;
+  text-shadow:0 0 20px rgba(200,168,60,.35);
+  transition:all .35s;filter:drop-shadow(0 2px 8px rgba(200,168,60,.3));
+}
+.rank-card:hover .rank-stars{
+  text-shadow:0 0 40px rgba(200,168,60,1),0 0 80px rgba(200,168,60,.5);
+  filter:drop-shadow(0 4px 22px rgba(200,168,60,.7));
+  transform:scale(1.12);
+}
+.rank-code-badge{
+  font-family:var(--f-display);font-size:13px;letter-spacing:.3em;
+  background:rgba(200,168,60,.1);border:1px solid rgba(200,168,60,.25);
+  color:var(--gold);padding:3px 16px 2px;border-radius:20px;
+  transition:all .3s;display:inline-block;
+}
+.rank-card:hover .rank-code-badge{background:rgba(200,168,60,.22);border-color:rgba(200,168,60,.55)}
+/* content */
+.rank-content{padding:20px 26px 26px;text-align:center}
+.rank-holder-name{
+  font-family:var(--f-ui);font-size:22px;font-weight:700;
+  color:var(--white);margin-bottom:4px;transition:color .2s;
+}
+.rank-card:hover .rank-holder-name{color:#e8c84a}
+.rank-full-title{
+  font-family:var(--f-mono);font-size:10px;color:rgba(200,168,60,.6);
+  letter-spacing:.12em;text-transform:uppercase;margin-bottom:14px;
+}
+.rank-desc{
+  font-size:13px;color:var(--muted);line-height:1.65;
+  overflow:hidden;max-height:0;opacity:0;
+  transition:max-height .4s ease,opacity .4s ease;
+  border-top:1px solid rgba(200,168,60,.1);
+}
+.rank-card:hover .rank-desc{max-height:90px;opacity:1;padding-top:12px}
+/* side accent */
+.rank-side-line{
+  position:absolute;left:0;top:20%;bottom:20%;width:2.5px;
+  background:linear-gradient(180deg,transparent,var(--gold),transparent);
+  opacity:0;transition:opacity .3s;border-radius:2px;
+}
+.rank-card:hover .rank-side-line{opacity:.7}
+
+/* hierarchy pyramid */
+.hierarchy{display:flex;flex-direction:column;align-items:center;gap:3px;max-width:480px;margin:0 auto}
+.hier-row{
+  text-align:center;padding:12px 0;border-radius:3px;
+  font-family:var(--f-ui);font-weight:700;font-size:15px;letter-spacing:.2em;
+  transition:all .22s;cursor:default;
+}
+.hier-row:hover{filter:brightness(1.3)}
+</style>
+{% endblock %}
+{% block content %}
+<div style="padding-top:var(--nav-h)"></div>
+<section class="section">
+  <div class="section-max">
+    <div class="section-hd reveal">
+      <span class="tag">// COMMAND_STRUCTURE</span>
+      <h2>Rank <em>Holders</em></h2>
+      <div class="divider"></div>
+      <p class="lead">The command hierarchy of DIT University NCC 29 UK Battalion. Hover a card to reveal rank details.</p>
+    </div>
+
+    {% if holders %}
+    {% set symbols = {'LCPL':'★','CDT':'◆','SUO':'★★★','JUO':'★★','CSM':'◆◆◆','CQMS':'◆◆','SGT':'▲▲▲','CPL':'▲▲'} %}
+    <div class="rank-grid stagger">
+      {% for h in holders %}
+      <div class="rank-card">
+        <div class="rank-side-line"></div>
+        <div class="rank-insignia">
+          <div class="rank-star-ring">
+            <span class="rank-stars">{{ symbols.get(h['rank_code'],'✦') }}</span>
+          </div>
+          <span class="rank-code-badge">{{ h['rank_code'] }}</span>
+        </div>
+        <div class="rank-content">
+          <div class="rank-holder-name">{{ h['holder_name'] }}</div>
+          <div class="rank-full-title">{{ h['rank_full'] }}</div>
+          <div class="rank-desc">{{ h['description'] or '' }}</div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+    {% endif %}
+
+    <!-- Chain of Command -->
+    <div style="margin-top:90px" class="reveal">
+      <div class="section-hd">
+        <span class="tag">// CHAIN_OF_COMMAND</span>
+        <h3 style="font-family:var(--f-display);font-size:clamp(28px,4vw,44px);letter-spacing:.08em;color:var(--white);margin-bottom:8px">Chain of <em style="color:var(--gold);font-style:normal">Command</em></h3>
+        <div class="divider"></div>
+      </div>
+      <div class="hierarchy">
+        {% for rank,bg,clr,w in [
+          ('LCPL  ·  Lance Corporal','rgba(200,168,60,.22)','#c8a030','100%'),
+          ('CDT  ·  Cadet Senior','rgba(200,168,60,.12)','#a08028','90%'),
+          ('CDT  ·  Cadet Buddy','rgba(200,168,60,.06)','#807020','78%'),
+        ] %}
+        <div class="hier-row" style="background:{{bg}};border:1px solid {{clr}};color:{{clr}};width:min({{w}},90vw)">{{rank}}</div>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}

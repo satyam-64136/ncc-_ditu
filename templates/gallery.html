@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+{% block title %}Gallery — DIT University NCC{% endblock %}
+{% block content %}
+<div style="padding-top:var(--nav-h)"></div>
+<section class="section">
+  <div class="section-max">
+    <div class="section-hd reveal">
+      <span class="tag">// PHOTO_ARCHIVE</span>
+      <h2>Photo <em>Gallery</em></h2>
+      <div class="divider"></div>
+      <p class="lead">Moments from parades, camps, training sessions and events.</p>
+    </div>
+
+    <div class="gal-filters reveal">
+      <a href="{{ url_for('gallery') }}" class="gal-btn {% if active_cat=='all' %}active{% endif %}">All</a>
+      {% for c in cats %}{% if c['category'] %}
+      <a href="{{ url_for('gallery', category=c['category']) }}"
+         class="gal-btn {% if active_cat==c['category'] %}active{% endif %}">{{ c['category']|title }}</a>
+      {% endif %}{% endfor %}
+    </div>
+
+    {% if imgs %}
+    <div class="gal-grid stagger">
+      {% for img in imgs %}
+      <div class="gal-item" data-full="{{ url_for('static', filename='uploads/gallery/'+img['filename']) }}">
+        <img src="{{ url_for('static', filename='uploads/gallery/'+img['filename']) }}"
+             alt="{{ img['caption'] or 'NCC Photo' }}" loading="lazy">
+        <div class="gal-overlay">
+          <div>
+            <div class="gal-cap">{{ img['caption'] or 'NCC '+img['category']|title }}</div>
+            {% if img['year'] %}<div style="font-family:var(--f-mono);font-size:10px;color:var(--gold);letter-spacing:.12em;margin-top:4px">{{ img['year'] }}</div>{% endif %}
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+    {% else %}
+    <div style="text-align:center;padding:90px;color:var(--muted)">
+      <div style="font-size:64px;margin-bottom:20px">📷</div>
+      <p style="font-family:var(--f-ui);font-size:22px;letter-spacing:.1em">Gallery will be updated soon.</p>
+    </div>
+    {% endif %}
+  </div>
+</section>
+
+<div class="lightbox" id="lightbox">
+  <button class="lb-close" id="lbClose">✕</button>
+  <img id="lbImg" src="" alt="Gallery Photo">
+</div>
+{% endblock %}

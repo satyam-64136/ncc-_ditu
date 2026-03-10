@@ -1,0 +1,28 @@
+{% extends 'admin/base.html' %}
+{% block title %}Events — Command Center{% endblock %}
+{% block content %}
+<div class="adm-topbar">
+  <div class="adm-pg-title">Events</div>
+  <a href="{{ url_for('admin_add_event') }}" class="btn btn-gold">+ Add Event</a>
+</div>
+<div class="adm-tw">
+  <table class="adm-table">
+    <thead><tr><th>Title</th><th>Date</th><th>Type</th><th>Location</th><th>Actions</th></tr></thead>
+    <tbody>
+      {% for e in events %}
+      <tr>
+        <td style="font-weight:600">{{ e['title'] }}</td>
+        <td style="font-family:var(--f-mono);font-size:11.5px">{{ e['event_date'][:10] }}</td>
+        <td><span class="etype etype-{{ e['event_type'] or 'fallin' }}" style="font-size:9px">{{ e['event_type'] or '—' }}</span></td>
+        <td style="font-size:12.5px;color:var(--muted)">{{ e['location'] or '—' }}</td>
+        <td>
+          <form method="POST" action="{{ url_for('admin_delete_event', eid=e['id']) }}" onsubmit="return confirm('Delete event?')">
+            <button class="btn btn-danger btn-sm">Delete</button>
+          </form>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

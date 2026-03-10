@@ -1,0 +1,41 @@
+{% extends 'admin/base.html' %}
+{% block title %}Cadets — Command Center{% endblock %}
+{% block content %}
+<div class="adm-topbar">
+  <div class="adm-pg-title">Cadets</div>
+  <a href="{{ url_for('admin_add_cadet') }}" class="btn btn-gold">+ Add Cadet</a>
+</div>
+
+<div class="adm-tw">
+  <table class="adm-table">
+    <thead><tr><th>Name</th><th>Rank / Position</th><th>Roll No.</th><th>Batch</th><th>Branch</th><th>Status</th><th>Actions</th></tr></thead>
+    <tbody>
+      {% for c in cadets %}
+      <tr>
+        <td>
+          <div style="font-weight:600">{{ c['name'] }}</div>
+          {% if c['chest_number'] %}<div style="font-family:var(--f-mono);font-size:10px;color:var(--gold)">{{ c['chest_number'] }}</div>{% endif %}
+        </td>
+        <td>
+          {% if c['is_rank_holder'] and c['rank_position'] %}
+          <span class="sbadge" style="background:rgba(200,168,60,.15);border:1px solid rgba(200,168,60,.35);color:var(--gold)">{{ c['rank_position'] }}</span>
+          {% else %}{{ c['rank'] }}{% endif %}
+        </td>
+        <td style="font-family:var(--f-mono);font-size:11.5px">{{ c['roll_number'] or '—' }}</td>
+        <td>{{ c['batch'] }}</td>
+        <td style="font-size:12.5px;color:var(--muted)">{{ c['branch'] or '—' }}</td>
+        <td><span class="sbadge {% if c['active'] %}sbadge-active{% else %}sbadge-inactive{% endif %}">{{ 'Active' if c['active'] else 'Inactive' }}</span></td>
+        <td>
+          <div style="display:flex;gap:7px">
+            <a href="{{ url_for('admin_edit_cadet', cid=c['id']) }}" class="btn btn-ghost btn-sm">Edit</a>
+            <form method="POST" action="{{ url_for('admin_delete_cadet', cid=c['id']) }}" onsubmit="return confirm('Delete {{ c['name'] }}?')">
+              <button type="submit" class="btn btn-danger btn-sm">Del</button>
+            </form>
+          </div>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

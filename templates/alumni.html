@@ -1,0 +1,92 @@
+{% extends 'base.html' %}
+{% block title %}Alumni — DIT University NCC{% endblock %}
+{% block extra_css %}
+<style>
+.alumni-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:24px}
+.alumni-card{
+  background:var(--glass2);border:1px solid rgba(180,150,50,.18);
+  border-radius:10px;overflow:hidden;position:relative;transition:all .3s ease;
+}
+.alumni-card::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:2px;
+  background:linear-gradient(90deg,transparent,var(--gold),transparent);opacity:0;transition:opacity .3s;
+}
+.alumni-card:hover::before{opacity:1}
+.alumni-card:hover{
+  border-color:rgba(200,168,60,.45);transform:translateY(-6px);
+  box-shadow:0 18px 55px rgba(0,0,0,.55), 0 0 25px rgba(200,168,60,.1);
+}
+.alumni-head{
+  display:flex;align-items:center;gap:16px;padding:22px 22px 18px;
+  background:linear-gradient(135deg,rgba(22,52,24,.6) 0%,rgba(8,20,10,.4) 100%);
+  border-bottom:1px solid rgba(200,168,60,.1);
+}
+.alumni-av{
+  width:64px;height:64px;border-radius:50%;flex-shrink:0;
+  background:linear-gradient(135deg,var(--green),var(--green-mid));
+  display:flex;align-items:center;justify-content:center;
+  font-family:var(--f-display);font-size:26px;color:var(--gold);
+  border:2px solid rgba(200,168,60,.3);
+  box-shadow:0 0 0 4px rgba(200,168,60,.06);transition:all .3s;overflow:hidden;
+}
+.alumni-card:hover .alumni-av{border-color:rgba(200,168,60,.65);box-shadow:0 0 0 6px rgba(200,168,60,.1),0 0 20px rgba(200,168,60,.25)}
+.alumni-av img{width:100%;height:100%;object-fit:cover;border-radius:50%}
+.alumni-name{font-family:var(--f-ui);font-size:20px;font-weight:700;color:var(--white);margin-bottom:4px;transition:color .2s;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.alumni-card:hover .alumni-name{color:#e8c84a}
+.alumni-rank-badge{font-family:var(--f-mono);font-size:9.5px;letter-spacing:.14em;background:rgba(200,168,60,.1);border:1px solid rgba(200,168,60,.25);color:var(--gold);padding:2px 10px;border-radius:2px;display:inline-block}
+.alumni-body{padding:18px 22px 22px}
+.alumni-batch{display:flex;align-items:center;gap:8px;margin-bottom:12px;font-family:var(--f-mono);font-size:11px;color:var(--muted);letter-spacing:.08em}
+.alumni-ach{font-size:13px;color:rgba(200,178,120,.75);background:rgba(200,168,60,.04);border-left:2.5px solid rgba(200,168,60,.28);padding:10px 12px;border-radius:0 4px 4px 0;margin-bottom:14px;line-height:1.65}
+.alumni-job{display:flex;align-items:center;gap:8px;padding-top:12px;border-top:1px solid rgba(200,168,60,.1);font-family:var(--f-ui);font-size:13px;font-weight:600;color:var(--green-hi);letter-spacing:.05em}
+</style>
+{% endblock %}
+{% block content %}
+<div style="padding-top:var(--nav-h)"></div>
+<section class="section">
+  <div class="section-max">
+    <div class="section-hd reveal">
+      <span class="tag">// VETERANS</span>
+      <h2>Our <em>Alumni</em></h2>
+      <div class="divider"></div>
+      <p class="lead">Proud veterans of DIT University NCC 29 UK Battalion who carry our legacy forward.</p>
+    </div>
+    {% if alumni %}
+    <div class="alumni-grid stagger">
+      {% for a in alumni %}
+      <div class="alumni-card">
+        <div class="alumni-head">
+          <div class="alumni-av">
+            {% if a['photo'] %}<img src="{{ url_for('static',filename='uploads/cadets/'+a['photo']) }}" alt="{{ a['name'] }}">
+            {% else %}{{ a['name'][0] }}{% endif %}
+          </div>
+          <div style="flex:1;min-width:0">
+            <div class="alumni-name">{{ a['name'] }}</div>
+            <span class="alumni-rank-badge">{{ a['rank'] or 'Cadet' }}</span>
+          </div>
+        </div>
+        <div class="alumni-body">
+          {% if a['batch_year'] %}
+          <div class="alumni-batch">📅 &nbsp;Batch of {{ a['batch_year'] }}</div>
+          {% endif %}
+          {% if a['achievements'] %}
+          <div class="alumni-ach">{{ a['achievements'] }}</div>
+          {% endif %}
+          {% if a['current_profession'] %}
+          <div class="alumni-job">▶ {{ a['current_profession'] }}</div>
+          {% endif %}
+          {% if a['testimonial'] %}
+          <blockquote style="margin-top:12px;padding:10px 12px;background:rgba(200,168,60,.04);border-left:2px solid rgba(200,168,60,.25);font-style:italic;font-size:12.5px;color:var(--muted);line-height:1.65;border-radius:0 4px 4px 0">"{{ a['testimonial'] }}"</blockquote>
+          {% endif %}
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+    {% else %}
+    <div style="text-align:center;padding:80px 20px;color:var(--muted)">
+      <div style="font-size:52px;margin-bottom:16px">🎖️</div>
+      <p style="font-family:var(--f-display);font-size:26px;letter-spacing:.1em">Alumni profiles coming soon</p>
+    </div>
+    {% endif %}
+  </div>
+</section>
+{% endblock %}

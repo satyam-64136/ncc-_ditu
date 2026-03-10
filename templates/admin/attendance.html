@@ -1,0 +1,140 @@
+{% extends 'admin/base.html' %}
+{% block title %}Mark Fallin Attendance — Dashboard{% endblock %}
+{% block content %}
+<div class="adm-topbar">
+  <div class="adm-pg-title">Mark Fallin Attendance</div>
+  <div style="display:flex;gap:8px">
+    <a href="{{ url_for('admin_att_records') }}" class="btn btn-outline btn-sm">📋 View Records</a>
+    <a href="{{ url_for('admin_export') }}" class="btn btn-ghost btn-sm">📊 Export CSV</a>
+  </div>
+</div>
+
+<div style="display:grid;grid-template-columns:1fr 270px;gap:22px;align-items:start">
+  <div>
+    <div style="display:flex;gap:14px;align-items:flex-end;margin-bottom:22px;flex-wrap:wrap;background:rgba(8,20,10,.6);border:1px solid rgba(200,168,60,.14);border-radius:6px;padding:18px 22px">
+      <div class="fld" style="margin:0">
+        <label>Select Date</label>
+        <input type="date" id="datePick" value="{{ date }}"
+          style="background:rgba(4,8,10,.8);border:1px solid rgba(200,168,60,.2);border-radius:3px;padding:9px 13px;color:var(--white);font-family:var(--f-body);font-size:13.5px;outline:none">
+      </div>
+      <button onclick="changeDt()" class="btn btn-outline btn-sm">Load Date</button>
+    </div>
+
+    <form method="POST" action="{{ url_for('admin_mark_attendance') }}">
+      <input type="hidden" name="date" value="{{ date }}">
+      <div style="display:flex;gap:14px;align-items:flex-end;margin-bottom:20px;flex-wrap:wrap">
+        <div class="fld" style="margin:0">
+          <label>Fallin Type</label>
+          <select name="fallin_type" style="background:rgba(4,8,10,.8);border:1px solid rgba(200,168,60,.2);border-radius:3px;padding:9px 13px;color:var(--white);font-family:var(--f-body);font-size:13.5px;outline:none;width:220px">
+            <option value="Morning Fallin">Morning Fallin</option>
+            <option value="Evening Fallin">Evening Fallin</option>
+            <option value="Special Fallin">Special Fallin</option>
+            <option value="Inspection Fallin">Inspection Fallin</option>
+            <option value="Training">Training</option>
+            <option value="Republic Day Prep">Republic Day Prep</option>
+            <option value="Camp Fallin">Camp Fallin</option>
+          </select>
+        </div>
+        <button type="submit" class="btn btn-gold">💾 Save Attendance</button>
+      </div>
+
+      <div style="display:flex;gap:8px;margin-bottom:16px;align-items:center">
+        <span style="font-family:var(--f-mono);font-size:10px;color:var(--muted);letter-spacing:.12em">MARK ALL AS:</span>
+        <button type="button" onclick="markAll('present')" class="btn btn-sm" style="background:rgba(50,100,50,.2);border:1px solid rgba(50,100,50,.4);color:#5ac84a;font-size:10px;padding:5px 14px">✓ Present</button>
+        <button type="button" onclick="markAll('late')"    class="btn btn-sm" style="background:rgba(200,168,60,.15);border:1px solid rgba(200,168,60,.35);color:var(--gold);font-size:10px;padding:5px 14px">◔ Late</button>
+        <button type="button" onclick="markAll('absent')"  class="btn btn-sm" style="background:rgba(160,30,30,.2);border:1px solid rgba(160,30,30,.4);color:#f07070;font-size:10px;padding:5px 14px">✗ Absent</button>
+      </div>
+
+      <!-- Seniors group -->
+      {% set seniors = cadets|selectattr('category','equalto','Senior')|list %}
+      {% set buddies = cadets|selectattr('category','equalto','Buddy')|list %}
+
+      {% for group_name, group_cadets in [('Seniors — NCC 3rd Year (2024–2027)', seniors), ('Buddies — NCC 1st Year (2025–2028)', buddies)] %}
+      {% if group_cadets %}
+      <div style="margin-bottom:24px">
+        <div style="font-family:'Rajdhani',sans-serif;font-size:12px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);padding:8px 0 10px;border-bottom:1px solid rgba(200,168,60,.12);margin-bottom:8px">
+          {{ group_name }}
+        </div>
+        <div class="adm-tw">
+          <table class="adm-table">
+            <thead>
+              <tr>
+                <th>#</th><th>Cadet</th><th>Rank</th><th>Roll No.</th>
+                <th style="text-align:center;color:#5ac84a">Present</th>
+                <th style="text-align:center;color:var(--gold)">Late</th>
+                <th style="text-align:center;color:#f07070">Absent</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for c in group_cadets %}
+              {% set att = existing.get(c['id']) %}
+              <tr>
+                <td style="font-family:var(--f-mono);font-size:11px;color:var(--muted)">{{ loop.index }}</td>
+                <td style="font-weight:600">{{ c['name'] }}</td>
+                <td style="font-size:12px;color:var(--muted)">{{ c['rank'] }}</td>
+                <td style="font-family:var(--f-mono);font-size:11px;color:var(--gold)">{{ c['roll_number'] or '—' }}</td>
+                <td style="text-align:center">
+                  <input type="radio" name="status_{{ c['id'] }}" value="present"
+                    {% if not att or att['status']=='present' %}checked{% endif %}
+                    style="accent-color:#5ac84a;width:17px;height:17px;cursor:pointer">
+                </td>
+                <td style="text-align:center">
+                  <input type="radio" name="status_{{ c['id'] }}" value="late"
+                    {% if att and att['status']=='late' %}checked{% endif %}
+                    style="accent-color:var(--gold);width:17px;height:17px;cursor:pointer">
+                </td>
+                <td style="text-align:center">
+                  <input type="radio" name="status_{{ c['id'] }}" value="absent"
+                    {% if att and att['status']=='absent' %}checked{% endif %}
+                    style="accent-color:#f07070;width:17px;height:17px;cursor:pointer">
+                </td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+      {% endif %}
+      {% endfor %}
+
+      <div style="margin-top:16px"><button type="submit" class="btn btn-gold">💾 Save Fallin Attendance</button></div>
+    </form>
+  </div>
+
+  <!-- Sidebar: history -->
+  <div>
+    <div style="background:rgba(8,20,10,.7);border:1px solid rgba(200,168,60,.14);border-radius:6px;padding:18px">
+      <div style="font-family:'Rajdhani',sans-serif;font-size:14px;font-weight:700;color:var(--gold);letter-spacing:.14em;text-transform:uppercase;margin-bottom:14px">Recent Sessions</div>
+      {% if history %}
+      <div style="display:flex;flex-direction:column;gap:5px">
+        {% for h in history %}
+        <a href="{{ url_for('admin_attendance', date=h['date']) }}"
+          style="display:block;padding:9px 12px;border-radius:4px;border:1px solid {% if h['date']==date %}rgba(200,168,60,.4){% else %}rgba(200,168,60,.1){% endif %};background:{% if h['date']==date %}rgba(200,168,60,.08){% else %}transparent{% endif %};transition:all .2s;text-decoration:none">
+          <div style="font-family:'Share Tech Mono',monospace;font-size:11px;color:var(--gold);letter-spacing:.06em">{{ h['date'] }}</div>
+          <div style="margin-top:4px;display:flex;gap:8px;font-size:10.5px">
+            <span style="color:#5ac84a">✓ {{ h['p'] }}</span>
+            <span style="color:#f07070">✗ {{ h['a'] }}</span>
+            <span style="color:var(--muted)">/ {{ h['total'] }}</span>
+          </div>
+        </a>
+        {% endfor %}
+      </div>
+      {% else %}
+      <p style="font-size:12px;color:var(--muted)">No sessions yet.</p>
+      {% endif %}
+      <div style="margin-top:14px;border-top:1px solid rgba(200,168,60,.1);padding-top:12px">
+        <a href="{{ url_for('admin_att_records') }}" class="btn btn-outline btn-sm" style="width:100%;justify-content:center;font-size:10px">All Records →</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+function changeDt(){
+  const d=document.getElementById('datePick').value;
+  if(d) location.href='{{ url_for("admin_attendance") }}?date='+d;
+}
+document.getElementById('datePick').addEventListener('keypress',e=>e.key==='Enter'&&changeDt());
+function markAll(s){ document.querySelectorAll('input[type=radio][value='+s+']').forEach(r=>r.checked=true); }
+</script>
+{% endblock %}
