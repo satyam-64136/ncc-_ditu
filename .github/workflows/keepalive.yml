@@ -2,12 +2,25 @@ name: Keep Render App Awake
 
 on:
   schedule:
-    - cron: "*/4 * * * *"
+    - cron: "*/5 * * * *"   # runs every 5 minutes
   workflow_dispatch:
 
 jobs:
-  ping:
+  keepalive:
     runs-on: ubuntu-latest
+
     steps:
-      - name: Ping Render
-        run: curl https://nccxditu.onrender.com
+      - name: Ping 1
+        run: curl -fsS https://nccxditu.onrender.com || echo "Ping failed"
+
+      - name: Wait
+        run: sleep 10
+
+      - name: Ping 2
+        run: curl -fsS https://nccxditu.onrender.com || echo "Ping failed"
+
+      - name: Wait
+        run: sleep 10
+
+      - name: Ping 3
+        run: curl -fsS https://nccxditu.onrender.com || echo "Ping failed"
