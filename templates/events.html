@@ -5,7 +5,7 @@
 <section class="section">
   <div class="section-max">
     <div class="section-hd reveal">
-      <span class="tag">// OPERATIONS_BOARD</span>
+      <span class="tag">Schedule</span>
       <h2>Events &amp; <em>Schedule</em></h2>
       <div class="divider"></div>
       <p class="lead">Fall-in schedules, camp announcements and important notices for all cadets.</p>
@@ -36,14 +36,14 @@
 
     <!-- Upcoming -->
     <div style="margin-bottom:60px">
-      <h3 style="font-family:var(--f-ui);font-size:20px;font-weight:700;color:var(--gold);letter-spacing:.16em;text-transform:uppercase;margin-bottom:22px;display:flex;align-items:center;gap:10px" class="reveal">
-        <span style="width:8px;height:8px;border-radius:50%;background:#4ac84a;box-shadow:0 0 10px #4ac84a;display:inline-block;animation:upcomingPulse 2s infinite"></span>
+      <h3 style="font-family:var(--f-ui);font-size:18px;font-weight:700;color:var(--gold);letter-spacing:.04em;text-transform:uppercase;margin-bottom:22px;display:flex;align-items:center;gap:10px" class="reveal">
+        <span style="width:8px;height:8px;border-radius:50%;background:var(--green-hi);display:inline-block"></span>
         Upcoming Events
       </h3>
       {% if upcoming %}
       <div class="event-list stagger">{% for e in upcoming %}{{ event_row(e) }}{% endfor %}</div>
       {% else %}
-      <div style="text-align:center;padding:40px;border:1px dashed rgba(200,168,60,.18);border-radius:6px;color:var(--muted)">
+      <div style="text-align:center;padding:40px;border:1px dashed rgba(27,58,99,.18);border-radius:6px;color:var(--muted)">
         <p style="font-family:var(--f-ui);font-size:17px">No upcoming events scheduled.</p>
       </div>
       {% endif %}
@@ -52,14 +52,11 @@
     <!-- Past -->
     {% if past %}
     <div>
-      <h3 style="font-family:var(--f-ui);font-size:20px;font-weight:700;color:var(--muted);letter-spacing:.16em;text-transform:uppercase;margin-bottom:22px" class="reveal">Past Events</h3>
+      <h3 style="font-family:var(--f-ui);font-size:18px;font-weight:700;color:var(--muted);letter-spacing:.04em;text-transform:uppercase;margin-bottom:22px" class="reveal">Past Events</h3>
       <div class="event-list stagger">{% for e in past %}{{ event_row(e, dim=true) }}{% endfor %}</div>
     </div>
     {% endif %}
   </div>
 </section>
 
-<style>
-@keyframes upcomingPulse{0%,100%{box-shadow:0 0 8px #4ac84a}50%{box-shadow:0 0 22px #4ac84a,0 0 40px rgba(74,200,74,.35)}}
-</style>
 {% endblock %}

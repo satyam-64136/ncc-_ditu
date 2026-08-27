@@ -11,11 +11,11 @@
 
 <div style="display:grid;grid-template-columns:1fr 270px;gap:22px;align-items:start">
   <div>
-    <div style="display:flex;gap:14px;align-items:flex-end;margin-bottom:22px;flex-wrap:wrap;background:rgba(8,20,10,.6);border:1px solid rgba(200,168,60,.14);border-radius:6px;padding:18px 22px">
+    <div style="display:flex;gap:14px;align-items:flex-end;margin-bottom:22px;flex-wrap:wrap;background:#ffffff;border:1px solid rgba(27,58,99,.12);border-radius:6px;padding:18px 22px">
       <div class="fld" style="margin:0">
         <label>Select Date</label>
         <input type="date" id="datePick" value="{{ date }}"
-          style="background:rgba(4,8,10,.8);border:1px solid rgba(200,168,60,.2);border-radius:3px;padding:9px 13px;color:var(--white);font-family:var(--f-body);font-size:13.5px;outline:none">
+          style="background:#f7f8fa;border:1px solid rgba(27,58,99,.18);border-radius:3px;padding:9px 13px;color:var(--white);font-family:var(--f-body);font-size:13.5px;outline:none">
       </div>
       <button onclick="changeDt()" class="btn btn-outline btn-sm">Load Date</button>
     </div>
@@ -25,7 +25,7 @@
       <div style="display:flex;gap:14px;align-items:flex-end;margin-bottom:20px;flex-wrap:wrap">
         <div class="fld" style="margin:0">
           <label>Fallin Type</label>
-          <select name="fallin_type" style="background:rgba(4,8,10,.8);border:1px solid rgba(200,168,60,.2);border-radius:3px;padding:9px 13px;color:var(--white);font-family:var(--f-body);font-size:13.5px;outline:none;width:220px">
+          <select name="fallin_type" style="background:#f7f8fa;border:1px solid rgba(27,58,99,.18);border-radius:3px;padding:9px 13px;color:var(--white);font-family:var(--f-body);font-size:13.5px;outline:none;width:220px">
             <option value="Morning Fallin">Morning Fallin</option>
             <option value="Evening Fallin">Evening Fallin</option>
             <option value="Special Fallin">Special Fallin</option>
@@ -40,19 +40,19 @@
 
       <div style="display:flex;gap:8px;margin-bottom:16px;align-items:center">
         <span style="font-family:var(--f-mono);font-size:10px;color:var(--muted);letter-spacing:.12em">MARK ALL AS:</span>
-        <button type="button" onclick="markAll('present')" class="btn btn-sm" style="background:rgba(50,100,50,.2);border:1px solid rgba(50,100,50,.4);color:#5ac84a;font-size:10px;padding:5px 14px">✓ Present</button>
-        <button type="button" onclick="markAll('late')"    class="btn btn-sm" style="background:rgba(200,168,60,.15);border:1px solid rgba(200,168,60,.35);color:var(--gold);font-size:10px;padding:5px 14px">◔ Late</button>
-        <button type="button" onclick="markAll('absent')"  class="btn btn-sm" style="background:rgba(160,30,30,.2);border:1px solid rgba(160,30,30,.4);color:#f07070;font-size:10px;padding:5px 14px">✗ Absent</button>
+        <button type="button" onclick="markAll('present')" class="btn btn-sm" style="background:rgba(31,138,76,.12);border:1px solid rgba(31,138,76,.35);color:#1f8a4c;font-size:10px;padding:5px 14px">✓ Present</button>
+        <button type="button" onclick="markAll('late')"    class="btn btn-sm" style="background:rgba(27,58,99,.14);border:1px solid rgba(27,58,99,.3);color:var(--gold);font-size:10px;padding:5px 14px">◔ Late</button>
+        <button type="button" onclick="markAll('absent')"  class="btn btn-sm" style="background:rgba(179,39,45,.12);border:1px solid rgba(179,39,45,.35);color:#b3272d;font-size:10px;padding:5px 14px">✗ Absent</button>
       </div>
 
       <!-- Seniors group -->
       {% set seniors = cadets|selectattr('category','equalto','Senior')|list %}
       {% set buddies = cadets|selectattr('category','equalto','Buddy')|list %}
 
-      {% for group_name, group_cadets in [('Seniors — NCC 3rd Year (2024–2027)', seniors), ('Buddies — NCC 1st Year (2025–2028)', buddies)] %}
+      {% for group_name, group_cadets in [('Seniors — NCC 3rd Year (2024–2027)', seniors), ('Buddies — NCC 2nd Year (2025–2028)', buddies)] %}
       {% if group_cadets %}
       <div style="margin-bottom:24px">
-        <div style="font-family:'Rajdhani',sans-serif;font-size:12px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);padding:8px 0 10px;border-bottom:1px solid rgba(200,168,60,.12);margin-bottom:8px">
+        <div style="font-family:'Inter',sans-serif;font-size:12px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);padding:8px 0 10px;border-bottom:1px solid rgba(27,58,99,.10);margin-bottom:8px">
           {{ group_name }}
         </div>
         <div class="adm-tw">
@@ -60,9 +60,9 @@
             <thead>
               <tr>
                 <th>#</th><th>Cadet</th><th>Rank</th><th>Roll No.</th>
-                <th style="text-align:center;color:#5ac84a">Present</th>
+                <th style="text-align:center;color:#1f8a4c">Present</th>
                 <th style="text-align:center;color:var(--gold)">Late</th>
-                <th style="text-align:center;color:#f07070">Absent</th>
+                <th style="text-align:center;color:#b3272d">Absent</th>
               </tr>
             </thead>
             <tbody>
@@ -76,7 +76,7 @@
                 <td style="text-align:center">
                   <input type="radio" name="status_{{ c['id'] }}" value="present"
                     {% if not att or att['status']=='present' %}checked{% endif %}
-                    style="accent-color:#5ac84a;width:17px;height:17px;cursor:pointer">
+                    style="accent-color:#1f8a4c;width:17px;height:17px;cursor:pointer">
                 </td>
                 <td style="text-align:center">
                   <input type="radio" name="status_{{ c['id'] }}" value="late"
@@ -86,7 +86,7 @@
                 <td style="text-align:center">
                   <input type="radio" name="status_{{ c['id'] }}" value="absent"
                     {% if att and att['status']=='absent' %}checked{% endif %}
-                    style="accent-color:#f07070;width:17px;height:17px;cursor:pointer">
+                    style="accent-color:#b3272d;width:17px;height:17px;cursor:pointer">
                 </td>
               </tr>
               {% endfor %}
@@ -103,17 +103,17 @@
 
   <!-- Sidebar: history -->
   <div>
-    <div style="background:rgba(8,20,10,.7);border:1px solid rgba(200,168,60,.14);border-radius:6px;padding:18px">
-      <div style="font-family:'Rajdhani',sans-serif;font-size:14px;font-weight:700;color:var(--gold);letter-spacing:.14em;text-transform:uppercase;margin-bottom:14px">Recent Sessions</div>
+    <div style="background:#ffffff;border:1px solid rgba(27,58,99,.12);border-radius:6px;padding:18px">
+      <div style="font-family:'Inter',sans-serif;font-size:14px;font-weight:700;color:var(--gold);letter-spacing:.14em;text-transform:uppercase;margin-bottom:14px">Recent Sessions</div>
       {% if history %}
       <div style="display:flex;flex-direction:column;gap:5px">
         {% for h in history %}
         <a href="{{ url_for('admin_attendance', date=h['date']) }}"
-          style="display:block;padding:9px 12px;border-radius:4px;border:1px solid {% if h['date']==date %}rgba(200,168,60,.4){% else %}rgba(200,168,60,.1){% endif %};background:{% if h['date']==date %}rgba(200,168,60,.08){% else %}transparent{% endif %};transition:all .2s;text-decoration:none">
-          <div style="font-family:'Share Tech Mono',monospace;font-size:11px;color:var(--gold);letter-spacing:.06em">{{ h['date'] }}</div>
+          style="display:block;padding:9px 12px;border-radius:4px;border:1px solid {% if h['date']==date %}rgba(27,58,99,.32){% else %}rgba(27,58,99,.08){% endif %};background:{% if h['date']==date %}rgba(27,58,99,.07){% else %}transparent{% endif %};transition:all .2s;text-decoration:none">
+          <div style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--gold);letter-spacing:.06em">{{ h['date'] }}</div>
           <div style="margin-top:4px;display:flex;gap:8px;font-size:10.5px">
-            <span style="color:#5ac84a">✓ {{ h['p'] }}</span>
-            <span style="color:#f07070">✗ {{ h['a'] }}</span>
+            <span style="color:#1f8a4c">✓ {{ h['p'] }}</span>
+            <span style="color:#b3272d">✗ {{ h['a'] }}</span>
             <span style="color:var(--muted)">/ {{ h['total'] }}</span>
           </div>
         </a>
@@ -122,7 +122,7 @@
       {% else %}
       <p style="font-size:12px;color:var(--muted)">No sessions yet.</p>
       {% endif %}
-      <div style="margin-top:14px;border-top:1px solid rgba(200,168,60,.1);padding-top:12px">
+      <div style="margin-top:14px;border-top:1px solid rgba(27,58,99,.08);padding-top:12px">
         <a href="{{ url_for('admin_att_records') }}" class="btn btn-outline btn-sm" style="width:100%;justify-content:center;font-size:10px">All Records →</a>
       </div>
     </div>

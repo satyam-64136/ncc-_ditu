@@ -1,36 +1,31 @@
 /* ═══════════════════════════════════════════════════════════════
    DIT UNIVERSITY NCC  ·  MAIN UI SCRIPT
-   Animations · Interactions · Day/Night Mode
+   Minimal, purposeful interactions only.
    ═══════════════════════════════════════════════════════════════ */
 
 (function () {
   'use strict';
 
-  /* ── NAV SCROLL ─────────────────────────────────────────── */
+  /* ── NAV SCROLL SHADOW ──────────────────────────────────── */
   const nav = document.getElementById('mainNav');
   if (nav) {
     window.addEventListener('scroll', () =>
-      nav.classList.toggle('scrolled', scrollY > 50), { passive: true });
+      nav.classList.toggle('scrolled', scrollY > 20), { passive: true });
   }
+
+  /* ── BUTTON HOVER GLOW (follows cursor) ──────────────────── */
+  document.querySelectorAll('.btn').forEach(btn => {
+    btn.addEventListener('pointermove', e => {
+      const r = btn.getBoundingClientRect();
+      btn.style.setProperty('--mx', ((e.clientX - r.left) / r.width * 100) + '%');
+      btn.style.setProperty('--my', ((e.clientY - r.top) / r.height * 100) + '%');
+    });
+  });
 
   /* ── MOBILE NAV ─────────────────────────────────────────── */
   const burger = document.getElementById('navBurger');
   const mobileNav = document.getElementById('mobileNav');
   burger?.addEventListener('click', () => mobileNav?.classList.toggle('open'));
-
-  /* ── DAY / NIGHT MODE ───────────────────────────────────── */
-  const modeBtn = document.getElementById('modeBtn');
-  const applyMode = (m) => {
-    document.body.classList.toggle('night-mode', m === 'night');
-    if (window.__setSceneMode) window.__setSceneMode(m);
-  };
-  const savedMode = localStorage.getItem('ncc-mode') || 'day';
-  applyMode(savedMode);
-  modeBtn?.addEventListener('click', () => {
-    const next = document.body.classList.contains('night-mode') ? 'day' : 'night';
-    localStorage.setItem('ncc-mode', next);
-    applyMode(next);
-  });
 
   /* ── FLASH AUTO-DISMISS ─────────────────────────────────── */
   document.querySelectorAll('.flash').forEach(el => {
@@ -41,8 +36,8 @@
     }, 3800);
   });
 
-  /* ── COUNTER ANIMATION ──────────────────────────────────── */
-  function runCounter(el, end, dur = 1700) {
+  /* ── COUNTER ANIMATION (stats bar) ──────────────────────── */
+  function runCounter(el, end, dur = 1200) {
     let s = null;
     const step = ts => {
       if (!s) s = ts;
@@ -64,29 +59,14 @@
     counters.forEach(el => io.observe(el));
   }
 
-  /* ── SCROLL REVEAL ──────────────────────────────────────── */
-  const reveals = document.querySelectorAll('.reveal, .reveal-l');
+  /* ── SUBTLE SCROLL REVEAL ────────────────────────────────── */
+  const reveals = document.querySelectorAll('.reveal, .reveal-l, .stagger');
   if (reveals.length) {
     const rv = new IntersectionObserver(entries => entries.forEach(e => {
       if (e.isIntersecting) { e.target.classList.add('in'); rv.unobserve(e.target); }
-    }), { threshold: .12 });
+    }), { threshold: .1 });
     reveals.forEach(el => rv.observe(el));
   }
-
-  /* ── CADET CARD 3D TILT ─────────────────────────────────── */
-  document.querySelectorAll('.cadet-card').forEach(card => {
-    card.addEventListener('mousemove', e => {
-      const r   = card.getBoundingClientRect();
-      const x   = ((e.clientX - r.left) / r.width  - .5) * 14;
-      const y   = ((e.clientY - r.top)  / r.height - .5) * 14;
-      card.style.transform = `translateY(-6px) rotateX(${-y}deg) rotateY(${x}deg)`;
-    });
-    card.addEventListener('mouseleave', () => {
-      card.style.transition = 'transform .45s ease';
-      card.style.transform = '';
-      setTimeout(() => card.style.transition = '', 450);
-    });
-  });
 
   /* ── GALLERY LIGHTBOX ───────────────────────────────────── */
   const lb    = document.getElementById('lightbox');
@@ -105,25 +85,5 @@
   document.getElementById('lbClose')?.addEventListener('click', closeLb);
   lb?.addEventListener('click', e => e.target === lb && closeLb());
   document.addEventListener('keydown', e => e.key === 'Escape' && closeLb());
-
-  /* ── GSAP HERO ENTRANCE ─────────────────────────────────── */
-  if (typeof gsap !== 'undefined') {
-    const tl = gsap.timeline({ delay: .25 });
-    tl.to('.hero-eyebrow', { opacity:1, duration:.7, ease:'power2.out' })
-      .to('.hero-title',   { opacity:1, y:0, duration:.8, ease:'power3.out' }, '-=.4')
-      .to('.hero-sub',     { opacity:1, y:0, duration:.6, ease:'power2.out' }, '-=.5')
-      .to('.hero-badge',   { opacity:1, duration:.5 }, '-=.3')
-      .to('.hero-cta',     { opacity:1, y:0, duration:.6, ease:'power2.out' }, '-=.3');
-    gsap.set('.hero-title,.hero-sub,.hero-cta', { y: 26 });
-
-    gsap.registerPlugin(ScrollTrigger);
-    document.querySelectorAll('.stagger').forEach(grid => {
-      gsap.from(grid.querySelectorAll(':scope > *'), {
-        opacity:0, y:40, scale:.96, stagger:.09, duration:.62,
-        ease:'power2.out',
-        scrollTrigger:{ trigger: grid, start:'top 82%' }
-      });
-    });
-  }
 
 })();

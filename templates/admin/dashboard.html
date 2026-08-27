@@ -81,9 +81,9 @@
     <thead>
       <tr>
         <th>Date</th><th>Fallin Type</th>
-        <th style="color:#5ac84a">Present</th>
+        <th style="color:#1f8a4c">Present</th>
         <th style="color:var(--gold)">Late</th>
-        <th style="color:#f07070">Absent</th>
+        <th style="color:#b3272d">Absent</th>
         <th>Attendance %</th><th>Actions</th>
       </tr>
     </thead>
@@ -93,12 +93,12 @@
       <tr>
         <td><strong style="font-family:var(--f-mono);font-size:12.5px">{{ row['date'] }}</strong></td>
         <td style="font-size:12px;color:var(--muted)">{{ row['fallin_type'] or 'Morning Fallin' }}</td>
-        <td><span style="color:#5ac84a;font-weight:700;font-size:15px">{{ row['present_count'] }}</span></td>
+        <td><span style="color:#1f8a4c;font-weight:700;font-size:15px">{{ row['present_count'] }}</span></td>
         <td><span style="color:var(--gold);font-weight:700;font-size:15px">{{ row['late_count'] }}</span></td>
-        <td><span style="color:#f07070;font-weight:700;font-size:15px">{{ row['absent_count'] }}</span></td>
+        <td><span style="color:#b3272d;font-weight:700;font-size:15px">{{ row['absent_count'] }}</span></td>
         <td>
           <div style="display:flex;align-items:center;gap:8px">
-            <div style="width:80px;height:4px;background:rgba(255,255,255,.07);border-radius:2px;overflow:hidden">
+            <div style="width:80px;height:4px;background:rgba(15,36,64,.07);border-radius:2px;overflow:hidden">
               <div style="height:100%;width:{{ pct }}%;background:var(--green-hi);border-radius:2px"></div>
             </div>
             <span style="font-family:var(--f-mono);font-size:11px;color:var(--muted)">{{ pct }}%</span>
@@ -117,8 +117,8 @@
   </table>
 </div>
 {% else %}
-<div style="text-align:center;padding:40px;border:1px dashed rgba(200,168,60,.18);border-radius:6px;color:var(--muted);margin-bottom:28px">
-  <p style="font-family:'Rajdhani',sans-serif;font-size:17px">No fallin attendance recorded yet.</p>
+<div style="text-align:center;padding:40px;border:1px dashed rgba(27,58,99,.16);border-radius:6px;color:var(--muted);margin-bottom:28px">
+  <p style="font-family:'Inter',sans-serif;font-size:17px">No fallin attendance recorded yet.</p>
   <a href="{{ url_for('admin_attendance') }}" class="btn btn-gold btn-sm" style="margin-top:12px">Mark Today's Fallin</a>
 </div>
 {% endif %}

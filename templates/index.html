@@ -5,16 +5,22 @@
 
 <!-- ════════ HERO ════════ -->
 <section id="hero">
-  <canvas id="three-canvas"></canvas>
-  <div class="hero-vignette"></div>
-  <div class="hero-content">
-    <span class="hero-eyebrow">29 UK Battalion · Dehradun, Uttarakhand</span>
-    <h1 class="hero-title">DIT UNIVERSITY<br><span class="g">NCC</span></h1>
-    <p class="hero-sub">National Cadet Corps · India</p>
-    <div class="hero-badge">UNITY &amp; DISCIPLINE</div>
-    <div class="hero-cta">
-      <a href="{{ url_for('cadets') }}"  class="btn btn-gold">Meet Our Cadets</a>
-      <a href="{{ url_for('events') }}"  class="btn btn-outline">Upcoming Events</a>
+  <div class="hero-grid">
+    <div class="reveal-l">
+      <span class="hero-eyebrow">29 UK Battalion · Dehradun, Uttarakhand</span>
+      <h1 class="hero-title">DIT UNIVERSITY<br><span class="g">NCC</span></h1>
+      <div class="hero-stripe"></div>
+      <p class="hero-sub">National Cadet Corps, India — building character, discipline and leadership among the youth of DIT University since our battalion's founding.</p>
+      <div class="hero-badge">UNITY &amp; DISCIPLINE</div>
+      <div class="hero-cta">
+        <a href="{{ url_for('cadets') }}"  class="btn btn-gold">Meet Our Cadets</a>
+        <a href="{{ url_for('events') }}"  class="btn btn-outline">Upcoming Events</a>
+      </div>
+    </div>
+    <div class="hero-emblem-wrap reveal">
+      <div class="hero-emblem-ring">
+        <img src="{{ url_for('static', filename='img/ncc-crest.png') }}" alt="NCC Crest — Unity and Discipline">
+      </div>
     </div>
   </div>
 </section>
@@ -45,10 +51,10 @@
 <section class="section">
   <div class="section-max">
     <div class="section-hd reveal">
-      <span class="tag">// BATTALION_INFO</span>
+      <span class="tag">Battalion Info</span>
       <h2>About <em>29 UK Battalion</em></h2>
       <div class="divider"></div>
-      <p class="lead">The NCC builds character, discipline and leadership in India's youth through rigorous military-style training.</p>
+      <p class="lead">The NCC builds character, discipline and leadership in India's youth through structured, military-style training.</p>
     </div>
 
     <div class="about-grid stagger">
@@ -58,9 +64,9 @@
         <p style="color:var(--muted);font-size:14.5px;line-height:1.75">To develop character, comradeship, discipline, leadership, secular outlook, the spirit of adventure, and ideals of selfless service among the youth of India.</p>
       </div>
       <div class="about-card">
-        <span class="about-icon">⚔️</span>
+        <span class="about-icon">🧭</span>
         <div class="about-ct">Training</div>
-        <p style="color:var(--muted);font-size:14.5px;line-height:1.75">Rigorous military drills, weapon training, map reading, first aid, adventure activities, and participation in national-level camps and Republic Day parades.</p>
+        <p style="color:var(--muted);font-size:14.5px;line-height:1.75">Drill, map reading, first aid, adventure activities, and participation in national-level camps and Republic Day parades.</p>
       </div>
       <div class="about-card">
         <span class="about-icon">🏆</span>
@@ -73,10 +79,10 @@
 
 <!-- ════════ UPCOMING EVENTS ════════ -->
 {% if upcoming %}
-<section style="background:rgba(8,20,10,.4);border-top:1px solid var(--border);border-bottom:1px solid var(--border);padding:80px 28px">
+<section style="background:#fff;border-top:1px solid var(--border);border-bottom:1px solid var(--border);padding:80px 28px">
   <div class="section-max">
     <div class="section-hd reveal">
-      <span class="tag">// SCHEDULE</span>
+      <span class="tag">Schedule</span>
       <h2>Upcoming <em>Events</em></h2>
       <div class="divider"></div>
     </div>
@@ -110,11 +116,11 @@
 <!-- ════════ CTA ════════ -->
 <section class="section" style="text-align:center">
   <div class="reveal">
-    <span class="tag">// JOIN_US</span>
-    <h2 style="font-family:var(--f-display);font-size:clamp(32px,5vw,58px);letter-spacing:.06em;margin-bottom:16px">
+    <span class="tag">Join Us</span>
+    <h2 style="font-family:var(--f-display);font-weight:600;font-size:clamp(30px,4.4vw,48px);letter-spacing:.01em;margin-bottom:16px">
       Be Part of the <em style="color:var(--gold);font-style:normal">Legacy</em>
     </h2>
-    <p style="color:var(--muted);margin-bottom:40px;max-width:480px;margin-left:auto;margin-right:auto;font-size:15.5px">
+    <p style="color:var(--muted);margin-bottom:36px;max-width:480px;margin-left:auto;margin-right:auto;font-size:15.5px">
       The NCC shapes tomorrow's leaders. Join 29 UK Battalion and embark on a journey of discipline, courage, and camaraderie.
     </p>
     <div style="display:flex;gap:14px;justify-content:center;flex-wrap:wrap">
@@ -125,9 +131,4 @@
   </div>
 </section>
 
-{% endblock %}
-
-{% block extra_js %}
-<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-<script src="{{ url_for('static', filename='js/parade.js') }}"></script>
 {% endblock %}

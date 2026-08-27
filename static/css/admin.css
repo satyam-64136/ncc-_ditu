@@ -6,33 +6,33 @@
 
 /* ── SIDEBAR ────────────────────────────────────────────────── */
 .adm-sidebar{
-  width:252px;background:#030a05;
-  border-right:1px solid rgba(200,168,60,.14);
+  width:252px;background:#f7f8fa;
+  border-right:1px solid rgba(27,58,99,.12);
   position:fixed;top:0;left:0;bottom:0;
   display:flex;flex-direction:column;z-index:100;overflow-y:auto;
 }
-.adm-sb-hd{padding:22px 18px;border-bottom:1px solid rgba(200,168,60,.12)}
+.adm-sb-hd{padding:22px 18px;border-bottom:1px solid rgba(27,58,99,.10)}
 .adm-sb-logo{display:flex;align-items:center;gap:10px}
-.adm-sb-title{font-family:'Bebas Neue',sans-serif;font-size:15px;letter-spacing:.12em;color:var(--gold)}
-.adm-sb-sub{font-family:'Rajdhani',sans-serif;font-size:11px;color:var(--muted);letter-spacing:.1em}
+.adm-sb-title{font-family:'Oswald',sans-serif;font-size:15px;letter-spacing:.12em;color:var(--gold)}
+.adm-sb-sub{font-family:'Inter',sans-serif;font-size:11px;color:var(--muted);letter-spacing:.1em}
 .adm-sb-nav{padding:18px 10px;flex:1}
 .adm-sb-sec{
-  font-family:'Share Tech Mono',monospace;font-size:9.5px;
-  color:rgba(122,144,122,.45);letter-spacing:.28em;text-transform:uppercase;
+  font-family:'IBM Plex Mono',monospace;font-size:9.5px;
+  color:rgba(91,100,114,.7);letter-spacing:.28em;text-transform:uppercase;
   padding:7px 12px 3px;margin-top:14px;
 }
 .adm-sb-link{
   display:flex;align-items:center;gap:9px;
-  font-family:'Rajdhani',sans-serif;font-size:13.5px;font-weight:600;
-  letter-spacing:.08em;color:rgba(232,239,232,.6);
-  text-decoration:none;padding:9px 12px;border-radius:5px;
+  font-family:'Inter',sans-serif;font-size:13.5px;font-weight:600;
+  letter-spacing:.02em;color:var(--muted);
+  text-decoration:none;padding:9px 12px;border-radius:8px;
   margin-bottom:2px;transition:all .18s;
 }
-.adm-sb-link:hover,.adm-sb-link.active{background:rgba(200,168,60,.1);color:var(--gold)}
+.adm-sb-link:hover,.adm-sb-link.active{background:var(--gold);color:#fff}
 .adm-sb-icon{font-size:15px;width:20px;text-align:center}
-.adm-sb-ft{padding:14px;border-top:1px solid rgba(200,168,60,.1)}
+.adm-sb-ft{padding:14px;border-top:1px solid rgba(27,58,99,.08)}
 .adm-sb-user{
-  font-family:'Share Tech Mono',monospace;font-size:11px;
+  font-family:'IBM Plex Mono',monospace;font-size:11px;
   color:var(--muted);margin-bottom:8px;
 }
 
@@ -44,7 +44,7 @@
   margin-bottom:28px;
 }
 .adm-pg-title{
-  font-family:'Bebas Neue',sans-serif;font-size:30px;
+  font-family:'Oswald',sans-serif;font-size:30px;
   letter-spacing:.08em;color:var(--white);
 }
 
@@ -54,33 +54,35 @@
   gap:14px;margin-bottom:28px;
 }
 .adm-stat{
-  background:rgba(8,20,10,.8);border:1px solid rgba(200,168,60,.18);
-  border-radius:6px;padding:18px 22px;display:flex;align-items:center;gap:14px;
+  background:#ffffff;border:1px solid rgba(27,58,99,.14);
+  border-radius:16px;padding:18px 22px;display:flex;align-items:center;gap:14px;
+  transition:box-shadow .2s, transform .2s;
 }
+.adm-stat:hover{box-shadow:var(--shadow-sm);transform:translateY(-2px)}
 .adm-stat-ico{font-size:26px}
 .adm-stat-n{
-  font-family:'Bebas Neue',sans-serif;font-size:34px;color:var(--gold);
+  font-family:'Oswald',sans-serif;font-size:34px;color:var(--gold);
   line-height:1;display:block;
 }
 .adm-stat-l{
-  font-family:'Rajdhani',sans-serif;font-size:11px;font-weight:700;
+  font-family:'Inter',sans-serif;font-size:11px;font-weight:700;
   letter-spacing:.16em;text-transform:uppercase;color:var(--muted);
 }
 
 /* table */
 .adm-tw{
-  background:rgba(8,20,10,.6);border:1px solid rgba(200,168,60,.14);
-  border-radius:6px;overflow:hidden;
+  background:#ffffff;border:1px solid rgba(27,58,99,.12);
+  border-radius:16px;overflow:hidden;box-shadow:var(--shadow-sm);
 }
 .adm-table{width:100%;border-collapse:collapse}
 .adm-table th{
-  font-family:'Rajdhani',sans-serif;font-size:11.5px;font-weight:700;
+  font-family:'Inter',sans-serif;font-size:11.5px;font-weight:700;
   letter-spacing:.16em;text-transform:uppercase;color:var(--gold);
-  padding:13px 15px;background:rgba(200,168,60,.05);
-  border-bottom:1px solid rgba(200,168,60,.14);text-align:left;
+  padding:13px 15px;background:rgba(27,58,99,.05);
+  border-bottom:1px solid rgba(27,58,99,.12);text-align:left;
 }
 .adm-table td{
-  padding:11px 15px;border-bottom:1px solid rgba(200,168,60,.05);
+  padding:11px 15px;border-bottom:1px solid rgba(27,58,99,.05);
   font-size:13.5px;color:var(--white);
 }
 .adm-table tr:hover td{background:rgba(200,168,60,.03)}
@@ -88,58 +90,58 @@
 
 /* form */
 .adm-form{
-  background:rgba(8,20,10,.6);border:1px solid rgba(200,168,60,.14);
-  border-radius:6px;padding:30px;max-width:680px;
+  background:#ffffff;border:1px solid rgba(27,58,99,.12);
+  border-radius:20px;padding:34px;max-width:680px;box-shadow:var(--shadow-sm);
 }
 .fld{margin-bottom:18px}
 .fld label{
   display:block;
-  font-family:'Rajdhani',sans-serif;font-size:12px;font-weight:700;
+  font-family:'Inter',sans-serif;font-size:12px;font-weight:700;
   letter-spacing:.14em;text-transform:uppercase;color:var(--gold);margin-bottom:7px;
 }
 .fld input,.fld select,.fld textarea{
-  width:100%;background:rgba(4,8,10,.8);
-  border:1px solid rgba(200,168,60,.2);border-radius:3px;
-  padding:9px 13px;font-family:'Exo 2',sans-serif;font-size:13.5px;
+  width:100%;background:#f7f8fa;
+  border:1px solid rgba(27,58,99,.18);border-radius:10px;
+  padding:9px 13px;font-family:'Inter',sans-serif;font-size:13.5px;
   color:var(--white);outline:none;transition:border-color .2s;
 }
 .fld input:focus,.fld select:focus,.fld textarea:focus{
-  border-color:var(--gold);box-shadow:0 0 0 2px rgba(200,168,60,.1);
+  border-color:var(--gold);box-shadow:0 0 0 2px rgba(27,58,99,.08);
 }
 .fld textarea{resize:vertical;min-height:90px}
-.fld select option{background:#04080a}
+.fld select option{background:#ffffff}
 .frow{display:grid;grid-template-columns:1fr 1fr;gap:14px}
 .fcheck{display:flex;align-items:center;gap:9px}
 .fcheck input{width:17px;height:17px;accent-color:var(--gold)}
 
 /* badges */
 .sbadge{
-  display:inline-block;font-family:'Share Tech Mono',monospace;
-  font-size:9.5px;padding:2px 8px;border-radius:2px;letter-spacing:.1em;text-transform:uppercase;
+  display:inline-block;font-family:'IBM Plex Mono',monospace;
+  font-size:9.5px;padding:3px 10px;border-radius:20px;letter-spacing:.1em;text-transform:uppercase;
 }
-.sbadge-active{background:rgba(50,100,50,.2);border:1px solid rgba(50,100,50,.4);color:#5ac85a}
+.sbadge-active{background:rgba(31,138,76,.12);border:1px solid rgba(31,138,76,.35);color:#1f8a4c}
 .sbadge-inactive{background:rgba(80,80,80,.15);border:1px solid rgba(80,80,80,.2);color:#888}
-.sbadge-present{background:rgba(50,100,50,.2);color:#5ac85a}
-.sbadge-absent{background:rgba(160,30,30,.2);color:#f07070}
-.sbadge-late{background:rgba(200,168,60,.15);color:var(--gold)}
+.sbadge-present{background:rgba(31,138,76,.12);color:#1f8a4c}
+.sbadge-absent{background:rgba(179,39,45,.12);color:#b3272d}
+.sbadge-late{background:rgba(27,58,99,.14);color:var(--gold)}
 
 /* login */
 .adm-login{
   min-height:100vh;display:flex;align-items:center;justify-content:center;
-  background:radial-gradient(ellipse at center,#0d2510 0%,#030a05 65%);padding:24px;
+  background:linear-gradient(180deg,#eef2f7 0%,#f7f8fa 100%);padding:24px;
 }
 .adm-login-card{
-  background:rgba(8,20,10,.92);border:1px solid rgba(200,168,60,.28);
-  border-radius:10px;padding:46px;width:100%;max-width:400px;text-align:center;
-  backdrop-filter:blur(12px);
+  background:#ffffff;border:1px solid var(--border);
+  border-radius:24px;padding:46px;width:100%;max-width:400px;text-align:center;
+  box-shadow:var(--shadow-lg);
 }
 .adm-login-logo{margin-bottom:22px}
 .adm-login-title{
-  font-family:'Bebas Neue',sans-serif;font-size:26px;letter-spacing:.12em;
+  font-family:'Oswald',sans-serif;font-size:26px;letter-spacing:.12em;
   color:var(--white);margin-bottom:4px;
 }
 .adm-login-sub{
-  font-family:'Rajdhani',sans-serif;font-size:12.5px;color:var(--muted);
+  font-family:'Inter',sans-serif;font-size:12.5px;color:var(--muted);
   letter-spacing:.1em;margin-bottom:30px;
 }
 
@@ -152,9 +154,17 @@
 
 /* ── section heading ── */
 .adm-sh{
-  font-family:'Rajdhani',sans-serif;font-size:17px;font-weight:700;
+  font-family:'Inter',sans-serif;font-size:17px;font-weight:700;
   color:var(--gold);letter-spacing:.1em;text-transform:uppercase;
 }
 
 /* ── attendance record badges ── */
 .sbadge-buddy{background:rgba(80,120,180,.15);border:1px solid rgba(80,120,180,.3);color:#7aaaf0}
+
+/* ── GHOST BUTTON (admin utility actions) ───────────────────── */
+.btn-ghost{
+  background:transparent;color:var(--muted);border-color:transparent;
+}
+.btn-ghost:hover{background:rgba(27,58,99,.06);color:var(--gold)}
+.btn-danger{background:#fff;color:var(--danger);border-color:rgba(179,39,45,.3)}
+.btn-danger:hover{background:var(--danger);color:#fff;border-color:var(--danger)}

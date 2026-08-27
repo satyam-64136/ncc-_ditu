@@ -6,7 +6,7 @@
   <title>{% block title %}DIT University NCC · 29 UK Battalion{% endblock %}</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Rajdhani:wght@400;500;600;700&family=Share+Tech+Mono&family=Exo+2:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Inter:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@500&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
   {% block extra_css %}{% endblock %}
 </head>
@@ -16,18 +16,12 @@
 <nav class="nav" id="mainNav">
   <div class="nav-inner">
     <a href="{{ url_for('index') }}" class="nav-brand">
-      <svg class="brand-hex" viewBox="0 0 44 44" width="42" height="42">
-        <polygon points="22,2 42,12 42,32 22,42 2,32 2,12"
-                 fill="none" stroke="#c8a030" stroke-width="1.6"/>
-        <polygon points="22,9 35,16.5 35,27.5 22,35 9,27.5 9,16.5"
-                 fill="none" stroke="#c8a030" stroke-width=".8" opacity=".5"/>
-        <text x="22" y="26" text-anchor="middle"
-              fill="#c8a030" font-family="'Bebas Neue',sans-serif"
-              font-size="9.5" letter-spacing="1">NCC</text>
-      </svg>
+      <span class="brand-badge">
+        <img src="{{ url_for('static', filename='img/dit-ncc-logo.png') }}" alt="DIT University × NCC">
+      </span>
       <div class="brand-lines">
-        <span>29 UK BATTALION</span>
-        <span>DIT University · Dehradun</span>
+        <span>29 UK Battalion</span>
+        <span>Dehradun, Uttarakhand</span>
       </div>
     </a>
 
@@ -43,10 +37,6 @@
     </div>
 
     <div class="nav-right">
-      <button class="btn-mode" id="modeBtn" title="Toggle Day/Night">
-        <span class="mode-d">☀</span>
-        <span class="mode-n">☽</span>
-      </button>
       <button class="nav-burger" id="navBurger" aria-label="Menu">
         <span></span><span></span><span></span>
       </button>
@@ -83,17 +73,13 @@
 <footer class="footer">
   <div class="footer-inner">
     <div class="footer-brand">
-      <svg viewBox="0 0 44 44" width="48" height="48">
-        <polygon points="22,2 42,12 42,32 22,42 2,32 2,12" fill="none" stroke="#c8a030" stroke-width="1.6"/>
-        <text x="22" y="27" text-anchor="middle" fill="#c8a030"
-              font-family="'Bebas Neue',sans-serif" font-size="9.5">NCC</text>
-      </svg>
+      <img src="{{ url_for('static', filename='img/ncc-crest.png') }}" alt="NCC Crest" style="height:46px;width:auto">
       <div>
         <div class="footer-t">DIT University NCC</div>
         <div class="footer-s">29 UK Battalion · Dehradun, Uttarakhand</div>
       </div>
     </div>
-    <div class="footer-motto">"UNITY &amp; DISCIPLINE"</div>
+    <div class="footer-motto">UNITY &amp; DISCIPLINE</div>
     <div class="footer-links">
       <a href="{{ url_for('events') }}">Events</a>
       <a href="{{ url_for('gallery') }}">Gallery</a>
@@ -104,8 +90,6 @@
   <div class="footer-bar">© 2025 DIT University NCC 29 UK Battalion · All Rights Reserved</div>
 </footer>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
 <script src="{{ url_for('static', filename='js/main.js') }}"></script>
 {% block extra_js %}{% endblock %}
 </body>
