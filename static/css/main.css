@@ -80,8 +80,7 @@ button,input,select,textarea{font-family:inherit}
 }
 .nav-brand{display:flex;align-items:center;gap:14px;flex-shrink:0}
 .brand-badge{
-  flex-shrink:0;background:var(--gold);border-radius:14px;
-  padding:6px 12px;display:flex;align-items:center;height:40px;
+  flex-shrink:0;display:flex;align-items:center;height:52px;
 }
 .brand-badge img{height:100%;width:auto;object-fit:contain;display:block}
 .brand-lines span:first-child{
@@ -187,7 +186,7 @@ button,input,select,textarea{font-family:inherit}
 .about-card{background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:30px;
   transition:border-color .2s, box-shadow .2s, transform .2s}
 .about-card:hover{border-color:var(--border-hi);box-shadow:var(--shadow-md);transform:translateY(-3px)}
-.about-icon{font-size:30px;margin-bottom:14px;display:block}
+.about-icon{margin-bottom:14px;display:flex;color:var(--gold)}
 .about-ct{font-family:var(--f-display);font-size:19px;font-weight:600;letter-spacing:.01em;color:var(--gold);margin-bottom:10px}
 
 .cert-row{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;margin-top:20px}
@@ -384,7 +383,7 @@ button,input,select,textarea{font-family:inherit}
   width:10px;height:10px;border-radius:50%;background:var(--gold);
   border:2px solid var(--black)}
 .ach-top,.ach-item-top{display:flex;align-items:center;gap:10px;margin-bottom:7px}
-.ach-icon,.ach-cat-icon{font-size:19px;flex-shrink:0}
+.ach-icon,.ach-cat-icon{flex-shrink:0;display:flex;align-items:center}
 .ach-ttl,.ach-item-title{font-family:var(--f-ui);font-size:16px;font-weight:700;color:var(--white);flex:1}
 .ach-yr,.ach-item-year{font-family:var(--f-ui);font-size:11px;font-weight:700;color:var(--gold);white-space:nowrap}
 .ach-desc,.ach-item-desc{font-size:13.5px;color:var(--muted);line-height:1.6}
@@ -406,7 +405,7 @@ button,input,select,textarea{font-family:inherit}
 .lightbox{display:none;position:fixed;inset:0;z-index:9000;background:rgba(10,16,28,.92);align-items:center;justify-content:center}
 .lightbox.open{display:flex}
 .lightbox img{max-width:90vw;max-height:88vh;border-radius:8px}
-.lb-close{position:absolute;top:18px;right:22px;font-family:var(--f-display);font-size:30px;color:#fff;background:none;border:none;cursor:pointer;transition:opacity .2s}
+.lb-close{position:absolute;top:18px;right:22px;color:#fff;background:none;border:none;cursor:pointer;transition:opacity .2s;display:flex;padding:6px}
 .lb-close:hover{opacity:.7}
 
 /* ================================================================

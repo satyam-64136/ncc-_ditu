@@ -1,3 +1,4 @@
+{% import '_icons.html' as icon %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -17,7 +18,7 @@
   <div class="nav-inner">
     <a href="{{ url_for('index') }}" class="nav-brand">
       <span class="brand-badge">
-        <img src="{{ url_for('static', filename='img/dit-ncc-logo.png') }}" alt="DIT University × NCC">
+        <img src="{{ url_for('static', filename='img/ncc-crest.png') }}" alt="NCC Crest">
       </span>
       <div class="brand-lines">
         <span>29 UK Battalion</span>
@@ -29,11 +30,9 @@
       <a href="{{ url_for('index') }}"        class="nav-link {% if request.endpoint=='index' %}active{% endif %}">Home</a>
       <a href="{{ url_for('about') }}"        class="nav-link {% if request.endpoint=='about' %}active{% endif %}">About</a>
       <a href="{{ url_for('cadets') }}"       class="nav-link {% if request.endpoint=='cadets' %}active{% endif %}">Cadets</a>
-      <a href="{{ url_for('rank_holders') }}" class="nav-link {% if request.endpoint=='rank_holders' %}active{% endif %}">Ranks</a>
       <a href="{{ url_for('achievements') }}" class="nav-link {% if request.endpoint=='achievements' %}active{% endif %}">Achievements</a>
       <a href="{{ url_for('alumni') }}"       class="nav-link {% if request.endpoint=='alumni' %}active{% endif %}">Alumni</a>
       <a href="{{ url_for('gallery') }}"      class="nav-link {% if request.endpoint=='gallery' %}active{% endif %}">Gallery</a>
-      <a href="{{ url_for('events') }}"       class="nav-link {% if request.endpoint=='events' %}active{% endif %}">Events</a>
     </div>
 
     <div class="nav-right">
@@ -47,11 +46,9 @@
     <a href="{{ url_for('index') }}">Home</a>
     <a href="{{ url_for('about') }}">About</a>
     <a href="{{ url_for('cadets') }}">Cadets</a>
-    <a href="{{ url_for('rank_holders') }}">Ranks</a>
     <a href="{{ url_for('achievements') }}">Achievements</a>
     <a href="{{ url_for('alumni') }}">Alumni</a>
     <a href="{{ url_for('gallery') }}">Gallery</a>
-    <a href="{{ url_for('events') }}">Events</a>
   </div>
 </nav>
 
@@ -84,7 +81,7 @@
       <a href="{{ url_for('events') }}">Events</a>
       <a href="{{ url_for('gallery') }}">Gallery</a>
       <a href="{{ url_for('alumni') }}">Alumni</a>
-      <a href="{{ url_for('admin_login') }}" class="footer-admin-link">⬡</a>
+      <a href="{{ url_for('admin_login') }}" class="footer-admin-link" style="display:inline-flex">{{ icon.shield_check(16) }}</a>
     </div>
   </div>
   <div class="footer-bar">© 2025 DIT University NCC 29 UK Battalion · All Rights Reserved</div>

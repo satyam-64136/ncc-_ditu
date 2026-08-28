@@ -1,14 +1,72 @@
 {% extends 'base.html' %}
-{% block title %}Cadets — DIT University NCC{% endblock %}
+{% import '_icons.html' as icon %}
+{% block title %}Cadets & Command — DIT University NCC{% endblock %}
 {% block content %}
 <div style="padding-top:var(--nav-h)"></div>
-<section class="section">
+
+<!-- ════════ COMMAND STRUCTURE ════════ -->
+<section class="section" id="command" style="padding-bottom:56px">
+  <div class="section-max">
+    <div class="section-hd reveal">
+      <span class="tag">Command Structure</span>
+      <h2>Cadets &amp; <em>Command</em></h2>
+      <div class="divider"></div>
+      <p class="lead">The leadership hierarchy and full active roster of DIT University NCC 29 UK Battalion.</p>
+    </div>
+
+    {% if holders %}
+    {% set symbols = {'LCPL':1,'CDT':1,'SUO':3,'UO':2,'JUO':2,'CSM':3,'CQMS':2,'SGT':3,'CPL':2} %}
+    <div class="rank-grid stagger">
+      {% for h in holders %}
+      <div class="rank-card">
+        <div class="rank-insignia">
+          <div class="rank-star-ring" style="display:flex;gap:3px">
+            {% for i in range(symbols.get(h['rank_code'],1)) %}{{ icon.star_fill(20,'#1b3a63') }}{% endfor %}
+          </div>
+          <span class="rank-code-badge">{{ h['rank_code'] }}</span>
+        </div>
+        <div class="rank-content">
+          <div class="rank-holder-name">{{ h['holder_name'] }}</div>
+          <div class="rank-full-title">{{ h['rank_full'] }}</div>
+          <div class="rank-desc">{{ h['description'] or '' }}</div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+    {% endif %}
+
+    <!-- Chain of Command -->
+    <div style="margin-top:64px" class="reveal">
+      <div class="section-hd" style="margin-bottom:34px">
+        <span class="tag">Chain of Command</span>
+        <h3 style="font-family:var(--f-display);font-size:clamp(24px,3.4vw,36px);font-weight:600;color:var(--white);margin-bottom:8px">Chain of <em style="color:var(--gold);font-style:normal">Command</em></h3>
+        <div class="divider"></div>
+      </div>
+      <div class="hierarchy">
+        {% for rank,bg,clr,w in [
+          ('SUO  ·  Senior Under Officer','rgba(27,58,99,.28)','#1b3a63','100%'),
+          ('UO  ·  Under Officer','rgba(27,58,99,.20)','#20477a','92%'),
+          ('CSM  ·  Company Sergeant Major','rgba(27,58,99,.15)','#2a5490','84%'),
+          ('CPL  ·  Corporal','rgba(27,58,99,.11)','#2f6fb0','76%'),
+          ('SGT  ·  Sergeant','rgba(27,58,99,.08)','#4a80b8','68%'),
+          ('CDT  ·  3rd Year Cadet','rgba(27,58,99,.06)','#6f9dc9','60%'),
+          ('CDT  ·  2nd Year Cadet','rgba(27,58,99,.04)','#96b8d8','52%'),
+        ] %}
+        <div class="hier-row" style="background:{{bg}};border:1px solid {{clr}};color:{{clr}};width:min({{w}},90vw)">{{rank}}</div>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ════════ ACTIVE ROSTER ════════ -->
+<section class="section" style="background:#fff;border-top:1px solid var(--border);padding-top:64px">
   <div class="section-max">
     <div class="section-hd reveal">
       <span class="tag">Active Roster</span>
       <h2>Current <em>Cadets</em></h2>
       <div class="divider"></div>
-      <p class="lead">DIT University NCC 29 UK Battalion — {{ seniors|length + buddies|length }} active cadets across two cohorts.</p>
+      <p class="lead">{{ seniors|length + buddies|length }} active cadets across two cohorts.</p>
     </div>
 
     <!-- Tabs -->
@@ -103,8 +161,8 @@
 
     {% if not seniors and not buddies %}
     <div style="text-align:center;padding:80px 20px;color:var(--muted)">
-      <div style="font-size:52px;margin-bottom:18px">🎖️</div>
-      <p style="font-family:var(--f-display);font-size:26px;letter-spacing:.1em">No cadets found</p>
+      <div style="margin-bottom:18px;display:flex;justify-content:center">{{ icon.medal(52,'var(--border-hi)') }}</div>
+      <p style="font-family:var(--f-display);font-size:22px;letter-spacing:.04em">No cadets found</p>
     </div>
     {% endif %}
   </div>

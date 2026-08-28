@@ -1,11 +1,12 @@
 {% extends 'admin/base.html' %}
+{% import '_icons.html' as icon %}
 {% block title %}Attendance Records — Dashboard{% endblock %}
 {% block content %}
 <div class="adm-topbar">
   <div class="adm-pg-title">Attendance Records</div>
   <div style="display:flex;gap:8px">
-    <a href="{{ url_for('admin_attendance') }}" class="btn btn-gold btn-sm">✅ Mark Fallin</a>
-    <a href="{{ url_for('admin_export', date=f_date) }}" class="btn btn-outline btn-sm">📊 Export{% if f_date %} {{ f_date }}{% else %} All{% endif %} CSV</a>
+    <a href="{{ url_for('admin_attendance') }}" class="btn btn-gold btn-sm">{{ icon.check_square(15) }} Mark Fallin</a>
+    <a href="{{ url_for('admin_export', date=f_date) }}" class="btn btn-outline btn-sm">{{ icon.bar_chart(15) }} Export{% if f_date %} {{ f_date }}{% else %} All{% endif %} CSV</a>
   </div>
 </div>
 
@@ -58,9 +59,9 @@
           <div style="height:100%;width:{{ pct }}%;background:var(--green-hi);border-radius:2px"></div>
         </div>
         <div style="display:flex;gap:10px;font-size:10.5px">
-          <span style="color:#1f8a4c">✓ {{ row['present_count'] }}</span>
+          <span style="color:#1f8a4c;display:inline-flex;align-items:center;gap:4px">{{ icon.check(12) }} {{ row['present_count'] }}</span>
           <span style="color:var(--gold)">◔ {{ row['late_count'] }}</span>
-          <span style="color:#b3272d">✗ {{ row['absent_count'] }}</span>
+          <span style="color:#b3272d;display:inline-flex;align-items:center;gap:4px">{{ icon.close(12) }} {{ row['absent_count'] }}</span>
           <span style="color:var(--muted);margin-left:auto">{{ row['fallin_type'] or '—' }}</span>
         </div>
       </a>
@@ -92,7 +93,7 @@
       <span style="font-family:'Inter',sans-serif;font-size:13px;font-weight:700;color:var(--gold);letter-spacing:.1em;text-transform:uppercase">
         {% if f_date %}{{ f_date }} — {% endif %}{{ detail_rows|length }} Record{{ 's' if detail_rows|length!=1 else '' }}
       </span>
-      <a href="{{ url_for('admin_export', date=f_date) }}" class="btn btn-ghost btn-sm">📊 Export CSV</a>
+      <a href="{{ url_for('admin_export', date=f_date) }}" class="btn btn-ghost btn-sm">{{ icon.bar_chart(15) }} Export CSV</a>
     </div>
     <div class="adm-tw">
       <table class="adm-table">

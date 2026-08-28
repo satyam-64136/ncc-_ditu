@@ -1,4 +1,5 @@
 {% extends 'admin/base.html' %}
+{% import '_icons.html' as icon %}
 {% block title %}Dashboard — DIT NCC{% endblock %}
 {% block content %}
 <div class="adm-topbar">
@@ -7,16 +8,16 @@
 </div>
 
 <div class="adm-stats">
-  <div class="adm-stat"><span class="adm-stat-ico">👤</span><div><span class="adm-stat-n">{{ stats.cadets }}</span><span class="adm-stat-l">Active Cadets</span></div></div>
-  <div class="adm-stat"><span class="adm-stat-ico">🎖️</span><div><span class="adm-stat-n">{{ stats.alumni }}</span><span class="adm-stat-l">Alumni</span></div></div>
-  <div class="adm-stat"><span class="adm-stat-ico">📅</span><div><span class="adm-stat-n">{{ stats.events }}</span><span class="adm-stat-l">Upcoming Events</span></div></div>
-  <div class="adm-stat"><span class="adm-stat-ico">✅</span><div><span class="adm-stat-n">{{ stats.att_sessions }}</span><span class="adm-stat-l">Fallin Sessions</span></div></div>
+  <div class="adm-stat"><span class="adm-stat-ico">{{ icon.user_circle(22,'var(--gold)') }}</span><div><span class="adm-stat-n">{{ stats.cadets }}</span><span class="adm-stat-l">Active Cadets</span></div></div>
+  <div class="adm-stat"><span class="adm-stat-ico">{{ icon.medal(22,'var(--gold)') }}</span><div><span class="adm-stat-n">{{ stats.alumni }}</span><span class="adm-stat-l">Alumni</span></div></div>
+  <div class="adm-stat"><span class="adm-stat-ico">{{ icon.calendar(22,'var(--gold)') }}</span><div><span class="adm-stat-n">{{ stats.events }}</span><span class="adm-stat-l">Upcoming Events</span></div></div>
+  <div class="adm-stat"><span class="adm-stat-ico">{{ icon.check_square(22,'var(--gold)') }}</span><div><span class="adm-stat-n">{{ stats.att_sessions }}</span><span class="adm-stat-l">Fallin Sessions</span></div></div>
 </div>
 
 <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:28px">
-  <a href="{{ url_for('admin_attendance') }}" class="btn btn-gold btn-sm">✅ Mark Fallin</a>
-  <a href="{{ url_for('admin_att_records') }}" class="btn btn-outline btn-sm">📋 Attendance Records</a>
-  <a href="{{ url_for('admin_export') }}" class="btn btn-ghost btn-sm">📊 Export CSV</a>
+  <a href="{{ url_for('admin_attendance') }}" class="btn btn-gold btn-sm">{{ icon.check_square(15) }} Mark Fallin</a>
+  <a href="{{ url_for('admin_att_records') }}" class="btn btn-outline btn-sm">{{ icon.clipboard_list(15) }} Attendance Records</a>
+  <a href="{{ url_for('admin_export') }}" class="btn btn-ghost btn-sm">{{ icon.bar_chart(15) }} Export CSV</a>
   <a href="{{ url_for('admin_add_cadet') }}" class="btn btn-ghost btn-sm">+ Add Cadet</a>
   <a href="{{ url_for('admin_add_event') }}" class="btn btn-ghost btn-sm">+ Add Event</a>
 </div>
@@ -66,7 +67,7 @@
 
 <!-- ATTENDANCE RECORDS PANEL -->
 <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
-  <h3 class="adm-sh">✅ Fallin Attendance Records
+  <h3 class="adm-sh" style="display:flex;align-items:center;gap:8px">{{ icon.check_square(17,'var(--gold)') }} Fallin Attendance Records
     <span style="font-family:var(--f-mono);font-size:10px;color:var(--muted);margin-left:10px;font-weight:400;letter-spacing:.06em">last 10 sessions</span>
   </h3>
   <div style="display:flex;gap:8px">

@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% import '_icons.html' as icon %}
 {% block title %}Achievements — DIT University NCC{% endblock %}
 {% block content %}
 <div style="padding-top:var(--nav-h)"></div>
@@ -11,7 +12,8 @@
       <p class="lead">Awards, recognitions and milestones earned by 29 UK Battalion.</p>
     </div>
 
-    {% set icons = {'award':'🥇','parade':'🏅','academic':'🎓','camp':'⛺','drill':'🏆','service':'🌟'} %}
+    {% set icons = {'award':'award_paths','parade':'medal_paths','academic':'graduation_cap_paths','camp':'tent_paths','drill':'trophy_paths','service':'star_paths'} %}
+    {% set icons_span = {'award':'award','parade':'medal','academic':'graduation_cap','camp':'tent','drill':'trophy','service':'star'} %}
 
     <!-- Medals -->
     <div style="margin-bottom:20px" class="reveal">
@@ -33,8 +35,10 @@
             <circle cx="60" cy="60" r="36" fill="rgba(27,58,99,.06)" stroke="rgba(27,58,99,.3)" stroke-width="1"/>
             <!-- centre -->
             <circle cx="60" cy="60" r="24" fill="rgba(27,58,99,.1)" stroke="rgba(27,58,99,.35)" stroke-width="1.2"/>
-            <!-- emoji -->
-            <text x="60" y="69" text-anchor="middle" font-size="26">{{ icons.get(item['category'],'🎖️') }}</text>
+            <!-- icon -->
+            <g transform="translate(44,44) scale(1.333)" fill="none" stroke="rgba(27,58,99,.85)" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round">
+              {{ icon[icons.get(item['category'],'medal_paths')]() }}
+            </g>
             <!-- year ribbon -->
             {% if item['year'] %}
             <rect x="18" y="100" width="84" height="14" rx="2" fill="rgba(27,58,99,.12)" stroke="rgba(27,58,99,.25)" stroke-width=".8"/>
@@ -59,7 +63,7 @@
       {% for item in items %}
       <div class="ach-item">
         <div class="ach-top">
-          <span class="ach-icon">{{ icons.get(item['category'],'🎖️') }}</span>
+          <span class="ach-icon">{{ icon[icons_span.get(item['category'],'medal')](19,'var(--gold)') }}</span>
           <span class="ach-ttl">{{ item['title'] }}</span>
           {% if item['year'] %}<span class="ach-yr">{{ item['year'] }}</span>{% endif %}
         </div>

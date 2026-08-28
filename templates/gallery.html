@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% import '_icons.html' as icon %}
 {% block title %}Gallery — DIT University NCC{% endblock %}
 {% block content %}
 <div style="padding-top:var(--nav-h)"></div>
@@ -36,7 +37,7 @@
     </div>
     {% else %}
     <div style="text-align:center;padding:90px;color:var(--muted)">
-      <div style="font-size:64px;margin-bottom:20px">📷</div>
+      <div style="margin-bottom:20px;display:flex;justify-content:center">{{ icon.camera(56,'var(--border-hi)') }}</div>
       <p style="font-family:var(--f-ui);font-size:22px;letter-spacing:.1em">Gallery will be updated soon.</p>
     </div>
     {% endif %}
@@ -44,7 +45,7 @@
 </section>
 
 <div class="lightbox" id="lightbox">
-  <button class="lb-close" id="lbClose">✕</button>
+  <button class="lb-close" id="lbClose">{{ icon.close(26,'#fff') }}</button>
   <img id="lbImg" src="" alt="Gallery Photo">
 </div>
 {% endblock %}

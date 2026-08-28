@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% import '_icons.html' as icon %}
 {% block title %}About — DIT University NCC{% endblock %}
 {% block content %}
 <div class="about-hero">
@@ -41,16 +42,16 @@
       <div class="divider"></div>
     </div>
     <div class="about-grid stagger">
-      {% for icon,title,desc in [
-        ('🦅','Discipline','Punctuality, orderliness, and adherence to rules form the bedrock of every cadet\'s character.'),
-        ('🤝','Unity','Cadets from diverse backgrounds unite as one — transcending religion, region, and social boundaries.'),
-        ('💪','Leadership','Through command assignments and team tasks, cadets develop leadership that lasts a lifetime.'),
-        ('🌍','Service','Community programs and disaster relief instill a deep sense of responsibility towards society.'),
-        ('⛰️','Adventure','Himalayan treks, rock climbing, and river crossing forge physical fitness and mental resolve.'),
-        ('🎖️','Honour','Integrity and ethical conduct are non-negotiable values every cadet lives by.'),
+      {% for iconname,title,desc in [
+        ('shield_check','Discipline','Punctuality, orderliness, and adherence to rules form the bedrock of every cadet\'s character.'),
+        ('handshake','Unity','Cadets from diverse backgrounds unite as one — transcending religion, region, and social boundaries.'),
+        ('flag','Leadership','Through command assignments and team tasks, cadets develop leadership that lasts a lifetime.'),
+        ('globe','Service','Community programs and disaster relief instill a deep sense of responsibility towards society.'),
+        ('mountain','Adventure','Himalayan treks, rock climbing, and river crossing forge physical fitness and mental resolve.'),
+        ('medal','Honour','Integrity and ethical conduct are non-negotiable values every cadet lives by.'),
       ] %}
       <div class="about-card">
-        <span class="about-icon">{{ icon }}</span>
+        <span class="about-icon">{{ icon[iconname](28,'var(--gold)') }}</span>
         <div class="about-ct">{{ title }}</div>
         <p style="color:var(--muted);font-size:13.5px;line-height:1.72">{{ desc }}</p>
       </div>

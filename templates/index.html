@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% import '_icons.html' as icon %}
 {% block title %}DIT University NCC · 29 UK Battalion — Dehradun{% endblock %}
 
 {% block content %}
@@ -59,17 +60,17 @@
 
     <div class="about-grid stagger">
       <div class="about-card">
-        <span class="about-icon">🎯</span>
+        <span class="about-icon">{{ icon.target(28,'var(--gold)') }}</span>
         <div class="about-ct">Mission</div>
         <p style="color:var(--muted);font-size:14.5px;line-height:1.75">To develop character, comradeship, discipline, leadership, secular outlook, the spirit of adventure, and ideals of selfless service among the youth of India.</p>
       </div>
       <div class="about-card">
-        <span class="about-icon">🧭</span>
+        <span class="about-icon">{{ icon.compass(28,'var(--gold)') }}</span>
         <div class="about-ct">Training</div>
         <p style="color:var(--muted);font-size:14.5px;line-height:1.75">Drill, map reading, first aid, adventure activities, and participation in national-level camps and Republic Day parades.</p>
       </div>
       <div class="about-card">
-        <span class="about-icon">🏆</span>
+        <span class="about-icon">{{ icon.trophy(28,'var(--gold)') }}</span>
         <div class="about-ct">Excellence</div>
         <p style="color:var(--muted);font-size:14.5px;line-height:1.75">Our cadets consistently earn A, B and C certificates and compete at state and national levels, with many going on to serve in the Indian Armed Forces.</p>
       </div>
@@ -100,7 +101,7 @@
         <div>
           <span class="etype etype-{{ e['event_type'] or 'fallin' }}">{{ e['event_type'] or 'event' }}</span>
           <div class="event-title">{{ e['title'] }}</div>
-          {% if e['location'] %}<div class="event-loc">📍 {{ e['location'] }}</div>{% endif %}
+          {% if e['location'] %}<div class="event-loc" style="display:flex;align-items:center;gap:5px">{{ icon.map_pin(13,'var(--muted)') }} {{ e['location'] }}</div>{% endif %}
         </div>
         <a href="{{ url_for('events') }}" class="btn btn-outline btn-sm">Details</a>
       </div>

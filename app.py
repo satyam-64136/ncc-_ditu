@@ -87,13 +87,13 @@ def cadets():
 
     seniors = [c for c in all_cadets if c['category'] == 'Senior']
     buddies = [c for c in all_cadets if c['category'] == 'Buddy']
+    holders = query("SELECT * FROM rank_holders ORDER BY sort_order")
     return render_template('cadets.html', seniors=seniors, buddies=buddies,
-                           active_cat=cat, search=search)
+                           active_cat=cat, search=search, holders=holders)
 
 @app.route('/rank-holders')
 def rank_holders():
-    holders = query("SELECT * FROM rank_holders ORDER BY sort_order")
-    return render_template('rank_holders.html', holders=holders)
+    return redirect(url_for('cadets') + '#command')
 
 @app.route('/achievements')
 def achievements():

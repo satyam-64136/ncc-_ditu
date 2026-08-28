@@ -1,11 +1,12 @@
 {% extends 'admin/base.html' %}
+{% import '_icons.html' as icon %}
 {% block title %}Mark Fallin Attendance — Dashboard{% endblock %}
 {% block content %}
 <div class="adm-topbar">
   <div class="adm-pg-title">Mark Fallin Attendance</div>
   <div style="display:flex;gap:8px">
-    <a href="{{ url_for('admin_att_records') }}" class="btn btn-outline btn-sm">📋 View Records</a>
-    <a href="{{ url_for('admin_export') }}" class="btn btn-ghost btn-sm">📊 Export CSV</a>
+    <a href="{{ url_for('admin_att_records') }}" class="btn btn-outline btn-sm">{{ icon.clipboard_list(15) }} View Records</a>
+    <a href="{{ url_for('admin_export') }}" class="btn btn-ghost btn-sm">{{ icon.bar_chart(15) }} Export CSV</a>
   </div>
 </div>
 
@@ -35,14 +36,14 @@
             <option value="Camp Fallin">Camp Fallin</option>
           </select>
         </div>
-        <button type="submit" class="btn btn-gold">💾 Save Attendance</button>
+        <button type="submit" class="btn btn-gold">{{ icon.save(15) }} Save Attendance</button>
       </div>
 
       <div style="display:flex;gap:8px;margin-bottom:16px;align-items:center">
         <span style="font-family:var(--f-mono);font-size:10px;color:var(--muted);letter-spacing:.12em">MARK ALL AS:</span>
-        <button type="button" onclick="markAll('present')" class="btn btn-sm" style="background:rgba(31,138,76,.12);border:1px solid rgba(31,138,76,.35);color:#1f8a4c;font-size:10px;padding:5px 14px">✓ Present</button>
+        <button type="button" onclick="markAll('present')" class="btn btn-sm" style="background:rgba(31,138,76,.12);border:1px solid rgba(31,138,76,.35);color:#1f8a4c;font-size:10px;padding:5px 14px;display:inline-flex;align-items:center;gap:5px">{{ icon.check(12) }} Present</button>
         <button type="button" onclick="markAll('late')"    class="btn btn-sm" style="background:rgba(27,58,99,.14);border:1px solid rgba(27,58,99,.3);color:var(--gold);font-size:10px;padding:5px 14px">◔ Late</button>
-        <button type="button" onclick="markAll('absent')"  class="btn btn-sm" style="background:rgba(179,39,45,.12);border:1px solid rgba(179,39,45,.35);color:#b3272d;font-size:10px;padding:5px 14px">✗ Absent</button>
+        <button type="button" onclick="markAll('absent')"  class="btn btn-sm" style="background:rgba(179,39,45,.12);border:1px solid rgba(179,39,45,.35);color:#b3272d;font-size:10px;padding:5px 14px;display:inline-flex;align-items:center;gap:5px">{{ icon.close(12) }} Absent</button>
       </div>
 
       <!-- Seniors group -->
@@ -97,7 +98,7 @@
       {% endif %}
       {% endfor %}
 
-      <div style="margin-top:16px"><button type="submit" class="btn btn-gold">💾 Save Fallin Attendance</button></div>
+      <div style="margin-top:16px"><button type="submit" class="btn btn-gold">{{ icon.save(15) }} Save Fallin Attendance</button></div>
     </form>
   </div>
 
@@ -112,8 +113,8 @@
           style="display:block;padding:9px 12px;border-radius:4px;border:1px solid {% if h['date']==date %}rgba(27,58,99,.32){% else %}rgba(27,58,99,.08){% endif %};background:{% if h['date']==date %}rgba(27,58,99,.07){% else %}transparent{% endif %};transition:all .2s;text-decoration:none">
           <div style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--gold);letter-spacing:.06em">{{ h['date'] }}</div>
           <div style="margin-top:4px;display:flex;gap:8px;font-size:10.5px">
-            <span style="color:#1f8a4c">✓ {{ h['p'] }}</span>
-            <span style="color:#b3272d">✗ {{ h['a'] }}</span>
+            <span style="color:#1f8a4c;display:inline-flex;align-items:center;gap:4px">{{ icon.check(12) }} {{ h['p'] }}</span>
+            <span style="color:#b3272d;display:inline-flex;align-items:center;gap:4px">{{ icon.close(12) }} {{ h['a'] }}</span>
             <span style="color:var(--muted)">/ {{ h['total'] }}</span>
           </div>
         </a>

@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% import '_icons.html' as icon %}
 {% block title %}Events — DIT University NCC{% endblock %}
 {% block content %}
 <div style="padding-top:var(--nav-h)"></div>
@@ -24,7 +25,7 @@
         <span class="etype etype-{{ e['event_type'] or 'fallin' }}">{{ e['event_type'] or 'event' }}</span>
         <div class="event-title">{{ e['title'] }}</div>
         {% if e['description'] %}<p style="font-size:13px;color:var(--muted);margin:5px 0;line-height:1.5">{{ e['description'] }}</p>{% endif %}
-        {% if e['location'] %}<div class="event-loc">📍 {{ e['location'] }}</div>{% endif %}
+        {% if e['location'] %}<div class="event-loc" style="display:flex;align-items:center;gap:5px">{{ icon.map_pin(13,'var(--muted)') }} {{ e['location'] }}</div>{% endif %}
       </div>
       <div style="text-align:center;min-width:70px">
         <div style="font-family:var(--f-mono);font-size:11px;color:var(--gold)">{{ e['event_date'][11:16] or '08:00' }}</div>

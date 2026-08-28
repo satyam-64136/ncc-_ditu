@@ -1,3 +1,4 @@
+{% import '_icons.html' as icon %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -26,35 +27,35 @@
     <nav class="adm-sb-nav">
       <div class="adm-sb-sec">Main</div>
       <a href="{{ url_for('admin_dashboard') }}" class="adm-sb-link {% if request.endpoint=='admin_dashboard' %}active{% endif %}">
-        <span class="adm-sb-icon">⊞</span> Dashboard
+        <span class="adm-sb-icon">{{ icon.layout_grid(16) }}</span> Dashboard
       </a>
       <div class="adm-sb-sec">Manage</div>
       <a href="{{ url_for('admin_cadets') }}" class="adm-sb-link {% if 'cadet' in request.endpoint %}active{% endif %}">
-        <span class="adm-sb-icon">👤</span> Cadets
+        <span class="adm-sb-icon">{{ icon.user_circle(16) }}</span> Cadets
       </a>
       <a href="{{ url_for('admin_events') }}" class="adm-sb-link {% if 'event' in request.endpoint %}active{% endif %}">
-        <span class="adm-sb-icon">📅</span> Events
+        <span class="adm-sb-icon">{{ icon.calendar(16) }}</span> Events
       </a>
       <a href="{{ url_for('admin_gallery') }}" class="adm-sb-link {% if 'gallery' in request.endpoint %}active{% endif %}">
-        <span class="adm-sb-icon">🖼️</span> Gallery
+        <span class="adm-sb-icon">{{ icon.image_icon(16) }}</span> Gallery
       </a>
       <div class="adm-sb-sec">Fallin</div>
       <a href="{{ url_for('admin_attendance') }}" class="adm-sb-link {% if request.endpoint=='admin_attendance' %}active{% endif %}">
-        <span class="adm-sb-icon">✅</span> Mark Fallin
+        <span class="adm-sb-icon">{{ icon.check_square(16) }}</span> Mark Fallin
       </a>
       <a href="{{ url_for('admin_att_records') }}" class="adm-sb-link {% if request.endpoint in ('admin_att_records','admin_edit_attendance') %}active{% endif %}">
-        <span class="adm-sb-icon">📋</span> Attendance Records
+        <span class="adm-sb-icon">{{ icon.clipboard_list(16) }}</span> Attendance Records
       </a>
       <a href="{{ url_for('admin_export') }}" class="adm-sb-link">
-        <span class="adm-sb-icon">📊</span> Export CSV
+        <span class="adm-sb-icon">{{ icon.bar_chart(16) }}</span> Export CSV
       </a>
       <div class="adm-sb-sec">Site</div>
       <a href="{{ url_for('index') }}" class="adm-sb-link" target="_blank">
-        <span class="adm-sb-icon">🌐</span> View Site
+        <span class="adm-sb-icon">{{ icon.globe(16) }}</span> View Site
       </a>
     </nav>
     <div class="adm-sb-ft">
-      <div class="adm-sb-user">◉ {{ session.get('admin_name','Admin') }}</div>
+      <div class="adm-sb-user" style="display:flex;align-items:center;gap:6px">{{ icon.user_circle(15,'var(--muted)') }} {{ session.get('admin_name','Admin') }}</div>
       <a href="{{ url_for('admin_logout') }}" class="btn btn-outline btn-sm" style="width:100%;justify-content:center">Logout</a>
     </div>
   </aside>
