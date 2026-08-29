@@ -15,20 +15,14 @@
     </div>
 
     {% if holders %}
-    {% set epaulette_ranks = {'SUO':2,'UO':1} %}
-    {% set chevron_ranks   = {'CSM':3,'CQMS':2,'SGT':3,'CPL':2,'LCPL':1} %}
+    {% set rank_images = {'SUO':'suo.png','UO':'uo.png','CSM':'csm.png','CQMS':'csm.png','SGT':'sgt.png','CPL':'cpl.png','LCPL':'lcpl.png'} %}
     <div class="rank-grid stagger">
       {% for h in holders %}
       <div class="rank-card">
         <div class="rank-insignia">
           <div class="rank-star-ring">
-            {% if h['rank_code'] in epaulette_ranks %}
-              {{ icon.rank_epaulette(epaulette_ranks[h['rank_code']], 68, 38) }}
-            {% elif h['rank_code'] in chevron_ranks %}
-              {{ icon.rank_chevron(chevron_ranks[h['rank_code']], 68, 44, emblem=(h['rank_code'] in ['CSM','CQMS'])) }}
-            {% else %}
-              {{ icon.rank_chevron(1, 68, 44) }}
-            {% endif %}
+            <img src="{{ url_for('static', filename='img/ranks/' + rank_images.get(h['rank_code'],'lcpl.png')) }}"
+                 alt="{{ h['rank_full'] }} insignia" style="height:64px;width:auto;object-fit:contain">
           </div>
           <span class="rank-code-badge">{{ h['rank_code'] }}</span>
         </div>
