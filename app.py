@@ -306,6 +306,46 @@ def admin_delete_event(eid):
     flash('Event deleted.','success')
     return redirect(url_for('admin_events'))
 
+# ── ACHIEVEMENTS CRUD ────────────────────────────────────────────
+@app.route('/command-center/achievements')
+@admin_required
+def admin_achievements():
+    return render_template('admin/achievements.html',
+        items=query("SELECT * FROM achievements ORDER BY year DESC, id DESC"))
+
+@app.route('/command-center/achievements/add', methods=['GET','POST'])
+@admin_required
+def admin_add_achievement():
+    if request.method == 'POST':
+        execute("INSERT INTO achievements(title,description,category,year) VALUES(%s,%s,%s,%s)",
+            [request.form['title'], request.form.get('description'),
+             request.form.get('category','award'),
+             int(request.form['year'])])
+        flash('Achievement added!','success')
+        return redirect(url_for('admin_achievements'))
+    return render_template('admin/achievement_form.html', item=None)
+
+@app.route('/command-center/achievements/edit/<int:aid>', methods=['GET','POST'])
+@admin_required
+def admin_edit_achievement(aid):
+    item = query("SELECT * FROM achievements WHERE id=%s",[aid],one=True)
+    if not item: flash('Not found.','error'); return redirect(url_for('admin_achievements'))
+    if request.method == 'POST':
+        execute("UPDATE achievements SET title=%s,description=%s,category=%s,year=%s WHERE id=%s",
+            [request.form['title'], request.form.get('description'),
+             request.form.get('category','award'),
+             int(request.form['year']), aid])
+        flash('Achievement updated!','success')
+        return redirect(url_for('admin_achievements'))
+    return render_template('admin/achievement_form.html', item=item)
+
+@app.route('/command-center/achievements/delete/<int:aid>', methods=['POST'])
+@admin_required
+def admin_delete_achievement(aid):
+    execute("DELETE FROM achievements WHERE id=%s",[aid])
+    flash('Achievement deleted.','success')
+    return redirect(url_for('admin_achievements'))
+
 # ── GALLERY ──────────────────────────────────────────────────────
 @app.route('/command-center/gallery')
 @admin_required

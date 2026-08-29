@@ -309,6 +309,39 @@ button,input,select,textarea{font-family:inherit}
    RANK HOLDERS
    ================================================================ */
 .rank-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:24px}
+
+/* ── RANK HIERARCHY (tiered, biggest at top) ────────────────────── */
+.rank-hierarchy{display:flex;flex-direction:column;align-items:center;gap:0;width:100%}
+.rank-tier-wrap{display:flex;flex-direction:column;align-items:center;width:100%}
+.rank-tier-connector{width:2px;height:28px;background:var(--border-hi)}
+.rank-tier-label{
+  font-family:var(--f-ui);font-size:11px;font-weight:700;letter-spacing:.16em;
+  color:var(--gold);text-transform:uppercase;margin:14px 0 18px;
+}
+.rank-tier{display:flex;justify-content:center;align-items:stretch;gap:22px;flex-wrap:wrap;width:100%;margin-bottom:8px}
+
+.rank-card-t1{width:320px}
+.rank-card-t2{width:280px}
+.rank-card-t3{width:270px}
+.rank-card-t4{width:250px}
+.rank-card-t5{width:250px}
+
+.rank-card-t1 .rank-insignia-img{height:78px}
+.rank-card-t2 .rank-insignia-img{height:68px}
+.rank-card-t3 .rank-insignia-img{height:62px}
+.rank-card-t4 .rank-insignia-img{height:54px}
+.rank-card-t5 .rank-insignia-img{height:54px}
+.rank-insignia-img{width:auto;object-fit:contain}
+
+.rank-card-t1 .rank-holder-name{font-size:23px}
+.rank-card-t2 .rank-holder-name{font-size:20px}
+.rank-card-t3 .rank-holder-name{font-size:19px}
+.rank-card-t1 .rank-full-title{font-size:12.5px}
+.rank-card-t1{box-shadow:var(--shadow-md)}
+
+@media(max-width:700px){
+  .rank-card-t1,.rank-card-t2,.rank-card-t3,.rank-card-t4,.rank-card-t5{width:100%;max-width:320px}
+}
 .rank-card{
   background:var(--surface);border:1px solid var(--border);
   border-radius:20px;overflow:hidden;position:relative;

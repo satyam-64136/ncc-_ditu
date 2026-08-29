@@ -1,0 +1,36 @@
+{% extends 'admin/base.html' %}
+{% block title %}{{ 'Edit' if item else 'Add' }} Achievement — Command Center{% endblock %}
+{% block content %}
+<div class="adm-topbar">
+  <div class="adm-pg-title">{{ 'Edit Achievement' if item else 'Add Achievement' }}</div>
+  <a href="{{ url_for('admin_achievements') }}" class="btn btn-ghost btn-sm">← Back</a>
+</div>
+<div class="adm-form">
+  <form method="POST">
+    <div class="fld">
+      <label>Title *</label>
+      <input type="text" name="title" value="{{ item['title'] if item else '' }}" required>
+    </div>
+    <div class="fld">
+      <label>Description</label>
+      <textarea name="description">{{ item['description'] if item and item['description'] else '' }}</textarea>
+    </div>
+    <div class="frow">
+      <div class="fld">
+        <label>Category</label>
+        <select name="category">
+          {% for c in ['award','parade','academic','camp','drill','service'] %}
+          <option value="{{ c }}" {% if item and item['category']==c %}selected{% endif %}>{{ c|title }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="fld">
+        <label>Year *</label>
+        <input type="number" name="year" min="2000" max="2100"
+               value="{{ item['year'] if item else '' }}" placeholder="e.g. 2026" required>
+      </div>
+    </div>
+    <button type="submit" class="btn btn-gold">{{ 'Update Achievement' if item else 'Add Achievement' }}</button>
+  </form>
+</div>
+{% endblock %}
