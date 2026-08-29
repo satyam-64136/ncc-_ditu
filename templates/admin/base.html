@@ -39,6 +39,9 @@
       <a href="{{ url_for('admin_achievements') }}" class="adm-sb-link {% if 'achievement' in request.endpoint %}active{% endif %}">
         <span class="adm-sb-icon">{{ icon.award(16) }}</span> Achievements
       </a>
+      <a href="{{ url_for('admin_alumni') }}" class="adm-sb-link {% if 'alumni' in request.endpoint %}active{% endif %}">
+        <span class="adm-sb-icon">{{ icon.graduation_cap(16) }}</span> Alumni
+      </a>
       <a href="{{ url_for('admin_gallery') }}" class="adm-sb-link {% if 'gallery' in request.endpoint %}active{% endif %}">
         <span class="adm-sb-icon">{{ icon.image_icon(16) }}</span> Gallery
       </a>

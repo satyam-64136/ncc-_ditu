@@ -346,6 +346,52 @@ def admin_delete_achievement(aid):
     flash('Achievement deleted.','success')
     return redirect(url_for('admin_achievements'))
 
+# ── ALUMNI CRUD ──────────────────────────────────────────────────
+@app.route('/command-center/alumni')
+@admin_required
+def admin_alumni():
+    return render_template('admin/alumni.html',
+        items=query("SELECT * FROM alumni ORDER BY batch_year DESC, id DESC"))
+
+@app.route('/command-center/alumni/add', methods=['GET','POST'])
+@admin_required
+def admin_add_alumni():
+    if request.method == 'POST':
+        photo = save_file(request.files.get('photo'),'alumni')
+        execute("""INSERT INTO alumni(name,rank,batch_year,achievements,current_profession,photo,testimonial)
+                   VALUES(%s,%s,%s,%s,%s,%s,%s)""",
+            [request.form['name'], request.form.get('rank'),
+             request.form.get('batch_year'), request.form.get('achievements'),
+             request.form.get('current_profession'), photo,
+             request.form.get('testimonial')])
+        flash('Alumni added!','success')
+        return redirect(url_for('admin_alumni'))
+    return render_template('admin/alumni_form.html', item=None)
+
+@app.route('/command-center/alumni/edit/<int:aid>', methods=['GET','POST'])
+@admin_required
+def admin_edit_alumni(aid):
+    item = query("SELECT * FROM alumni WHERE id=%s",[aid],one=True)
+    if not item: flash('Not found.','error'); return redirect(url_for('admin_alumni'))
+    if request.method == 'POST':
+        photo = save_file(request.files.get('photo'),'alumni') or item['photo']
+        execute("""UPDATE alumni SET name=%s,rank=%s,batch_year=%s,achievements=%s,
+                   current_profession=%s,photo=%s,testimonial=%s WHERE id=%s""",
+            [request.form['name'], request.form.get('rank'),
+             request.form.get('batch_year'), request.form.get('achievements'),
+             request.form.get('current_profession'), photo,
+             request.form.get('testimonial'), aid])
+        flash('Alumni updated!','success')
+        return redirect(url_for('admin_alumni'))
+    return render_template('admin/alumni_form.html', item=item)
+
+@app.route('/command-center/alumni/delete/<int:aid>', methods=['POST'])
+@admin_required
+def admin_delete_alumni(aid):
+    execute("DELETE FROM alumni WHERE id=%s",[aid])
+    flash('Alumni removed.','success')
+    return redirect(url_for('admin_alumni'))
+
 # ── GALLERY ──────────────────────────────────────────────────────
 @app.route('/command-center/gallery')
 @admin_required

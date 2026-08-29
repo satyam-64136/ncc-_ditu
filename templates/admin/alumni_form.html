@@ -1,0 +1,49 @@
+{% extends 'admin/base.html' %}
+{% block title %}{{ 'Edit' if item else 'Add' }} Alumni — Command Center{% endblock %}
+{% block content %}
+<div class="adm-topbar">
+  <div class="adm-pg-title">{{ 'Edit Alumni' if item else 'Add Alumni' }}</div>
+  <a href="{{ url_for('admin_alumni') }}" class="btn btn-ghost btn-sm">← Back</a>
+</div>
+<div class="adm-form">
+  <form method="POST" enctype="multipart/form-data">
+    <div class="frow">
+      <div class="fld">
+        <label>Full Name *</label>
+        <input type="text" name="name" value="{{ item['name'] if item else '' }}" required>
+      </div>
+      <div class="fld">
+        <label>Rank held</label>
+        <input type="text" name="rank" value="{{ item['rank'] if item and item['rank'] else '' }}" placeholder="e.g. SUO, CSM, CDT">
+      </div>
+    </div>
+    <div class="fld">
+      <label>Batch Years</label>
+      <input type="text" name="batch_year" value="{{ item['batch_year'] if item and item['batch_year'] else '' }}" placeholder="e.g. 2020-23">
+    </div>
+    <div class="fld">
+      <label>Achievements (while in NCC)</label>
+      <textarea name="achievements">{{ item['achievements'] if item and item['achievements'] else '' }}</textarea>
+    </div>
+    <div class="fld">
+      <label>Current Profession</label>
+      <input type="text" name="current_profession" value="{{ item['current_profession'] if item and item['current_profession'] else '' }}" placeholder="e.g. Indian Army Officer">
+    </div>
+    <div class="fld">
+      <label>Testimonial / Quote</label>
+      <textarea name="testimonial">{{ item['testimonial'] if item and item['testimonial'] else '' }}</textarea>
+    </div>
+    <div class="fld">
+      <label>Photo</label>
+      <input type="file" name="photo" accept="image/*">
+      {% if item and item['photo'] %}
+      <div style="margin-top:10px;display:flex;align-items:center;gap:10px">
+        <img src="{{ item['photo'] }}" alt="Current photo" style="width:52px;height:52px;object-fit:cover;border-radius:50%;border:1px solid var(--border)">
+        <span style="font-family:var(--f-ui);font-size:11px;color:var(--muted)">Current photo (upload a new one to replace)</span>
+      </div>
+      {% endif %}
+    </div>
+    <button type="submit" class="btn btn-gold">{{ 'Update Alumni' if item else 'Add Alumni' }}</button>
+  </form>
+</div>
+{% endblock %}

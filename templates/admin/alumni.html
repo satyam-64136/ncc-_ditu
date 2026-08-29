@@ -1,0 +1,44 @@
+{% extends 'admin/base.html' %}
+{% block title %}Alumni — Command Center{% endblock %}
+{% block content %}
+<div class="adm-topbar">
+  <div class="adm-pg-title">Alumni</div>
+  <a href="{{ url_for('admin_add_alumni') }}" class="btn btn-gold">+ Add Alumni</a>
+</div>
+<div class="adm-tw">
+  <table class="adm-table">
+    <thead><tr><th>Name</th><th>Rank</th><th>Batch</th><th>Profession</th><th>Achievements</th><th>Actions</th></tr></thead>
+    <tbody>
+      {% for a in items %}
+      <tr>
+        <td>
+          <div style="display:flex;align-items:center;gap:10px">
+            {% if a['photo'] %}
+            <img src="{{ a['photo'] }}" alt="{{ a['name'] }}" style="width:34px;height:34px;object-fit:cover;border-radius:50%;border:1px solid var(--border)">
+            {% else %}
+            <div style="width:34px;height:34px;border-radius:50%;background:var(--gold);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px">{{ a['name'][0] }}</div>
+            {% endif %}
+            <span style="font-weight:600">{{ a['name'] }}</span>
+          </div>
+        </td>
+        <td>{{ a['rank'] or '—' }}</td>
+        <td style="font-family:var(--f-mono);font-size:12px">{{ a['batch_year'] or '—' }}</td>
+        <td style="font-size:12.5px">{{ a['current_profession'] or '—' }}</td>
+        <td style="font-size:12.5px;color:var(--muted);max-width:260px">{{ a['achievements'] or '—' }}</td>
+        <td>
+          <div style="display:flex;gap:7px">
+            <a href="{{ url_for('admin_edit_alumni', aid=a['id']) }}" class="btn btn-ghost btn-sm">Edit</a>
+            <form method="POST" action="{{ url_for('admin_delete_alumni', aid=a['id']) }}" onsubmit="return confirm('Remove this alumni entry?')">
+              <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+            </form>
+          </div>
+        </td>
+      </tr>
+      {% endfor %}
+      {% if not items %}
+      <tr><td colspan="6" style="text-align:center;color:var(--muted);padding:32px">No alumni yet — add your first one.</td></tr>
+      {% endif %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}
