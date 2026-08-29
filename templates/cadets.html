@@ -15,13 +15,20 @@
     </div>
 
     {% if holders %}
-    {% set symbols = {'LCPL':1,'CDT':1,'SUO':3,'UO':2,'JUO':2,'CSM':3,'CQMS':2,'SGT':3,'CPL':2} %}
+    {% set epaulette_ranks = {'SUO':2,'UO':1} %}
+    {% set chevron_ranks   = {'CSM':3,'CQMS':2,'SGT':3,'CPL':2,'LCPL':1} %}
     <div class="rank-grid stagger">
       {% for h in holders %}
       <div class="rank-card">
         <div class="rank-insignia">
-          <div class="rank-star-ring" style="display:flex;gap:3px">
-            {% for i in range(symbols.get(h['rank_code'],1)) %}{{ icon.star_fill(20,'#1b3a63') }}{% endfor %}
+          <div class="rank-star-ring">
+            {% if h['rank_code'] in epaulette_ranks %}
+              {{ icon.rank_epaulette(epaulette_ranks[h['rank_code']], 68, 38) }}
+            {% elif h['rank_code'] in chevron_ranks %}
+              {{ icon.rank_chevron(chevron_ranks[h['rank_code']], 68, 44, emblem=(h['rank_code'] in ['CSM','CQMS'])) }}
+            {% else %}
+              {{ icon.rank_chevron(1, 68, 44) }}
+            {% endif %}
           </div>
           <span class="rank-code-badge">{{ h['rank_code'] }}</span>
         </div>

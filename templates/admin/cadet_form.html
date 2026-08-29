@@ -20,22 +20,13 @@
       </select>
     </div>
   </div>
-  <div class="frow">
-    <div class="fld">
-      <label>Category</label>
-      <select name="category">
-        <option value="Senior" {% if not cadet or cadet['category']=='Senior' %}selected{% endif %}>Senior (3rd Year)</option>
-        <option value="Buddy"  {% if cadet and cadet['category']=='Buddy' %}selected{% endif %}>Buddy (2nd Year)</option>
-      </select>
-    </div>
-    <div class="fld">
-      <label>NCC Year</label>
-      <select name="ncc_year">
-        {% for yr in ['NCC 1st Year','NCC 2nd Year','NCC 3rd Year'] %}
-        <option value="{{ yr }}" {% if cadet and cadet['ncc_year']==yr %}selected{% endif %}>{{ yr }}</option>
-        {% endfor %}
-      </select>
-    </div>
+  <div class="fld">
+    <label>NCC Year</label>
+    <select name="ncc_year">
+      {% for yr in ['NCC 1st Year','NCC 2nd Year','NCC 3rd Year'] %}
+      <option value="{{ yr }}" {% if cadet and cadet['ncc_year']==yr %}selected{% endif %}>{{ yr }}</option>
+      {% endfor %}
+    </select>
   </div>
   <div class="frow">
     <div class="fld">
@@ -47,32 +38,13 @@
       <input type="text" name="batch" value="{{ cadet['batch'] if cadet else '' }}" placeholder="e.g. 2024-27" required>
     </div>
   </div>
-  <div class="frow">
-    <div class="fld">
-      <label>Branch / Department</label>
-      <input type="text" name="branch" value="{{ cadet['branch'] if cadet and cadet['branch'] else '' }}">
-    </div>
-    <div class="fld">
-      <label>Chest Number</label>
-      <input type="text" name="chest_number" value="{{ cadet['chest_number'] if cadet and cadet['chest_number'] else '' }}">
-    </div>
+  <div class="fld">
+    <label>Branch / Department</label>
+    <input type="text" name="branch" value="{{ cadet['branch'] if cadet and cadet['branch'] else '' }}">
   </div>
   <div class="fld">
     <label>Bio / Notes</label>
     <textarea name="bio">{{ cadet['bio'] if cadet and cadet['bio'] else '' }}</textarea>
-  </div>
-  <div class="frow">
-    <div class="fld">
-      <div class="fcheck">
-        <input type="checkbox" name="is_rank_holder" id="irh" value="1"
-               {% if cadet and cadet['is_rank_holder'] %}checked{% endif %}>
-        <label for="irh" style="font-size:13.5px;letter-spacing:.04em;font-weight:600;color:var(--white);text-transform:none">Rank Holder</label>
-      </div>
-    </div>
-    <div class="fld">
-      <label>Rank Position (e.g. LCPL)</label>
-      <input type="text" name="rank_position" value="{{ cadet['rank_position'] if cadet and cadet['rank_position'] else '' }}">
-    </div>
   </div>
   <div class="fld">
     <label>Photo</label>

@@ -105,6 +105,14 @@ def admin_required(f):
         return f(*a, **kw)
     return dec
 
+def derive_cadet_fields(rank, ncc_year):
+    """Category and rank-holder status are no longer picked manually in the
+    admin form — they're derived from the Rank and NCC Year dropdowns."""
+    is_rank_holder = 1 if rank and rank != 'CDT' else 0
+    rank_position   = rank if is_rank_holder else None
+    category        = 'Senior' if ncc_year == 'NCC 3rd Year' else 'Buddy'
+    return category, is_rank_holder, rank_position
+
 # ── PUBLIC ROUTES ────────────────────────────────────────────────
 @app.route('/')
 def index():
@@ -226,17 +234,18 @@ def admin_cadets():
 def admin_add_cadet():
     if request.method == 'POST':
         photo = save_file(request.files.get('photo'),'cadets')
+        rank    = request.form['rank']
+        ncc_year = request.form.get('ncc_year','')
+        category, is_rank_holder, rank_position = derive_cadet_fields(rank, ncc_year)
         execute("""INSERT INTO cadets
-                   (name,rank,roll_number,batch,branch,chest_number,bio,
+                   (name,rank,roll_number,batch,branch,bio,
                     ncc_year,category,is_rank_holder,rank_position,photo,active)
-                   VALUES(%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,1)""",
-            [request.form['name'], request.form['rank'],
+                   VALUES(%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,1)""",
+            [request.form['name'], rank,
              request.form.get('roll_number'), request.form['batch'],
-             request.form.get('branch'), request.form.get('chest_number'),
-             request.form.get('bio'), request.form.get('ncc_year',''),
-             request.form.get('category','Senior'),
-             1 if request.form.get('is_rank_holder') else 0,
-             request.form.get('rank_position'), photo])
+             request.form.get('branch'),
+             request.form.get('bio'), ncc_year,
+             category, is_rank_holder, rank_position, photo])
         flash('Cadet added!','success')
         return redirect(url_for('admin_cadets'))
     return render_template('admin/cadet_form.html', cadet=None)
@@ -248,16 +257,17 @@ def admin_edit_cadet(cid):
     if not cadet: flash('Not found.','error'); return redirect(url_for('admin_cadets'))
     if request.method == 'POST':
         photo = save_file(request.files.get('photo'),'cadets') or cadet['photo']
+        rank    = request.form['rank']
+        ncc_year = request.form.get('ncc_year','')
+        category, is_rank_holder, rank_position = derive_cadet_fields(rank, ncc_year)
         execute("""UPDATE cadets SET name=%s,rank=%s,roll_number=%s,batch=%s,branch=%s,
-                   chest_number=%s,bio=%s,ncc_year=%s,category=%s,is_rank_holder=%s,
+                   bio=%s,ncc_year=%s,category=%s,is_rank_holder=%s,
                    rank_position=%s,photo=%s,active=%s WHERE id=%s""",
-            [request.form['name'], request.form['rank'],
+            [request.form['name'], rank,
              request.form.get('roll_number'), request.form['batch'],
-             request.form.get('branch'), request.form.get('chest_number'),
-             request.form.get('bio'), request.form.get('ncc_year',''),
-             request.form.get('category','Senior'),
-             1 if request.form.get('is_rank_holder') else 0,
-             request.form.get('rank_position'), photo,
+             request.form.get('branch'),
+             request.form.get('bio'), ncc_year,
+             category, is_rank_holder, rank_position, photo,
              1 if request.form.get('active') else 0, cid])
         flash('Cadet updated!','success')
         return redirect(url_for('admin_cadets'))

@@ -14,11 +14,10 @@
       <tr>
         <td>
           <div style="font-weight:600">{{ c['name'] }}</div>
-          {% if c['chest_number'] %}<div style="font-family:var(--f-mono);font-size:10px;color:var(--gold)">{{ c['chest_number'] }}</div>{% endif %}
         </td>
         <td>
-          {% if c['is_rank_holder'] and c['rank_position'] %}
-          <span class="sbadge" style="background:rgba(27,58,99,.14);border:1px solid rgba(27,58,99,.3);color:var(--gold)">{{ c['rank_position'] }}</span>
+          {% if c['rank'] != 'CDT' %}
+          <span class="sbadge" style="background:rgba(27,58,99,.14);border:1px solid rgba(27,58,99,.3);color:var(--gold)">{{ c['rank'] }}</span>
           {% else %}{{ c['rank'] }}{% endif %}
         </td>
         <td style="font-family:var(--f-mono);font-size:11.5px">{{ c['roll_number'] or '—' }}</td>
