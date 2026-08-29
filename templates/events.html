@@ -14,12 +14,12 @@
 
     {% macro event_row(e, dim=false) %}
     {% set months=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'] %}
-    {% set m = e['event_date'][5:7]|int %}
+    {% set m = e['event_date'].month %}
     <div class="event-row" {% if dim %}style="opacity:.6"{% endif %}>
       <div class="event-date">
-        <span class="day">{{ e['event_date'][8:10] }}</span>
+        <span class="day">{{ '%02d'|format(e['event_date'].day) }}</span>
         <span class="mon">{{ months[m-1] if m>=1 and m<=12 else '' }}</span>
-        <span class="mon" style="font-size:9px">{{ e['event_date'][:4] }}</span>
+        <span class="mon" style="font-size:9px">{{ e['event_date'].year }}</span>
       </div>
       <div>
         <span class="etype etype-{{ e['event_type'] or 'fallin' }}">{{ e['event_type'] or 'event' }}</span>
@@ -28,7 +28,7 @@
         {% if e['location'] %}<div class="event-loc" style="display:flex;align-items:center;gap:5px">{{ icon.map_pin(13,'var(--muted)') }} {{ e['location'] }}</div>{% endif %}
       </div>
       <div style="text-align:center;min-width:70px">
-        <div style="font-family:var(--f-mono);font-size:11px;color:var(--gold)">{{ e['event_date'][11:16] or '08:00' }}</div>
+        <div style="font-family:var(--f-mono);font-size:11px;color:var(--gold)">08:00</div>
         <div style="font-size:9px;color:var(--muted);letter-spacing:.06em">HRS</div>
         {% if dim %}<div style="font-family:var(--f-mono);font-size:9px;color:rgba(100,100,100,.6);margin-top:6px">COMPLETED</div>{% endif %}
       </div>

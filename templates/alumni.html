@@ -17,7 +17,7 @@
       <div class="alumni-card">
         <div class="alumni-head">
           <div class="alumni-av">
-            {% if a['photo'] %}<img src="{{ url_for('static',filename='uploads/cadets/'+a['photo']) }}" alt="{{ a['name'] }}">
+            {% if a['photo'] %}<img src="{{ a['photo'] }}" alt="{{ a['name'] }}">
             {% else %}{{ a['name'][0] }}{% endif %}
           </div>
           <div style="flex:1;min-width:0">

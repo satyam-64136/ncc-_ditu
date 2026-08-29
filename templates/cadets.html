@@ -89,7 +89,7 @@
         <div class="cadet-card">
           <div class="cadet-photo">
             {% if c['photo'] %}
-            <img src="{{ url_for('static', filename='uploads/cadets/'+c['photo']) }}" alt="{{ c['name'] }}" loading="lazy">
+            <img src="{{ c['photo'] }}" alt="{{ c['name'] }}" loading="lazy">
             {% else %}
             <div class="cadet-photo-ph">
               <svg viewBox="0 0 80 80" width="72" height="72">
@@ -131,7 +131,7 @@
         <div class="cadet-card">
           <div class="cadet-photo">
             {% if c['photo'] %}
-            <img src="{{ url_for('static', filename='uploads/cadets/'+c['photo']) }}" alt="{{ c['name'] }}" loading="lazy">
+            <img src="{{ c['photo'] }}" alt="{{ c['name'] }}" loading="lazy">
             {% else %}
             <div class="cadet-photo-ph">
               <svg viewBox="0 0 80 80" width="72" height="72">

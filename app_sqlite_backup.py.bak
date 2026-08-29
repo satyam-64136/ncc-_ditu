@@ -1,51 +1,25 @@
-import os, csv, io
+import sqlite3, os, csv, io
 from datetime import datetime
 from functools import wraps
 from flask import (Flask, render_template, request, redirect, url_for,
                    flash, session, Response, g)
 from werkzeug.security import generate_password_hash, check_password_hash
 from werkzeug.utils import secure_filename
-import psycopg2
-import psycopg2.extras
-from supabase import create_client
-
-# Load .env for local development. On Render, real environment
-# variables are set in the dashboard and this call is a harmless no-op.
-try:
-    from dotenv import load_dotenv
-    load_dotenv()
-except ImportError:
-    pass
 
 app = Flask(__name__)
-app.secret_key = os.environ.get('SECRET_KEY', 'ditu-ncc-29uk-ultra-secret-2025')
+app.secret_key = 'ditu-ncc-29uk-ultra-secret-2025'
 
-# ── CONFIG (all from environment variables — never hardcode secrets) ──
-DATABASE_URL      = os.environ.get('DATABASE_URL')        # Postgres connection string from Supabase
-SUPABASE_URL      = os.environ.get('SUPABASE_URL')        # e.g. https://xxxx.supabase.co
-SUPABASE_KEY      = os.environ.get('SUPABASE_KEY')        # anon/publishable key
-SUPABASE_BUCKET   = os.environ.get('SUPABASE_BUCKET', 'ncc-media')
-
-ALLOWED = {'png','jpg','jpeg','gif','webp'}
-
-if not DATABASE_URL:
-    raise RuntimeError(
-        "DATABASE_URL is not set. Get it from Supabase → Project Settings → "
-        "Database → Connection string (URI, use the 'Transaction pooler' one on "
-        "Render), then set it as an environment variable."
-    )
-if not SUPABASE_URL or not SUPABASE_KEY:
-    raise RuntimeError(
-        "SUPABASE_URL / SUPABASE_KEY are not set. Get them from Supabase → "
-        "Project Settings → API, then set them as environment variables."
-    )
-
-supabase = create_client(SUPABASE_URL, SUPABASE_KEY)
+BASE_DIR   = os.path.dirname(os.path.abspath(__file__))
+DB_PATH    = os.path.join(BASE_DIR, 'ncc.db')
+UPLOAD_DIR = os.path.join(BASE_DIR, 'static', 'uploads')
+ALLOWED    = {'png','jpg','jpeg','gif','webp'}
 
 # ── DB ──────────────────────────────────────────────────────────
 def get_db():
     if 'db' not in g:
-        g.db = psycopg2.connect(DATABASE_URL, cursor_factory=psycopg2.extras.RealDictCursor)
+        g.db = sqlite3.connect(DB_PATH)
+        g.db.row_factory = sqlite3.Row
+        g.db.execute("PRAGMA foreign_keys = ON")
     return g.db
 
 @app.teardown_appcontext
@@ -54,48 +28,27 @@ def close_db(e=None):
     if db: db.close()
 
 def query(sql, args=(), one=False):
-    """SELECT helper. args uses %s placeholders (Postgres style)."""
-    db  = get_db()
-    cur = db.cursor()
-    cur.execute(sql, args)
+    cur = get_db().execute(sql, args)
     rv  = cur.fetchall()
-    cur.close()
     return (rv[0] if rv else None) if one else rv
 
 def execute(sql, args=()):
-    """INSERT/UPDATE/DELETE helper. If the SQL ends in a plain INSERT
-    without RETURNING, we auto-append RETURNING id to mimic sqlite's
-    lastrowid behaviour used throughout the old routes."""
     db  = get_db()
-    cur = db.cursor()
-    sql_run = sql
-    is_insert = sql.strip().upper().startswith('INSERT') and 'RETURNING' not in sql.upper()
-    if is_insert:
-        sql_run = sql.rstrip().rstrip(';') + ' RETURNING id'
-    cur.execute(sql_run, args)
-    new_id = None
-    if is_insert:
-        row = cur.fetchone()
-        new_id = row['id'] if row else None
+    cur = db.execute(sql, args)
     db.commit()
-    cur.close()
-    return new_id
+    return cur.lastrowid
 
 def allowed_file(f):
-    return '.' in f.filename and f.filename.rsplit('.',1)[1].lower() in ALLOWED
+    return '.' in f and f.rsplit('.',1)[1].lower() in ALLOWED
 
 def save_file(file, subfolder):
-    """Uploads to Supabase Storage and returns the public URL (or None)."""
-    if not file or not file.filename or not allowed_file(file):
-        return None
-    ext  = file.filename.rsplit('.',1)[1].lower()
-    name = f"{subfolder}/{int(datetime.now().timestamp())}_{secure_filename(file.filename)}"
-    data = file.read()
-    supabase.storage.from_(SUPABASE_BUCKET).upload(
-        name, data,
-        {"content-type": file.mimetype or f"image/{ext}"}
-    )
-    return supabase.storage.from_(SUPABASE_BUCKET).get_public_url(name)
+    if file and allowed_file(file.filename):
+        fn  = f"{int(datetime.now().timestamp())}_{secure_filename(file.filename)}"
+        dst = os.path.join(UPLOAD_DIR, subfolder)
+        os.makedirs(dst, exist_ok=True)
+        file.save(os.path.join(dst, fn))
+        return fn
+    return None
 
 def admin_required(f):
     @wraps(f)
@@ -111,7 +64,7 @@ def index():
     cc = query("SELECT COUNT(*) c FROM cadets WHERE active=1", one=True)['c']
     ac = query("SELECT COUNT(*) c FROM alumni",                one=True)['c']
     ec = query("SELECT COUNT(*) c FROM events",                one=True)['c']
-    up = query("SELECT * FROM events WHERE event_date>=CURRENT_DATE ORDER BY event_date LIMIT 3")
+    up = query("SELECT * FROM events WHERE event_date>=date('now') ORDER BY event_date LIMIT 3")
     return render_template('index.html', cadets_count=cc, alumni_count=ac,
                            events_count=ec, upcoming=up)
 
@@ -126,9 +79,9 @@ def cadets():
     sql    = "SELECT * FROM cadets WHERE active=1"
     args   = []
     if cat:
-        sql  += " AND category=%s"; args.append(cat)
+        sql  += " AND category=?"; args.append(cat)
     if search:
-        sql  += " AND (name ILIKE %s OR rank ILIKE %s)"; args += [f'%{search}%',f'%{search}%']
+        sql  += " AND (name LIKE ? OR rank LIKE ?)"; args += [f'%{search}%',f'%{search}%']
     sql += " ORDER BY category, rank DESC, name"
     all_cadets = query(sql, args)
 
@@ -150,7 +103,7 @@ def achievements():
 @app.route('/gallery')
 def gallery():
     cat = request.args.get('category','all')
-    imgs = (query("SELECT * FROM gallery WHERE category=%s ORDER BY uploaded_at DESC",[cat])
+    imgs = (query("SELECT * FROM gallery WHERE category=? ORDER BY uploaded_at DESC",[cat])
             if cat!='all' else
             query("SELECT * FROM gallery ORDER BY uploaded_at DESC"))
     cats = query("SELECT DISTINCT category FROM gallery ORDER BY category")
@@ -158,8 +111,8 @@ def gallery():
 
 @app.route('/events')
 def events():
-    upcoming = query("SELECT * FROM events WHERE event_date>=CURRENT_DATE ORDER BY event_date")
-    past     = query("SELECT * FROM events WHERE event_date<CURRENT_DATE ORDER BY event_date DESC LIMIT 10")
+    upcoming = query("SELECT * FROM events WHERE event_date>=date('now') ORDER BY event_date")
+    past     = query("SELECT * FROM events WHERE event_date<date('now') ORDER BY event_date DESC LIMIT 10")
     return render_template('events.html', upcoming=upcoming, past=past)
 
 @app.route('/alumni')
@@ -173,7 +126,7 @@ def admin_login():
     if session.get('admin_id'):
         return redirect(url_for('admin_dashboard'))
     if request.method == 'POST':
-        u = query("SELECT * FROM admin_users WHERE username=%s",
+        u = query("SELECT * FROM admin_users WHERE username=?",
                   [request.form['username']], one=True)
         if u and check_password_hash(u['password_hash'], request.form['password']):
             session['admin_id']   = u['id']
@@ -195,12 +148,12 @@ def admin_dashboard():
     stats = {
         'cadets':        query("SELECT COUNT(*) c FROM cadets WHERE active=1", one=True)['c'],
         'alumni':        query("SELECT COUNT(*) c FROM alumni",                one=True)['c'],
-        'events':        query("SELECT COUNT(*) c FROM events WHERE event_date>=CURRENT_DATE",one=True)['c'],
+        'events':        query("SELECT COUNT(*) c FROM events WHERE event_date>=date('now')",one=True)['c'],
         'gallery':       query("SELECT COUNT(*) c FROM gallery",               one=True)['c'],
         'att_sessions':  query("SELECT COUNT(DISTINCT date) c FROM attendance",one=True)['c'],
     }
     recent    = query("SELECT * FROM cadets ORDER BY created_at DESC LIMIT 6")
-    soon      = query("SELECT * FROM events WHERE event_date>=CURRENT_DATE ORDER BY event_date LIMIT 5")
+    soon      = query("SELECT * FROM events WHERE event_date>=date('now') ORDER BY event_date LIMIT 5")
     att_dates = query("""
         SELECT date,
                COUNT(*)                                             AS total,
@@ -229,7 +182,7 @@ def admin_add_cadet():
         execute("""INSERT INTO cadets
                    (name,rank,roll_number,batch,branch,chest_number,bio,
                     ncc_year,category,is_rank_holder,rank_position,photo,active)
-                   VALUES(%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,1)""",
+                   VALUES(?,?,?,?,?,?,?,?,?,?,?,?,1)""",
             [request.form['name'], request.form['rank'],
              request.form.get('roll_number'), request.form['batch'],
              request.form.get('branch'), request.form.get('chest_number'),
@@ -244,13 +197,13 @@ def admin_add_cadet():
 @app.route('/command-center/cadets/edit/<int:cid>', methods=['GET','POST'])
 @admin_required
 def admin_edit_cadet(cid):
-    cadet = query("SELECT * FROM cadets WHERE id=%s",[cid],one=True)
+    cadet = query("SELECT * FROM cadets WHERE id=?",[cid],one=True)
     if not cadet: flash('Not found.','error'); return redirect(url_for('admin_cadets'))
     if request.method == 'POST':
         photo = save_file(request.files.get('photo'),'cadets') or cadet['photo']
-        execute("""UPDATE cadets SET name=%s,rank=%s,roll_number=%s,batch=%s,branch=%s,
-                   chest_number=%s,bio=%s,ncc_year=%s,category=%s,is_rank_holder=%s,
-                   rank_position=%s,photo=%s,active=%s WHERE id=%s""",
+        execute("""UPDATE cadets SET name=?,rank=?,roll_number=?,batch=?,branch=?,
+                   chest_number=?,bio=?,ncc_year=?,category=?,is_rank_holder=?,
+                   rank_position=?,photo=?,active=? WHERE id=?""",
             [request.form['name'], request.form['rank'],
              request.form.get('roll_number'), request.form['batch'],
              request.form.get('branch'), request.form.get('chest_number'),
@@ -266,7 +219,7 @@ def admin_edit_cadet(cid):
 @app.route('/command-center/cadets/delete/<int:cid>', methods=['POST'])
 @admin_required
 def admin_delete_cadet(cid):
-    execute("DELETE FROM cadets WHERE id=%s",[cid])
+    execute("DELETE FROM cadets WHERE id=?",[cid])
     flash('Cadet removed.','success')
     return redirect(url_for('admin_cadets'))
 
@@ -281,7 +234,7 @@ def admin_events():
 @admin_required
 def admin_add_event():
     if request.method == 'POST':
-        execute("INSERT INTO events(title,description,event_type,event_date,location) VALUES(%s,%s,%s,%s,%s)",
+        execute("INSERT INTO events(title,description,event_type,event_date,location) VALUES(?,?,?,?,?)",
             [request.form['title'], request.form.get('description'),
              request.form.get('event_type'), request.form['event_date'],
              request.form.get('location')])
@@ -292,7 +245,7 @@ def admin_add_event():
 @app.route('/command-center/events/delete/<int:eid>', methods=['POST'])
 @admin_required
 def admin_delete_event(eid):
-    execute("DELETE FROM events WHERE id=%s",[eid])
+    execute("DELETE FROM events WHERE id=?",[eid])
     flash('Event deleted.','success')
     return redirect(url_for('admin_events'))
 
@@ -306,10 +259,10 @@ def admin_gallery():
 @app.route('/command-center/gallery/upload', methods=['POST'])
 @admin_required
 def admin_upload():
-    url = save_file(request.files.get('image'),'gallery')
-    if url:
-        execute("INSERT INTO gallery(filename,caption,category,year) VALUES(%s,%s,%s,%s)",
-            [url, request.form.get('caption'),
+    fn = save_file(request.files.get('image'),'gallery')
+    if fn:
+        execute("INSERT INTO gallery(filename,caption,category,year) VALUES(?,?,?,?)",
+            [fn, request.form.get('caption'),
              request.form.get('category','events'),
              int(request.form.get('year', datetime.now().year))])
         flash('Image uploaded!','success')
@@ -318,18 +271,23 @@ def admin_upload():
 @app.route('/command-center/gallery/delete/<int:gid>', methods=['POST'])
 @admin_required
 def admin_delete_gallery(gid):
-    execute("DELETE FROM gallery WHERE id=%s",[gid])
+    execute("DELETE FROM gallery WHERE id=?",[gid])
     flash('Image removed.','success')
     return redirect(url_for('admin_gallery'))
 
 # ── ATTENDANCE ───────────────────────────────────────────────────
+# Storage: attendance table (id, cadet_id FK, date, status, fallin_type, notes, marked_at)
+# One row per cadet per date — UNIQUE(cadet_id, date)
+# Dashboard queries: GROUP BY date with SUM(CASE...) for present/absent/late counts
+# Records page: JOIN cadets, filter by date/cadet/status, sortable
+
 @app.route('/command-center/attendance')
 @admin_required
 def admin_attendance():
     date_str   = request.args.get('date', datetime.now().strftime('%Y-%m-%d'))
     cadets_all = query("SELECT * FROM cadets WHERE active=1 ORDER BY category, rank DESC, name")
     existing   = {r['cadet_id']:r for r in
-                  query("SELECT * FROM attendance WHERE date=%s",[date_str])}
+                  query("SELECT * FROM attendance WHERE date=?",[date_str])}
     history    = query("""
         SELECT date, COUNT(*) total,
                SUM(CASE WHEN status='present' THEN 1 ELSE 0 END) p,
@@ -346,13 +304,13 @@ def admin_mark_attendance():
     fallin_type = request.form.get('fallin_type','Morning Fallin')
     for c in query("SELECT id FROM cadets WHERE active=1"):
         status = request.form.get(f'status_{c["id"]}','absent')
-        ex = query("SELECT id FROM attendance WHERE cadet_id=%s AND date=%s",
+        ex = query("SELECT id FROM attendance WHERE cadet_id=? AND date=?",
                    [c['id'],date_str], one=True)
         if ex:
-            execute("UPDATE attendance SET status=%s,fallin_type=%s WHERE id=%s",
+            execute("UPDATE attendance SET status=?,fallin_type=? WHERE id=?",
                     [status,fallin_type,ex['id']])
         else:
-            execute("INSERT INTO attendance(cadet_id,date,status,fallin_type) VALUES(%s,%s,%s,%s)",
+            execute("INSERT INTO attendance(cadet_id,date,status,fallin_type) VALUES(?,?,?,?)",
                     [c['id'],date_str,status,fallin_type])
     flash('Fallin attendance saved!','success')
     return redirect(url_for('admin_attendance', date=date_str))
@@ -375,16 +333,18 @@ def admin_att_records():
         FROM attendance GROUP BY date ORDER BY date DESC
     """)
 
+    # Build detail query with optional filters
     sql  = """SELECT c.name, c.rank, c.chest_number, c.roll_number, c.category,
                      a.status, a.fallin_type, a.marked_at, a.date, a.id AS att_id
               FROM attendance a JOIN cadets c ON c.id=a.cadet_id WHERE 1=1"""
     args = []
-    if f_date:   sql += " AND a.date=%s";     args.append(f_date)
-    if f_cadet:  sql += " AND c.name ILIKE %s"; args.append(f'%{f_cadet}%')
-    if f_status: sql += " AND a.status=%s";   args.append(f_status)
+    if f_date:   sql += " AND a.date=?";     args.append(f_date)
+    if f_cadet:  sql += " AND c.name LIKE ?"; args.append(f'%{f_cadet}%')
+    if f_status: sql += " AND a.status=?";   args.append(f_status)
     sql += " ORDER BY a.date DESC, c.category, c.name LIMIT 200"
     detail_rows = query(sql, args)
 
+    # Stats for selected date
     stats = None
     if f_date and detail_rows:
         total   = len(detail_rows)
@@ -403,7 +363,7 @@ def admin_att_records():
 @app.route('/command-center/attendance/edit/<int:att_id>', methods=['POST'])
 @admin_required
 def admin_edit_attendance(att_id):
-    execute("UPDATE attendance SET status=%s WHERE id=%s",
+    execute("UPDATE attendance SET status=? WHERE id=?",
             [request.form.get('status'), att_id])
     flash('Record updated.','success')
     return redirect(url_for('admin_att_records',
@@ -419,7 +379,7 @@ def admin_export():
         rows  = query("""SELECT a.date,c.name,c.rank,c.roll_number,c.category,
                                 a.status,a.fallin_type
                          FROM attendance a JOIN cadets c ON c.id=a.cadet_id
-                         WHERE a.date=%s ORDER BY c.category,c.name""", [f_date])
+                         WHERE a.date=? ORDER BY c.category,c.name""", [f_date])
         fname = f"fallin_{f_date}.csv"
     else:
         rows  = query("""SELECT a.date,c.name,c.rank,c.roll_number,c.category,
@@ -430,10 +390,23 @@ def admin_export():
     buf = io.StringIO()
     w   = csv.writer(buf)
     w.writerow(['Date','Name','Rank','Roll No','Category','Status','Fallin Type'])
-    for r in rows: w.writerow(list(r.values()))
+    for r in rows: w.writerow(list(r))
     buf.seek(0)
     return Response(buf, mimetype='text/csv',
         headers={'Content-Disposition': f'attachment;filename={fname}'})
 
+# ── DB INIT ──────────────────────────────────────────────────────
+def init_db():
+    with app.app_context():
+        db = get_db()
+        with open(os.path.join(BASE_DIR,'database.sql'), encoding='utf-8') as f:
+            db.executescript(f.read())
+        db.commit()
+        if not db.execute("SELECT id FROM admin_users WHERE username='admin'").fetchone():
+            db.execute("INSERT INTO admin_users(username,password_hash,name) VALUES(?,?,?)",
+                ('admin', generate_password_hash('admin123'), 'NCC Admin'))
+            db.commit()
+
 if __name__ == '__main__':
+    init_db()
     app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 5000)))

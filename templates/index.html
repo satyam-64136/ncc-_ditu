@@ -91,10 +91,10 @@
       {% for e in upcoming %}
       <div class="event-row">
         <div class="event-date">
-          <span class="day">{{ e['event_date'][:2] if e['event_date']|length > 7 else e['event_date'][-2:] }}</span>
+          <span class="day">{{ '%02d'|format(e['event_date'].day) }}</span>
           <span class="mon">
             {% set months=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'] %}
-            {% set m = e['event_date'][5:7]|int %}
+            {% set m = e['event_date'].month %}
             {{ months[m-1] if m >= 1 and m <= 12 else '' }}
           </span>
         </div>

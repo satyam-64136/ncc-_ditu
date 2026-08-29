@@ -12,7 +12,7 @@
       {% for e in events %}
       <tr>
         <td style="font-weight:600">{{ e['title'] }}</td>
-        <td style="font-family:var(--f-mono);font-size:11.5px">{{ e['event_date'][:10] }}</td>
+        <td style="font-family:var(--f-mono);font-size:11.5px">{{ e['event_date'].strftime('%Y-%m-%d') }}</td>
         <td><span class="etype etype-{{ e['event_type'] or 'fallin' }}" style="font-size:9px">{{ e['event_type'] or '—' }}</span></td>
         <td style="font-size:12.5px;color:var(--muted)">{{ e['location'] or '—' }}</td>
         <td>

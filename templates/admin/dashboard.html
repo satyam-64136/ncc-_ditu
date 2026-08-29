@@ -55,7 +55,7 @@
           {% for e in soon %}
           <tr>
             <td style="font-weight:600">{{ e['title'][:28] }}{% if e['title']|length>28 %}…{% endif %}</td>
-            <td style="font-family:var(--f-mono);font-size:11.5px">{{ e['event_date'][:10] }}</td>
+            <td style="font-family:var(--f-mono);font-size:11.5px">{{ e['event_date'].strftime('%Y-%m-%d') }}</td>
             <td><span class="etype etype-{{ e['event_type'] or 'fallin' }}" style="font-size:9px">{{ e['event_type'] or '—' }}</span></td>
           </tr>
           {% endfor %}
