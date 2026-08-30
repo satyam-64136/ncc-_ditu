@@ -213,6 +213,10 @@ button,input,select,textarea{font-family:inherit}
 
 /* ── ABOUT PAGE ──────────────────────────────────────────────── */
 .about-hero{padding:calc(var(--nav-h) + 64px) 28px 64px;text-align:center;background:linear-gradient(180deg,#eef2f7 0%,var(--black) 100%);border-bottom:1px solid var(--border)}
+.battalion-grid{display:grid;grid-template-columns:1fr 1fr;gap:56px;align-items:center;margin-bottom:80px}
+@media(max-width:820px){
+  .battalion-grid{grid-template-columns:1fr;gap:32px}
+}
 
 /* ── FOOTER ──────────────────────────────────────────────────── */
 .footer{background:#fff;border-top:1px solid var(--border);padding:48px 28px 0;margin-top:80px;position:relative}

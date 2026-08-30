@@ -18,19 +18,21 @@
 <section class="section">
   <div class="section-max">
     <!-- Battalion detail -->
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:56px;align-items:center;margin-bottom:80px" class="reveal">
+    <div class="battalion-grid reveal">
       <div>
         <span class="tag">29 UK BN</span>
         <h3 style="font-family:var(--f-display);font-size:38px;letter-spacing:.08em;color:var(--gold);margin-bottom:18px">THE BATTALION</h3>
         <p style="color:var(--muted);margin-bottom:14px;line-height:1.8">The 29 Uttarakhand Battalion is stationed in Dehradun and encompasses multiple colleges in the Garhwal region. DIT University's NCC unit trains cadets in Army Wing activities including drill, weapon handling, map reading, and field craft.</p>
         <p style="color:var(--muted);line-height:1.8">Our cadets regularly participate in Republic Day parades, Annual Training Camps (ATC), Combined Annual Training Camps (CATC), and national-level competitions at Thal Sainik Camp.</p>
       </div>
-      <div style="text-align:center">
-        <img src="{{ url_for('static', filename='img/ncc-crest.png') }}" alt="NCC Crest" style="width:170px;height:auto;margin:0 auto;display:block;filter:drop-shadow(0 8px 20px rgba(27,58,99,.22))">
-        <div class="cert-row">
-          <div class="cert-hex"><span class="cl">A</span><span class="clb">Certificate</span></div>
-          <div class="cert-hex"><span class="cl">B</span><span class="clb">Certificate</span></div>
-          <div class="cert-hex"><span class="cl">C</span><span class="clb">Certificate</span></div>
+      <div>
+        <div style="background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:38px 28px;text-align:center">
+          <img src="{{ url_for('static', filename='img/ncc-crest.png') }}" alt="NCC Crest" style="width:150px;height:auto;margin:0 auto;display:block;filter:drop-shadow(0 8px 20px rgba(27,58,99,.22))">
+          <div class="cert-row" style="margin-top:24px">
+            <div class="cert-hex"><span class="cl">A</span><span class="clb">Certificate</span></div>
+            <div class="cert-hex"><span class="cl">B</span><span class="clb">Certificate</span></div>
+            <div class="cert-hex"><span class="cl">C</span><span class="clb">Certificate</span></div>
+          </div>
         </div>
       </div>
     </div>
