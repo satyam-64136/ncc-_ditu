@@ -14,13 +14,14 @@
 
     {% set icons = {'award':'award_paths','parade':'medal_paths','academic':'graduation_cap_paths','camp':'tent_paths','drill':'trophy_paths','service':'star_paths'} %}
     {% set icons_span = {'award':'award','parade':'medal','academic':'graduation_cap','camp':'tent','drill':'trophy','service':'star'} %}
+    {% set featured = items[:8] %}
 
-    <!-- Medals -->
+    <!-- Medals (curated highlights only, not the full list) -->
     <div style="margin-bottom:20px" class="reveal">
-      <span class="tag">Medals & Decorations</span>
+      <span class="tag">Recent Highlights</span>
     </div>
     <div class="medals-grid stagger">
-      {% for item in items %}
+      {% for item in featured %}
       <div class="medal-wrap">
         <div class="medal-svg-outer">
           <div class="medal-glow"></div>
@@ -53,15 +54,26 @@
       {% endfor %}
     </div>
 
-    <!-- Timeline -->
-    <div class="section-hd reveal" style="margin-bottom:40px">
+    <!-- Timeline (full list, filterable) -->
+    <div class="section-hd reveal" style="margin-bottom:24px">
       <span class="tag">Achievement Timeline</span>
       <h3 style="font-family:var(--f-display);font-size:clamp(28px,4vw,44px);letter-spacing:.08em;color:var(--white);margin-bottom:8px">History of <em style="color:var(--gold);font-style:normal">Excellence</em></h3>
       <div class="divider"></div>
     </div>
-    <div class="ach-timeline stagger">
+
+    <div class="gal-filters reveal" id="achFilters">
+      <button class="gal-btn active" data-cat="all">All ({{ items|length }})</button>
+      {% for cat in ['award','parade','academic','camp','drill','service'] %}
+        {% set cnt = items|selectattr('category','equalto',cat)|list|length %}
+        {% if cnt > 0 %}
+        <button class="gal-btn" data-cat="{{ cat }}">{{ cat|title }} ({{ cnt }})</button>
+        {% endif %}
+      {% endfor %}
+    </div>
+
+    <div class="ach-timeline stagger" id="achTimeline">
       {% for item in items %}
-      <div class="ach-item">
+      <div class="ach-item {% if loop.index > 10 %}ach-hidden-initial{% endif %}" data-cat="{{ item['category'] or 'award' }}">
         <div class="ach-top">
           <span class="ach-icon">{{ icon[icons_span.get(item['category'],'medal')](19,'var(--gold)') }}</span>
           <span class="ach-ttl">{{ item['title'] }}</span>
@@ -71,7 +83,48 @@
       </div>
       {% endfor %}
     </div>
+    {% if items|length > 10 %}
+    <div style="text-align:center;margin-top:24px">
+      <button id="achShowMore" class="btn btn-outline btn-sm">Show {{ items|length - 10 }} Earlier Achievements</button>
+    </div>
+    {% endif %}
 
   </div>
 </section>
+<script>
+(function(){
+  const filters = document.getElementById('achFilters');
+  const timeline = document.getElementById('achTimeline');
+  const showMoreBtn = document.getElementById('achShowMore');
+  let showingAll = false;
+
+  function render() {
+    const activeCat = filters.querySelector('.gal-btn.active')?.dataset.cat || 'all';
+    const items = timeline.querySelectorAll('.ach-item');
+    items.forEach(item => {
+      const matches = (activeCat === 'all' || item.dataset.cat === activeCat);
+      const isOverflow = item.classList.contains('ach-hidden-initial');
+      const hideForCollapse = (activeCat === 'all' && isOverflow && !showingAll);
+      item.style.display = (matches && !hideForCollapse) ? '' : 'none';
+    });
+    if (showMoreBtn) showMoreBtn.style.display = (activeCat === 'all' && !showingAll) ? '' : 'none';
+  }
+
+  filters?.addEventListener('click', e => {
+    const btn = e.target.closest('.gal-btn');
+    if (!btn) return;
+    filters.querySelectorAll('.gal-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    showingAll = false;
+    render();
+  });
+
+  showMoreBtn?.addEventListener('click', () => {
+    showingAll = true;
+    render();
+  });
+
+  render();
+})();
+</script>
 {% endblock %}
