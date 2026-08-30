@@ -182,7 +182,7 @@ button,input,select,textarea{font-family:inherit}
 .stat-lbl{display:block;font-family:var(--f-ui);font-size:12px;font-weight:600;letter-spacing:.1em;color:rgba(255,255,255,.72);text-transform:uppercase;margin-top:8px}
 
 /* ── ABOUT CARDS ─────────────────────────────────────────────── */
-.about-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:20px}
+.about-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:20px}
 .about-card{background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:30px;
   transition:border-color .2s, box-shadow .2s, transform .2s}
 .about-card:hover{border-color:var(--border-hi);box-shadow:var(--shadow-md);transform:translateY(-3px)}
@@ -268,7 +268,7 @@ button,input,select,textarea{font-family:inherit}
   margin-left:auto;font-family:var(--f-display);font-size:30px;font-weight:600;color:var(--border-hi);line-height:1;
 }
 
-.cadets-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:20px}
+.cadets-grid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:20px}
 .cadet-card{
   background:var(--surface);border:1px solid var(--border);
   border-radius:20px;overflow:hidden;position:relative;
@@ -308,7 +308,6 @@ button,input,select,textarea{font-family:inherit}
 /* ================================================================
    RANK HOLDERS
    ================================================================ */
-.rank-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:24px}
 
 /* ── RANK HIERARCHY (tiered, biggest at top) ────────────────────── */
 .rank-hierarchy{display:flex;flex-direction:column;align-items:center;gap:0;width:100%}
@@ -396,7 +395,7 @@ button,input,select,textarea{font-family:inherit}
 /* ================================================================
    ACHIEVEMENTS
    ================================================================ */
-.medals-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:24px;margin-bottom:72px}
+.medals-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:24px;margin-bottom:72px}
 .medal-wrap{text-align:center;background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:22px 16px;transition:border-color .2s, box-shadow .2s}
 .medal-wrap:hover{border-color:var(--border-hi);box-shadow:var(--shadow-sm)}
 .medal-svg-outer{position:relative;display:inline-block;margin-bottom:12px}
@@ -428,7 +427,7 @@ button,input,select,textarea{font-family:inherit}
 .gal-btn{font-family:var(--f-ui);font-size:12.5px;font-weight:600;padding:8px 18px;border:1px solid var(--border);border-radius:20px;background:#fff;color:var(--muted);cursor:pointer;transition:all .18s;text-decoration:none}
 .gal-btn:hover{border-color:var(--border-hi);color:var(--gold)}
 .gal-btn.active{border-color:var(--gold);color:#fff;background:var(--gold)}
-.gal-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:14px}
+.gal-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px}
 .gal-item{position:relative;border-radius:18px;overflow:hidden;aspect-ratio:4/3;cursor:pointer;border:1px solid var(--border);background:#eef1f5}
 .gal-item img{width:100%;height:100%;object-fit:cover;transition:transform .3s}
 .gal-item:hover img{transform:scale(1.04)}
@@ -444,7 +443,7 @@ button,input,select,textarea{font-family:inherit}
 /* ================================================================
    ALUMNI
    ================================================================ */
-.alumni-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:22px}
+.alumni-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:22px}
 .alumni-card{
   background:var(--surface);border:1px solid var(--border);
   border-radius:20px;overflow:hidden;transition:border-color .2s, box-shadow .2s, transform .2s;
@@ -479,6 +478,11 @@ button,input,select,textarea{font-family:inherit}
   .hero-emblem-ring{width:220px;height:220px}
   #hero{padding-bottom:110px}
   .statsbar{margin-top:-40px}
+  .about-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .cadets-grid{grid-template-columns:repeat(3,minmax(0,1fr))}
+  .medals-grid{grid-template-columns:repeat(3,minmax(0,1fr))}
+  .gal-grid{grid-template-columns:repeat(3,minmax(0,1fr))}
+  .alumni-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
 }
 @media(max-width:768px){
   .nav-links{display:none}
@@ -494,7 +498,11 @@ button,input,select,textarea{font-family:inherit}
 }
 @media(max-width:480px){
   .statsbar-inner{grid-template-columns:1fr 1fr}
-  .cadets-grid{grid-template-columns:repeat(auto-fill,minmax(150px,1fr))}
+  .about-grid{grid-template-columns:minmax(0,1fr)}
+  .cadets-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .medals-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .gal-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .alumni-grid{grid-template-columns:minmax(0,1fr)}
 }
 
 /* page enter */

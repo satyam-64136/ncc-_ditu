@@ -12,54 +12,7 @@
       <p class="lead">Awards, recognitions and milestones earned by 29 UK Battalion.</p>
     </div>
 
-    {% set icons = {'award':'award_paths','parade':'medal_paths','academic':'graduation_cap_paths','camp':'tent_paths','drill':'trophy_paths','service':'star_paths'} %}
     {% set icons_span = {'award':'award','parade':'medal','academic':'graduation_cap','camp':'tent','drill':'trophy','service':'star'} %}
-    {% set featured = items[:8] %}
-
-    <!-- Medals (curated highlights only, not the full list) -->
-    <div style="margin-bottom:20px" class="reveal">
-      <span class="tag">Recent Highlights</span>
-    </div>
-    <div class="medals-grid stagger">
-      {% for item in featured %}
-      <div class="medal-wrap">
-        <div class="medal-svg-outer">
-          <div class="medal-glow"></div>
-          <svg class="medal-svg" viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
-            <!-- outer decorative ring -->
-            <circle cx="60" cy="60" r="52" fill="rgba(27,58,99,.05)" stroke="rgba(27,58,99,.4)" stroke-width="1.5"/>
-            <!-- spokes -->
-            {% for i in range(12) %}
-            <line x1="60" y1="20" x2="60" y2="10" stroke="rgba(27,58,99,.2)" stroke-width="1.2" transform="rotate({{ i*30 }},60,60)"/>
-            {% endfor %}
-            <!-- inner ring -->
-            <circle cx="60" cy="60" r="36" fill="rgba(27,58,99,.06)" stroke="rgba(27,58,99,.3)" stroke-width="1"/>
-            <!-- centre -->
-            <circle cx="60" cy="60" r="24" fill="rgba(27,58,99,.1)" stroke="rgba(27,58,99,.35)" stroke-width="1.2"/>
-            <!-- icon -->
-            <g transform="translate(44,44) scale(1.333)" fill="none" stroke="rgba(27,58,99,.85)" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round">
-              {{ icon[icons.get(item['category'],'medal_paths')]() }}
-            </g>
-            <!-- year ribbon -->
-            {% if item['year'] %}
-            <rect x="18" y="100" width="84" height="14" rx="2" fill="rgba(27,58,99,.12)" stroke="rgba(27,58,99,.25)" stroke-width=".8"/>
-            <text x="60" y="111" text-anchor="middle" fill="rgba(27,58,99,.8)" font-family="'IBM Plex Mono',monospace" font-size="8" letter-spacing="2">{{ item['year'] }}</text>
-            {% endif %}
-          </svg>
-        </div>
-        <div class="medal-title">{{ item['title'] }}</div>
-        <div class="medal-desc">{{ item['description'] or '' }}</div>
-        {% if item['year'] %}<span class="medal-year">{{ item['year'] }}</span>{% endif %}
-      </div>
-      {% endfor %}
-    </div>
-
-    <!-- Timeline (full list, filterable) -->
-    <div class="section-hd reveal" style="margin-bottom:24px">
-      <span class="tag">Achievement Timeline</span>
-      <h3 style="font-family:var(--f-display);font-size:clamp(28px,4vw,44px);letter-spacing:.08em;color:var(--white);margin-bottom:8px">History of <em style="color:var(--gold);font-style:normal">Excellence</em></h3>
-      <div class="divider"></div>
-    </div>
 
     <div class="gal-filters reveal" id="achFilters">
       <button class="gal-btn active" data-cat="all">All ({{ items|length }})</button>
@@ -73,7 +26,7 @@
 
     <div class="ach-timeline stagger" id="achTimeline">
       {% for item in items %}
-      <div class="ach-item {% if loop.index > 10 %}ach-hidden-initial{% endif %}" data-cat="{{ item['category'] or 'award' }}">
+      <div class="ach-item {% if loop.index > 12 %}ach-hidden-initial{% endif %}" data-cat="{{ item['category'] or 'award' }}">
         <div class="ach-top">
           <span class="ach-icon">{{ icon[icons_span.get(item['category'],'medal')](19,'var(--gold)') }}</span>
           <span class="ach-ttl">{{ item['title'] }}</span>
@@ -83,9 +36,9 @@
       </div>
       {% endfor %}
     </div>
-    {% if items|length > 10 %}
+    {% if items|length > 12 %}
     <div style="text-align:center;margin-top:24px">
-      <button id="achShowMore" class="btn btn-outline btn-sm">Show {{ items|length - 10 }} Earlier Achievements</button>
+      <button id="achShowMore" class="btn btn-outline btn-sm">Show {{ items|length - 12 }} Earlier Achievements</button>
     </div>
     {% endif %}
 
