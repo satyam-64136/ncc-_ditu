@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nominal Register — DIT University NCC</title>
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Inter:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/admin.css') }}">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/exceljs/4.3.0/exceljs.min.js"></script>
+<style>
+  /* Page-specific layout only — everything else (colors, fonts, buttons,
+     tables, form fields) comes straight from main.css / admin.css so this
+     tool always matches the rest of the site automatically. */
+
+  body{background:var(--black)}
+
+  .nr-masthead{
+    background:var(--gold);color:#fff;
+    padding:16px clamp(16px,4vw,40px);
+    display:flex;align-items:center;justify-content:space-between;gap:20px;flex-wrap:wrap;
+    position:sticky;top:0;z-index:20;
+  }
+  .nr-masthead-id{display:flex;align-items:center;gap:12px;min-width:0}
+  .nr-crest{width:38px;height:38px;flex:none;border-radius:10px;background:rgba(255,255,255,.14);display:flex;align-items:center;justify-content:center}
+  .nr-masthead h1{font-family:var(--f-display);font-weight:600;font-size:19px;margin:0;letter-spacing:.02em}
+  .nr-masthead p{margin:2px 0 0;font-size:12px;color:rgba(255,255,255,.65);font-family:var(--f-ui)}
+  .nr-back{
+    font-family:var(--f-ui);font-size:12.5px;font-weight:600;color:rgba(255,255,255,.9);
+    text-decoration:none;white-space:nowrap;padding:8px 16px;
+    border:1px solid rgba(255,255,255,.3);border-radius:20px;transition:background .15s;
+  }
+  .nr-back:hover{background:rgba(255,255,255,.12)}
+
+  .nr-app{
+    max-width:1360px;margin:0 auto;
+    padding:clamp(16px,3vw,28px) clamp(16px,4vw,32px) 80px;
+    display:grid;grid-template-columns:minmax(320px,400px) 1fr;gap:20px;align-items:start;
+  }
+  @media(max-width:940px){ .nr-app{grid-template-columns:1fr;padding-left:14px;padding-right:14px} }
+
+  .nr-panel-head{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:14px}
+  .nr-panel-head h2{font-family:var(--f-display);font-size:16px;font-weight:600;margin:0;color:var(--gold);letter-spacing:.02em}
+  .nr-count{font-family:var(--f-mono);font-size:11px;color:var(--muted)}
+
+  .nr-search-row{display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap}
+  .nr-search-row input{flex:1;min-width:140px}
+
+  .nr-db-wrap{max-height:560px;overflow:auto}
+  .nr-db-wrap table{width:100%;min-width:420px}
+  .nr-db-wrap thead th{position:sticky;top:0;z-index:1}
+  .nr-db-wrap tbody tr{cursor:pointer}
+  .nr-db-wrap tbody tr.selected td{background:rgba(63,143,214,.08)}
+  .nr-db-wrap td.name{font-weight:600}
+  .nr-db-wrap td.regt{font-family:var(--f-mono);font-size:11.5px;color:var(--muted)}
+  .nr-empty td{text-align:center;padding:32px 10px;color:var(--muted);font-style:italic;cursor:default}
+
+  .nr-badge{
+    display:inline-block;font-family:var(--f-ui);font-size:10.5px;font-weight:700;
+    padding:3px 10px;border-radius:20px;border:1px solid var(--border);
+    background:#fff;color:var(--muted);white-space:nowrap;
+  }
+  tr.selected .nr-badge{border-color:var(--skyblue);color:var(--gold)}
+
+  .nr-chk-wrap{position:relative;display:inline-flex;width:22px;height:22px}
+  .nr-chk-wrap input{position:absolute;inset:0;width:22px;height:22px;margin:0;opacity:0;cursor:pointer;z-index:1}
+  .nr-chk-box{position:absolute;inset:0;width:22px;height:22px;border:1.5px solid var(--border-hi);border-radius:6px;background:#fff;transition:all .12s}
+  .nr-chk-wrap input:checked + .nr-chk-box{background:var(--gold);border-color:var(--gold)}
+  .nr-chk-wrap input:checked + .nr-chk-box::after{content:'';position:absolute;left:7px;top:3px;width:6px;height:11px;border:solid #fff;border-width:0 2.5px 2.5px 0;transform:rotate(45deg)}
+  .nr-chk-wrap:hover .nr-chk-box{border-color:var(--gold)}
+
+  .nr-sheet{background:#fff;border:1px solid var(--border);border-radius:14px;margin-top:14px;padding:26px clamp(14px,3vw,36px);overflow-x:auto}
+  .nr-sheet-title{text-align:center;font-family:var(--f-display);font-weight:600;font-size:19px;letter-spacing:.03em;margin:0 0 16px;color:var(--gold)}
+  table.nr-nominal{width:100%;border-collapse:collapse;margin-top:8px;min-width:520px}
+  table.nr-nominal th{background:rgba(27,58,99,.05);border:1px solid var(--border);font-family:var(--f-ui);font-weight:700;font-size:12px;letter-spacing:.04em;color:var(--gold);padding:9px 6px;text-align:center;text-transform:uppercase}
+  table.nr-nominal td{border:1px solid var(--border);padding:8px;font-weight:500;font-size:13px;text-align:center}
+  table.nr-nominal td.name-cell{text-align:left;font-weight:600}
+  table.nr-nominal tbody tr.year-lead td{border-top:2px solid var(--gold)}
+  .nr-empty-preview{text-align:center;color:var(--muted);font-style:italic;padding:44px 10px}
+
+  .nr-export-bar{display:flex;align-items:center;justify-content:flex-end;flex-wrap:wrap;gap:10px;margin-top:16px;padding-top:14px;border-top:1px solid var(--border)}
+
+  .nr-toast{
+    position:fixed;bottom:22px;right:22px;left:22px;max-width:320px;margin-left:auto;
+    background:var(--gold);color:#fff;padding:12px 18px;font-size:13px;border-radius:10px;
+    box-shadow:var(--shadow-lg);opacity:0;transform:translateY(8px);transition:all .25s;
+    pointer-events:none;z-index:50;font-family:var(--f-ui);
+  }
+  .nr-toast.show{opacity:1;transform:translateY(0)}
+
+  @media(max-width:600px){
+    .nr-masthead h1{font-size:16.5px}
+    .nr-masthead p{display:none}
+    .nr-back{padding:7px 12px;font-size:11.5px}
+    .nr-search-row input{min-width:100%}
+    .nr-chk-wrap,.nr-chk-wrap input,.nr-chk-box{width:25px;height:25px}
+    .nr-sheet{padding:16px 12px}
+    .nr-export-bar{justify-content:stretch}
+    .nr-export-bar .btn-row{width:100%;display:flex;gap:8px}
+    .nr-export-bar .btn-row .btn{flex:1}
+  }
+
+  @media print{
+    .nr-masthead,.nr-panel-head,.nr-search-row,.nr-db-panel,.nr-title-fld,.nr-export-bar,.nr-toast{display:none !important}
+    body{background:#fff}
+    .nr-app{grid-template-columns:1fr;padding:0;max-width:none}
+    .nr-sheet{border:none;box-shadow:none;padding:0;border-radius:0}
+  }
+</style>
+</head>
+<body>
+
+<div class="nr-masthead">
+  <div class="nr-masthead-id">
+    <div class="nr-crest">
+      <svg viewBox="0 0 24 24" width="21" height="21" fill="none" stroke="#fff" stroke-width="1.6">
+        <path d="M12 2 L21 6 V12 C21 17 17 21 12 22 C7 21 3 17 3 12 V6 Z"/>
+        <path d="M12 8 L12 16 M8.5 10.5 L15.5 13.5 M15.5 10.5 L8.5 13.5" stroke="#8fc0e8"/>
+      </svg>
+    </div>
+    <div>
+      <h1>Nominal Register</h1>
+      <p>DIT University NCC · 29 UK Battalion</p>
+    </div>
+  </div>
+  <a href="{{ url_for('index') }}" class="nr-back">← NCC Site</a>
+</div>
+
+<div class="nr-app">
+
+  <!-- ===================== LEFT: CADET DATABASE ===================== -->
+  <section class="nr-db-panel">
+    <div class="nr-panel-head">
+      <h2>Cadet Database</h2>
+      <span class="nr-count" id="dbCount">Loading…</span>
+    </div>
+
+    <div class="nr-search-row">
+      <input type="search" id="searchBox" placeholder="Search name or roll no…">
+      <button class="btn btn-outline btn-sm" id="selectAllBtn" type="button">Select all</button>
+      <button class="btn btn-ghost btn-sm" id="selectNoneBtn" type="button">None</button>
+    </div>
+
+    <div class="adm-tw nr-db-wrap">
+      <table class="adm-table">
+        <thead>
+          <tr>
+            <th style="width:36px"></th>
+            <th>Name</th>
+            <th>Roll No.</th>
+            <th style="width:78px">Rank</th>
+            <th style="width:56px">Year</th>
+          </tr>
+        </thead>
+        <tbody id="dbBody">
+          <tr class="nr-empty"><td colspan="5">Loading cadets from database…</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- ===================== RIGHT: NOMINAL BUILDER ===================== -->
+  <section>
+    <div class="nr-panel-head">
+      <h2>Nominal Builder</h2>
+      <span class="nr-count" id="selCount">0 selected</span>
+    </div>
+
+    <div class="fld nr-title-fld" style="max-width:480px">
+      <label for="docTitle">Nominal Title</label>
+      <input type="text" id="docTitle" value="NOMINAL FOR RDC SELECTIONS">
+    </div>
+
+    <!-- live preview styled like the printed nominal -->
+    <div class="nr-sheet" id="sheet">
+      <h3 class="nr-sheet-title" id="pvTitle">NOMINAL FOR RDC SELECTIONS</h3>
+      <table class="nr-nominal" id="pvTable">
+        <thead>
+          <tr>
+            <th style="width:50px">S. No</th>
+            <th style="width:80px">Rank</th>
+            <th>Name</th>
+            <th style="width:170px">Roll Number</th>
+            <th style="width:70px">Year</th>
+          </tr>
+        </thead>
+        <tbody id="pvBody">
+          <tr><td colspan="5" class="nr-empty-preview">No cadets selected.</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="nr-export-bar">
+      <div class="btn-row">
+        <button class="btn btn-outline" id="printBtn" type="button">Print / PDF</button>
+        <button class="btn btn-gold" id="exportBtn" type="button">Export to Excel</button>
+      </div>
+    </div>
+
+  </section>
+
+</div>
+
+<div class="nr-toast" id="toast"></div>
+
+<script>
+(function(){
+
+  /* ---------------- constants ---------------- */
+  var RANKS = [
+    {key:'SUO',  label:'SUO',   weight:1},
+    {key:'UO',   label:'UO',    weight:2},
+    {key:'JUO',  label:'JUO',   weight:3},
+    {key:'CSM',  label:'CSM',   weight:4},
+    {key:'CQMS', label:'CQMS',  weight:5},
+    {key:'SGT',  label:'Sgt.',  weight:6},
+    {key:'CPL',  label:'Cpl.',  weight:7},
+    {key:'LCPL', label:'L/Cpl.',weight:8},
+    {key:'CDT',  label:'Cdt.',  weight:9}
+  ];
+  var YEARS = [
+    {key:'3rd', label:'3rd', weight:3},
+    {key:'2nd', label:'2nd', weight:2},
+    {key:'1st', label:'1st', weight:1}
+  ];
+  var rankByKey = {}; RANKS.forEach(function(r){ rankByKey[r.key]=r; });
+  var yearByKey = {}; YEARS.forEach(function(y){ yearByKey[y.key]=y; });
+
+  var cadets = [];      // {id,name,regtNo,enrollNo,rank,year,selected}
+
+  /* ---------------- selection persistence (local only — roster always comes fresh from the DB) ---------------- */
+  var SEL_KEY = 'ncc_nominal_selected_ids';
+  function loadSelectedIds(){
+    try{ return JSON.parse(localStorage.getItem(SEL_KEY) || '[]'); }catch(e){ return []; }
+  }
+  function saveSelectedIds(){
+    try{
+      var ids = cadets.filter(function(c){ return c.selected; }).map(function(c){ return c.id; });
+      localStorage.setItem(SEL_KEY, JSON.stringify(ids));
+    }catch(e){}
+  }
+
+  /* ---------------- fetch cadets from our live database ---------------- */
+  async function loadCadets(){
+    var selectedIds = loadSelectedIds();
+    try{
+      var res = await fetch('/api/nominal-cadets');
+      if (!res.ok) throw new Error('HTTP ' + res.status);
+      var data = await res.json();
+      var list = (data.cadets || []).map(function(c){
+        if (!rankByKey[c.rank]) c.rank = 'CDT';
+        if (!yearByKey[c.year]) c.year = '3rd';
+        c.selected = selectedIds.indexOf(c.id) !== -1;
+        return c;
+      });
+      return list;
+    }catch(err){
+      console.error('Failed to load cadets:', err);
+      showToast('Could not load cadets from the database.');
+      return [];
+    }
+  }
+
+  /* ---------------- sorting ----------------
+     3rd Year (ranked, then Cdt.) → 2nd Year (ranked, then Cdt.) → 1st Year (ranked, then Cdt.)
+     "Ranked" = anything above Cdt. in the RANKS weight order. */
+  function sortCadets(list){
+    return list.slice().sort(function(a,b){
+      var yw = yearByKey[b.year].weight - yearByKey[a.year].weight;
+      if (yw !== 0) return yw;
+      var rw = rankByKey[a.rank].weight - rankByKey[b.rank].weight;
+      if (rw !== 0) return rw;
+      return a.name.localeCompare(b.name);
+    });
+  }
+
+  /* ---------------- render: database table ---------------- */
+  var dbBody = document.getElementById('dbBody');
+  var dbCount = document.getElementById('dbCount');
+  var selCount = document.getElementById('selCount');
+  var searchBox = document.getElementById('searchBox');
+
+  function renderDb(){
+    var q = (searchBox.value || '').trim().toLowerCase();
+    var visible = sortCadets(cadets.filter(function(c){
+      if (!q) return true;
+      return c.name.toLowerCase().indexOf(q) !== -1 || c.regtNo.toLowerCase().indexOf(q) !== -1;
+    }));
+    dbBody.innerHTML = '';
+    if (!visible.length){
+      var empty = document.createElement('tr');
+      empty.className = 'nr-empty';
+      empty.innerHTML = '<td colspan="5">' + (cadets.length ? 'No cadets match your search.' : 'No active cadets found.') + '</td>';
+      dbBody.appendChild(empty);
+    } else {
+      visible.forEach(function(c){
+        var tr = document.createElement('tr');
+        tr.dataset.id = c.id;
+        if (c.selected) tr.classList.add('selected');
+
+        var tdChk = document.createElement('td');
+        var wrap = document.createElement('label');
+        wrap.className = 'nr-chk-wrap';
+        var chk = document.createElement('input');
+        chk.type = 'checkbox'; chk.checked = !!c.selected;
+        var box = document.createElement('span');
+        box.className = 'nr-chk-box';
+        wrap.appendChild(chk); wrap.appendChild(box);
+        tdChk.appendChild(wrap);
+
+        function toggle(){
+          c.selected = !c.selected;
+          chk.checked = c.selected;
+          tr.classList.toggle('selected', c.selected);
+          saveSelectedIds(); renderPreview(); updateCounts();
+        }
+        chk.addEventListener('change', function(){
+          c.selected = chk.checked;
+          tr.classList.toggle('selected', c.selected);
+          saveSelectedIds(); renderPreview(); updateCounts();
+        });
+        tr.addEventListener('click', function(e){
+          if (e.target === chk) return;
+          toggle();
+        });
+
+        var tdName = document.createElement('td');
+        tdName.className = 'name'; tdName.textContent = c.name;
+
+        var tdRegt = document.createElement('td');
+        tdRegt.className = 'regt';
+        tdRegt.textContent = c.regtNo + (c.enrollNo ? ' · ' + c.enrollNo : '');
+
+        var tdRank = document.createElement('td');
+        var rankBadge = document.createElement('span');
+        rankBadge.className = 'nr-badge'; rankBadge.textContent = rankByKey[c.rank].label;
+        tdRank.appendChild(rankBadge);
+
+        var tdYear = document.createElement('td');
+        var yearBadge = document.createElement('span');
+        yearBadge.className = 'nr-badge'; yearBadge.textContent = yearByKey[c.year].label;
+        tdYear.appendChild(yearBadge);
+
+        tr.appendChild(tdChk); tr.appendChild(tdName); tr.appendChild(tdRegt);
+        tr.appendChild(tdRank); tr.appendChild(tdYear);
+        dbBody.appendChild(tr);
+      });
+    }
+    updateCounts();
+  }
+
+  function updateCounts(){
+    dbCount.textContent = cadets.length + (cadets.length === 1 ? ' cadet' : ' cadets');
+    var n = cadets.filter(function(c){ return c.selected; }).length;
+    selCount.textContent = n + (n === 1 ? ' selected' : ' selected');
+  }
+
+  /* ---------------- render: preview ---------------- */
+  var pvBody = document.getElementById('pvBody');
+  var pvTitle = document.getElementById('pvTitle');
+  var docTitle = document.getElementById('docTitle');
+
+  function getNominalList(){
+    return sortCadets(cadets.filter(function(c){ return c.selected; }));
+  }
+
+  function renderPreview(){
+    pvTitle.textContent = docTitle.value.trim() || 'NOMINAL';
+
+    var list = getNominalList();
+    pvBody.innerHTML = '';
+    if (!list.length){
+      pvBody.innerHTML = '<tr><td colspan="5" class="nr-empty-preview">No cadets selected.</td></tr>';
+      return;
+    }
+    var lastYear = null;
+    list.forEach(function(c, i){
+      var tr = document.createElement('tr');
+      if (c.year !== lastYear){ tr.className = 'year-lead'; lastYear = c.year; }
+      tr.innerHTML =
+        '<td>' + (i+1) + '.</td>' +
+        '<td>' + rankByKey[c.rank].label + '</td>' +
+        '<td class="name-cell">' + escapeHtml(c.name) + '</td>' +
+        '<td>' + escapeHtml(c.regtNo) + '</td>' +
+        '<td>' + yearByKey[c.year].label + '</td>';
+      pvBody.appendChild(tr);
+    });
+  }
+
+  function escapeHtml(s){
+    return String(s).replace(/[&<>"']/g, function(m){
+      return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m];
+    });
+  }
+
+  /* ---------------- search / select all / none ---------------- */
+  searchBox.addEventListener('input', renderDb);
+  document.getElementById('selectAllBtn').addEventListener('click', function(){
+    var q = (searchBox.value||'').trim().toLowerCase();
+    cadets.forEach(function(c){
+      if (!q || c.name.toLowerCase().indexOf(q)!==-1 || c.regtNo.toLowerCase().indexOf(q)!==-1) c.selected = true;
+    });
+    saveSelectedIds(); renderDb(); renderPreview();
+  });
+  document.getElementById('selectNoneBtn').addEventListener('click', function(){
+    cadets.forEach(function(c){ c.selected = false; });
+    saveSelectedIds(); renderDb(); renderPreview();
+  });
+
+  /* ---------------- title live update ---------------- */
+  docTitle.addEventListener('input', renderPreview);
+
+  /* ---------------- print ---------------- */
+  document.getElementById('printBtn').addEventListener('click', function(){ window.print(); });
+
+  /* ---------------- toast ---------------- */
+  var toastTimer = null;
+  function showToast(msg){
+    var t = document.getElementById('toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(function(){ t.classList.remove('show'); }, 2600);
+  }
+
+  /* ---------------- Excel export ---------------- */
+  document.getElementById('exportBtn').addEventListener('click', async function(){
+    var list = getNominalList();
+    if (!list.length){ showToast('Select at least one cadet before exporting.'); return; }
+    var btn = this;
+    var originalLabel = btn.textContent;
+    btn.disabled = true; btn.textContent = 'Building…';
+    try{
+      await exportToExcel(list);
+      showToast('Excel file exported.');
+    }catch(err){
+      console.error(err);
+      showToast('Export failed — see console for details.');
+    }finally{
+      btn.disabled = false; btn.textContent = originalLabel;
+    }
+  });
+
+  async function exportToExcel(list){
+    var wb = new ExcelJS.Workbook();
+    var ws = wb.addWorksheet('Nominal', { pageSetup: { orientation: 'portrait', fitToPage: true } });
+
+    ws.columns = [
+      { width: 8 },   // S.No
+      { width: 11 },  // Rank
+      { width: 26 },  // Name
+      { width: 22 },  // Roll No
+      { width: 9 }    // Year
+    ];
+
+    var thin = { style: 'thin', color: { argb: 'FF000000' } };
+    var allBorders = { top: thin, bottom: thin, left: thin, right: thin };
+    var titleText = (document.getElementById('docTitle').value.trim() || 'NOMINAL').toUpperCase();
+
+    var rowCursor = 1;
+
+    ws.mergeCells(rowCursor, 1, rowCursor, 5);
+    var titleCell = ws.getCell(rowCursor, 1);
+    titleCell.value = titleText;
+    titleCell.font = { name: 'Arial', size: 14, bold: true, underline: true };
+    titleCell.alignment = { horizontal: 'center', vertical: 'bottom' };
+    ws.getRow(rowCursor).height = 21;
+    rowCursor++;
+
+    for (var b=0; b<2; b++){ rowCursor++; }
+
+    var headers = ['S. No', 'RANK', 'NAME', 'ROLL NUMBER', 'Year'];
+    var headerRow = ws.getRow(rowCursor);
+    headers.forEach(function(h, idx){
+      var cell = headerRow.getCell(idx+1);
+      cell.value = h;
+      cell.font = { name: 'Arial', size: 14, bold: true };
+      cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFE8E8E8' } };
+      cell.alignment = { horizontal: 'center', vertical: 'bottom' };
+      cell.border = allBorders;
+    });
+    headerRow.height = 21;
+    rowCursor++;
+
+    list.forEach(function(c, i){
+      var row = ws.getRow(rowCursor);
+      var values = [i+1, rankByKey[c.rank].label, c.name, c.regtNo, yearByKey[c.year].label];
+      values.forEach(function(v, idx){
+        var cell = row.getCell(idx+1);
+        cell.value = v;
+        cell.font = { name: 'Arial', size: 12, bold: true };
+        cell.alignment = { horizontal: (idx===2) ? 'left' : 'center', vertical: 'bottom' };
+        cell.border = allBorders;
+      });
+      row.height = 18;
+      rowCursor++;
+    });
+
+    var buffer = await wb.xlsx.writeBuffer();
+    var blob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement('a');
+    var fname = (titleText.replace(/[^A-Za-z0-9]+/g,'_').replace(/^_+|_+$/g,'') || 'Nominal') + '.xlsx';
+    a.href = url; a.download = fname;
+    document.body.appendChild(a); a.click(); document.body.removeChild(a);
+    setTimeout(function(){ URL.revokeObjectURL(url); }, 4000);
+  }
+
+  /* ---------------- init ---------------- */
+  (async function init(){
+    cadets = await loadCadets();
+    renderDb();
+    renderPreview();
+  })();
+
+})();
+</script>
+</body>
+</html>
