@@ -7,7 +7,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Inter:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
 <link rel="stylesheet" href="{{ url_for('static', filename='css/admin.css') }}">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/exceljs/4.3.0/exceljs.min.js"></script>
+<script src="{{ url_for('static', filename='js/vendor/exceljs.min.js') }}"></script>
 <style>
   /* Page-specific layout only — everything else (colors, fonts, buttons,
      tables, form fields) comes straight from main.css / admin.css so this
@@ -37,6 +37,7 @@
     padding:clamp(16px,3vw,28px) clamp(16px,4vw,32px) 80px;
     display:grid;grid-template-columns:minmax(320px,400px) 1fr;gap:20px;align-items:start;
   }
+  .nr-app > *{ min-width:0; }
   @media(max-width:940px){ .nr-app{grid-template-columns:1fr;padding-left:14px;padding-right:14px} }
 
   .nr-panel-head{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:14px}

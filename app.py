@@ -175,6 +175,41 @@ def alumni():
     return render_template('alumni.html',
         alumni=query("SELECT * FROM alumni ORDER BY batch_year DESC"))
 
+# ── NOMINAL REGISTER ─────────────────────────────────────────────
+# Intentionally NOT behind @admin_required — this is a standalone tool
+# meant to be shareable by direct link (e.g. to an ANO who doesn't have
+# an admin login) without exposing the rest of the admin panel. It's
+# also linked from inside the admin sidebar for convenience.
+@app.route('/nominal-register')
+def nominal_register():
+    return render_template('nominal_register.html')
+
+def _year_bucket(ncc_year, category):
+    y = (ncc_year or '').lower()
+    if '3rd' in y: return '3rd'
+    if '2nd' in y: return '2nd'
+    if '1st' in y: return '1st'
+    # fall back to category if ncc_year wasn't set on an older record
+    return '3rd' if category == 'Senior' else '2nd'
+
+@app.route('/api/nominal-cadets')
+def api_nominal_cadets():
+    rows = query("""SELECT id, name, rank, roll_number, chest_number, ncc_year, category
+                    FROM cadets WHERE active=1 ORDER BY name""")
+    return {
+        'cadets': [
+            {
+                'id': r['id'],
+                'name': r['name'],
+                'regtNo': r['roll_number'] or '',
+                'enrollNo': r['chest_number'] or '',
+                'rank': r['rank'] or 'CDT',
+                'year': _year_bucket(r['ncc_year'], r['category']),
+            }
+            for r in rows
+        ]
+    }
+
 # ── ADMIN AUTH ───────────────────────────────────────────────────
 @app.route('/command-center/login', methods=['GET','POST'])
 def admin_login():
