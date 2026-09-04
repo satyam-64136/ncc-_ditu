@@ -7,7 +7,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Inter:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
 <link rel="stylesheet" href="{{ url_for('static', filename='css/admin.css') }}">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/exceljs/4.3.0/exceljs.min.js"></script>
+<script src="{{ url_for('static', filename='js/vendor/exceljs.min.js') }}"></script>
 <style>
   /* Page-specific layout only — everything else (colors, fonts, buttons,
      tables, form fields) comes straight from main.css / admin.css so this
@@ -37,6 +37,7 @@
     padding:clamp(16px,3vw,28px) clamp(16px,4vw,32px) 80px;
     display:grid;grid-template-columns:minmax(320px,400px) 1fr;gap:20px;align-items:start;
   }
+  .nr-app > *{ min-width:0; }
   @media(max-width:940px){ .nr-app{grid-template-columns:1fr;padding-left:14px;padding-right:14px} }
 
   .nr-panel-head{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:14px}
@@ -51,8 +52,9 @@
   .nr-db-wrap thead th{position:sticky;top:0;z-index:1}
   .nr-db-wrap tbody tr{cursor:pointer}
   .nr-db-wrap tbody tr.selected td{background:rgba(63,143,214,.08)}
-  .nr-db-wrap td.name{font-weight:600}
-  .nr-db-wrap td.regt{font-family:var(--f-mono);font-size:11.5px;color:var(--muted)}
+  .nr-db-wrap td.nr-cadet-cell{ line-height:1.35 }
+  .nr-db-wrap td.nr-cadet-cell .name{font-weight:600}
+  .nr-db-wrap td.nr-cadet-cell .regt{font-family:var(--f-mono);font-size:11.5px;color:var(--muted);margin-top:2px}
   .nr-empty td{text-align:center;padding:32px 10px;color:var(--muted);font-style:italic;cursor:default}
 
   .nr-badge{
@@ -89,15 +91,43 @@
   .nr-toast.show{opacity:1;transform:translateY(0)}
 
   @media(max-width:600px){
-    .nr-masthead h1{font-size:16.5px}
+    body{font-size:13px}
+    .nr-masthead{padding:12px 14px}
+    .nr-masthead h1{font-size:15px}
     .nr-masthead p{display:none}
-    .nr-back{padding:7px 12px;font-size:11.5px}
-    .nr-search-row input{min-width:100%}
-    .nr-chk-wrap,.nr-chk-wrap input,.nr-chk-box{width:25px;height:25px}
-    .nr-sheet{padding:16px 12px}
-    .nr-export-bar{justify-content:stretch}
+    .nr-crest{width:32px;height:32px}
+    .nr-crest svg{width:18px;height:18px}
+    .nr-back{padding:6px 11px;font-size:11px}
+    .nr-app{padding-top:14px;gap:16px}
+    .nr-panel-head{margin-bottom:8px}
+    .nr-panel-head h2{font-size:13.5px}
+    .nr-count{font-size:10px}
+    .nr-search-row{gap:6px;margin-bottom:8px}
+    .nr-search-row input{min-width:100%;font-size:13px;padding:8px 10px}
+    .nr-search-row .btn{padding:7px 12px;font-size:11.5px}
+    .nr-col-year{display:none}
+    .nr-db-wrap table{min-width:0}
+    .nr-db-wrap thead th{font-size:9.5px;padding:8px 6px}
+    .nr-db-wrap td{padding:8px 6px !important}
+    .nr-db-wrap td.nr-cadet-cell .name{font-size:12.5px}
+    .nr-db-wrap td.nr-cadet-cell .regt{font-size:10px}
+    .nr-badge{font-size:9.5px;padding:2px 7px}
+    .nr-chk-wrap,.nr-chk-wrap input,.nr-chk-box{width:20px;height:20px}
+    .nr-chk-wrap .nr-chk-box::after{left:6px;top:2.5px;width:5px;height:9px;border-width:0 2px 2px 0}
+    .nr-title-fld label{font-size:10px}
+    .nr-title-fld input{font-size:13px;padding:8px 10px}
+    .nr-sheet{padding:14px 10px;margin-top:10px}
+    .nr-sheet-title{font-size:14.5px;margin-bottom:10px}
+    table.nr-nominal{min-width:0;font-size:11px}
+    table.nr-nominal th{font-size:9.5px;padding:6px 4px}
+    table.nr-nominal td{font-size:11px;padding:6px 4px}
+    .nr-export-bar{justify-content:stretch;margin-top:12px;padding-top:10px}
     .nr-export-bar .btn-row{width:100%;display:flex;gap:8px}
-    .nr-export-bar .btn-row .btn{flex:1}
+    .nr-export-bar .btn-row .btn{flex:1;padding:10px 12px;font-size:12.5px}
+  }
+
+  @media(max-width:360px){
+    .nr-masthead h1{font-size:13.5px}
   }
 
   @media print{
@@ -146,14 +176,13 @@
         <thead>
           <tr>
             <th style="width:36px"></th>
-            <th>Name</th>
-            <th>Roll No.</th>
+            <th>Cadet</th>
             <th style="width:78px">Rank</th>
-            <th style="width:56px">Year</th>
+            <th style="width:56px" class="nr-col-year">Year</th>
           </tr>
         </thead>
         <tbody id="dbBody">
-          <tr class="nr-empty"><td colspan="5">Loading cadets from database…</td></tr>
+          <tr class="nr-empty"><td colspan="4">Loading cadets from database…</td></tr>
         </tbody>
       </table>
     </div>
@@ -290,7 +319,7 @@
     if (!visible.length){
       var empty = document.createElement('tr');
       empty.className = 'nr-empty';
-      empty.innerHTML = '<td colspan="5">' + (cadets.length ? 'No cadets match your search.' : 'No active cadets found.') + '</td>';
+      empty.innerHTML = '<td colspan="4">' + (cadets.length ? 'No cadets match your search.' : 'No active cadets found.') + '</td>';
       dbBody.appendChild(empty);
     } else {
       visible.forEach(function(c){
@@ -325,11 +354,13 @@
         });
 
         var tdName = document.createElement('td');
-        tdName.className = 'name'; tdName.textContent = c.name;
-
-        var tdRegt = document.createElement('td');
-        tdRegt.className = 'regt';
-        tdRegt.textContent = c.regtNo + (c.enrollNo ? ' · ' + c.enrollNo : '');
+        tdName.className = 'nr-cadet-cell';
+        var nameLine = document.createElement('div');
+        nameLine.className = 'name'; nameLine.textContent = c.name;
+        var regtLine = document.createElement('div');
+        regtLine.className = 'regt';
+        regtLine.textContent = c.regtNo + (c.enrollNo ? ' · ' + c.enrollNo : '');
+        tdName.appendChild(nameLine); tdName.appendChild(regtLine);
 
         var tdRank = document.createElement('td');
         var rankBadge = document.createElement('span');
@@ -337,11 +368,12 @@
         tdRank.appendChild(rankBadge);
 
         var tdYear = document.createElement('td');
+        tdYear.className = 'nr-col-year';
         var yearBadge = document.createElement('span');
         yearBadge.className = 'nr-badge'; yearBadge.textContent = yearByKey[c.year].label;
         tdYear.appendChild(yearBadge);
 
-        tr.appendChild(tdChk); tr.appendChild(tdName); tr.appendChild(tdRegt);
+        tr.appendChild(tdChk); tr.appendChild(tdName);
         tr.appendChild(tdRank); tr.appendChild(tdYear);
         dbBody.appendChild(tr);
       });
