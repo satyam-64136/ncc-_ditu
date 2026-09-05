@@ -73,6 +73,19 @@
 
   .nr-sheet{background:#fff;border:1px solid var(--border);border-radius:14px;margin-top:14px;padding:26px clamp(14px,3vw,36px);overflow-x:auto}
   .nr-sheet-title{text-align:center;font-family:var(--f-display);font-weight:600;font-size:19px;letter-spacing:.03em;margin:0 0 16px;color:var(--gold)}
+
+  .nr-unit-block{
+    max-width:520px;margin:0 auto 18px;
+    font-family:var(--f-ui);font-size:13px;font-weight:700;color:var(--white);
+  }
+  .nr-unit-block > div{display:flex;gap:8px;padding:3px 0}
+  .nr-unit-block > div > span:first-child{width:150px;flex-shrink:0}
+  .nr-unit-block > div > b{width:10px;flex-shrink:0}
+  .nr-group-label{
+    text-align:center;font-family:var(--f-ui);font-weight:700;font-size:13px;
+    letter-spacing:.04em;border:1px solid var(--border);border-radius:6px;
+    padding:6px;margin-bottom:10px;color:var(--white);background:rgba(27,58,99,.04);
+  }
   table.nr-nominal{width:100%;border-collapse:collapse;margin-top:8px;min-width:520px}
   table.nr-nominal th{background:rgba(27,58,99,.05);border:1px solid var(--border);font-family:var(--f-ui);font-weight:700;font-size:12px;letter-spacing:.04em;color:var(--gold);padding:9px 6px;text-align:center;text-transform:uppercase}
   table.nr-nominal td{border:1px solid var(--border);padding:8px;font-weight:500;font-size:13px;text-align:center}
@@ -166,7 +179,7 @@
     </div>
 
     <div class="nr-search-row">
-      <input type="search" id="searchBox" placeholder="Search name or roll no…">
+      <input type="search" id="searchBox" placeholder="Search name or regt no…">
       <button class="btn btn-outline btn-sm" id="selectAllBtn" type="button">Select all</button>
       <button class="btn btn-ghost btn-sm" id="selectNoneBtn" type="button">None</button>
     </div>
@@ -196,25 +209,35 @@
     </div>
 
     <div class="fld nr-title-fld" style="max-width:480px">
-      <label for="docTitle">Nominal Title</label>
-      <input type="text" id="docTitle" value="NOMINAL FOR RDC SELECTIONS">
+      <label for="docTitle">Event / Purpose</label>
+      <input type="text" id="docTitle" value="RDC SELECTIONS">
     </div>
 
     <!-- live preview styled like the printed nominal -->
     <div class="nr-sheet" id="sheet">
-      <h3 class="nr-sheet-title" id="pvTitle">NOMINAL FOR RDC SELECTIONS</h3>
+      <h3 class="nr-sheet-title" id="pvTitle">NOMINAL ROLL OF CDTS REPORTING FOR RDC SELECTIONS</h3>
+
+      <div class="nr-unit-block">
+        <div><span>Name of Unit</span><b>:</b><span>29 UK BN</span></div>
+        <div><span>Name of Gp HQ</span><b>:</b><span>DEHRADUN GROUP</span></div>
+        <div><span>Name of Dte</span><b>:</b><span>UTTARAKHAND DTE</span></div>
+        <div><span>Name of Institution</span><b>:</b><span>DIT UNIVERSITY</span></div>
+        <div><span>Name of ANO's</span><b>:</b><span>Lt. Dr. Jabrinder Singh</span></div>
+      </div>
+
+      <div class="nr-group-label">SDs</div>
+
       <table class="nr-nominal" id="pvTable">
         <thead>
           <tr>
-            <th style="width:50px">S. No</th>
-            <th style="width:80px">Rank</th>
-            <th>Name</th>
-            <th style="width:170px">Roll Number</th>
-            <th style="width:70px">Year</th>
+            <th style="width:60px">SR. NO.</th>
+            <th style="width:80px">RANK</th>
+            <th>NAME</th>
+            <th style="width:190px">REGIMENTAL NO.</th>
           </tr>
         </thead>
         <tbody id="pvBody">
-          <tr><td colspan="5" class="nr-empty-preview">No cadets selected.</td></tr>
+          <tr><td colspan="4" class="nr-empty-preview">No cadets selected.</td></tr>
         </tbody>
       </table>
     </div>
@@ -397,12 +420,13 @@
   }
 
   function renderPreview(){
-    pvTitle.textContent = docTitle.value.trim() || 'NOMINAL';
+    var eventName = docTitle.value.trim() || 'NOMINAL';
+    pvTitle.textContent = 'NOMINAL ROLL OF CDTS REPORTING FOR ' + eventName;
 
     var list = getNominalList();
     pvBody.innerHTML = '';
     if (!list.length){
-      pvBody.innerHTML = '<tr><td colspan="5" class="nr-empty-preview">No cadets selected.</td></tr>';
+      pvBody.innerHTML = '<tr><td colspan="4" class="nr-empty-preview">No cadets selected.</td></tr>';
       return;
     }
     var lastYear = null;
@@ -413,8 +437,7 @@
         '<td>' + (i+1) + '.</td>' +
         '<td>' + rankByKey[c.rank].label + '</td>' +
         '<td class="name-cell">' + escapeHtml(c.name) + '</td>' +
-        '<td>' + escapeHtml(c.regtNo) + '</td>' +
-        '<td>' + yearByKey[c.year].label + '</td>';
+        '<td>' + escapeHtml(c.regtNo) + '</td>';
       pvBody.appendChild(tr);
     });
   }
@@ -477,62 +500,88 @@
     var wb = new ExcelJS.Workbook();
     var ws = wb.addWorksheet('Nominal', { pageSetup: { orientation: 'portrait', fitToPage: true } });
 
+    // Column widths matching the official template (A | B:C rank | D:E name | F:G regt no)
     ws.columns = [
-      { width: 8 },   // S.No
-      { width: 11 },  // Rank
-      { width: 26 },  // Name
-      { width: 22 },  // Roll No
-      { width: 9 }    // Year
+      { width: 12.5 }, { width: 8 }, { width: 8 },
+      { width: 15 }, { width: 15 }, { width: 13 }, { width: 13 }
     ];
 
     var thin = { style: 'thin', color: { argb: 'FF000000' } };
     var allBorders = { top: thin, bottom: thin, left: thin, right: thin };
-    var titleText = (document.getElementById('docTitle').value.trim() || 'NOMINAL').toUpperCase();
+    var eventName = (document.getElementById('docTitle').value.trim() || 'NOMINAL');
+    var titleText = 'NOMINAL ROLL OF CDTS REPORTING FOR ' + eventName;
 
-    var rowCursor = 1;
+    var boldCentered = { name: 'Arial', size: 12, bold: true };
+    function setCell(r, c, value, opts){
+      opts = opts || {};
+      var cell = ws.getCell(r, c);
+      cell.value = value;
+      cell.font = opts.font || boldCentered;
+      cell.alignment = opts.align || { horizontal: 'center', vertical: 'center' };
+      if (opts.border) cell.border = allBorders;
+      return cell;
+    }
 
-    ws.mergeCells(rowCursor, 1, rowCursor, 5);
-    var titleCell = ws.getCell(rowCursor, 1);
-    titleCell.value = titleText;
-    titleCell.font = { name: 'Arial', size: 14, bold: true, underline: true };
-    titleCell.alignment = { horizontal: 'center', vertical: 'bottom' };
-    ws.getRow(rowCursor).height = 21;
-    rowCursor++;
+    // Row 1 — title
+    ws.mergeCells(1, 1, 1, 7);
+    setCell(1, 1, titleText, { font: { name: 'Arial', size: 12, bold: true } });
+    ws.getRow(1).height = 21;
 
-    for (var b=0; b<2; b++){ rowCursor++; }
+    // Row 2 — blank spacer
 
-    var headers = ['S. No', 'RANK', 'NAME', 'ROLL NUMBER', 'Year'];
-    var headerRow = ws.getRow(rowCursor);
-    headers.forEach(function(h, idx){
-      var cell = headerRow.getCell(idx+1);
-      cell.value = h;
-      cell.font = { name: 'Arial', size: 14, bold: true };
-      cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFE8E8E8' } };
-      cell.alignment = { horizontal: 'center', vertical: 'bottom' };
-      cell.border = allBorders;
+    // Rows 3–7 — unit info block (label A:B, ':' in D, value F:G)
+    var unitRows = [
+      ["Name of Unit", "29 UK BN"],
+      ["Name of Gp HQ", "DEHRADUN GROUP"],
+      ["Name of Dte", "UTTARAKHAND DTE"],
+      ["Name of Institution", "DIT UNIVERSITY"],
+      ["Name of ANO's", "Lt. Dr. Jabrinder Singh"],
+    ];
+    unitRows.forEach(function(pair, idx){
+      var r = 3 + idx;
+      ws.mergeCells(r, 1, r, 2);
+      setCell(r, 1, pair[0], { font: { name: 'Arial', size: 10, bold: true }, align: { horizontal: 'left', vertical: 'center' } });
+      setCell(r, 4, ':', { font: { name: 'Arial', size: 10, bold: true } });
+      ws.mergeCells(r, 6, r, 7);
+      setCell(r, 6, pair[1], { font: { name: 'Arial', size: 10, bold: true } });
+      ws.getRow(r).height = 15.75;
     });
-    headerRow.height = 21;
-    rowCursor++;
 
+    // Row 8 — blank spacer
+
+    // Row 9 — group label
+    ws.mergeCells(9, 1, 9, 7);
+    setCell(9, 1, 'SDs', { font: { name: 'Arial', size: 10, bold: true }, border: true });
+    ws.getRow(9).height = 15.75;
+
+    // Row 10 — table header (SR.NO | RANK[B:C] | NAME[D:E] | REGIMENTAL NO.[F:G])
+    ws.mergeCells(10, 2, 10, 3);
+    ws.mergeCells(10, 4, 10, 5);
+    ws.mergeCells(10, 6, 10, 7);
+    setCell(10, 1, 'SR. NO.', { font: { name: 'Arial', size: 10, bold: true }, border: true });
+    setCell(10, 2, 'RANK',   { font: { name: 'Arial', size: 10, bold: true }, border: true });
+    setCell(10, 4, 'NAME',   { font: { name: 'Arial', size: 10, bold: true }, border: true });
+    setCell(10, 6, 'REGIMENTAL NO.', { font: { name: 'Arial', size: 10, bold: true }, border: true });
+    ws.getRow(10).height = 15.75;
+
+    // Data rows
     list.forEach(function(c, i){
-      var row = ws.getRow(rowCursor);
-      var values = [i+1, rankByKey[c.rank].label, c.name, c.regtNo, yearByKey[c.year].label];
-      values.forEach(function(v, idx){
-        var cell = row.getCell(idx+1);
-        cell.value = v;
-        cell.font = { name: 'Arial', size: 12, bold: true };
-        cell.alignment = { horizontal: (idx===2) ? 'left' : 'center', vertical: 'bottom' };
-        cell.border = allBorders;
-      });
-      row.height = 18;
-      rowCursor++;
+      var r = 11 + i;
+      ws.mergeCells(r, 2, r, 3);
+      ws.mergeCells(r, 4, r, 5);
+      ws.mergeCells(r, 6, r, 7);
+      setCell(r, 1, i+1, { font: { name: 'Arial', size: 10, bold: true }, border: true });
+      setCell(r, 2, rankByKey[c.rank].label, { font: { name: 'Arial', size: 10, bold: true }, border: true });
+      setCell(r, 4, c.name, { font: { name: 'Arial', size: 10, bold: true }, border: true });
+      setCell(r, 6, c.regtNo, { font: { name: 'Arial', size: 10, bold: true }, border: true });
+      ws.getRow(r).height = 15.75;
     });
 
     var buffer = await wb.xlsx.writeBuffer();
     var blob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
     var url = URL.createObjectURL(blob);
     var a = document.createElement('a');
-    var fname = (titleText.replace(/[^A-Za-z0-9]+/g,'_').replace(/^_+|_+$/g,'') || 'Nominal') + '.xlsx';
+    var fname = (eventName.replace(/[^A-Za-z0-9]+/g,'_').replace(/^_+|_+$/g,'') || 'Nominal') + '.xlsx';
     a.href = url; a.download = fname;
     document.body.appendChild(a); a.click(); document.body.removeChild(a);
     setTimeout(function(){ URL.revokeObjectURL(url); }, 4000);
